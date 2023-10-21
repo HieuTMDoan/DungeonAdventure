@@ -1,31 +1,11 @@
 package objects.tiles;
 
-import objects.DungeonCharacter;
+class DefaultTile extends Tile {
 
-public class DefaultTile implements Tile{
+    private final static char DISPLAY_CHAR = ' ';
 
     protected DefaultTile() {
-
+        super(DISPLAY_CHAR, true, false);
     }
 
-
-    @Override
-    public char getTileChar() {
-        return ' ';
-    }
-
-    @Override
-    public boolean isTraversable() {
-        return true;
-    }
-
-    @Override
-    public boolean isInteractable() {
-        return false;
-    }
-
-    @Override
-    public void onStepOver(final DungeonCharacter target) {
-
-    }
 }

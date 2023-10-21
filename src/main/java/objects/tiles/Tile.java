@@ -4,11 +4,6 @@ import objects.DungeonCharacter;
 
 public abstract class Tile {
 
-    public final static Tile DEFAULT = new DefaultTile();
-
-//    Tile WALL = new WallTile();
-
-
     private final char myTileChar;
     private final boolean myTraversable;
     private final boolean myInteractable;

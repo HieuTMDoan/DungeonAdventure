@@ -15,6 +15,8 @@ https://app.diagrams.net/#G1c-ypsWS3IY4ryL-B-XlXjTAmY8hkbJAv
 Toggl:
 https://track.toggl.com/timer
 
+Project Description:
+https://github.com/atburn/TCSS360_Group3_CourseProject/blob/src/Project%20Details%20-%20Dungeon%20Adventure.pdf
 
 Code Todo:
 

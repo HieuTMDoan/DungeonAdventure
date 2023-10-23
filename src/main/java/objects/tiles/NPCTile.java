@@ -8,7 +8,7 @@ public class NPCTile extends Tile {
     private final DungeonCharacter myDungeonCharacter;
 
     public NPCTile(final DungeonCharacter theDungeonCharacter) {
-        super(theDungeonCharacter.getDisplayChar(), false, false);
+        super(theDungeonCharacter.getDisplayChar(), false);
         this.myDungeonCharacter = theDungeonCharacter;
     }
 }

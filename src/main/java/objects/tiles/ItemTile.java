@@ -21,7 +21,7 @@ public class ItemTile extends Tile {
         super(theItems.length == 1
                         ? theItems[0].getDisplayChar()
                         : MULTIPLE_ITEMS_DISPLAY_CHAR,
-                true, true);
+                true);
 
         this.myStoredItems.addAll(List.of(theItems));
 

@@ -8,7 +8,7 @@ public class DoorTile extends Tile {
         super(axis == (Directions.Axis.VERTICAL)
                         ? TileChars.VERTICAL_DOOR.getTileChar()
                         : TileChars.HORIZONTAL_DOOR.getTileChar(),
-                true, true);
+                true);
     }
 
 

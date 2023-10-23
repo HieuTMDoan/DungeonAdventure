@@ -16,9 +16,7 @@ public abstract class Tile {
         NPC,
         ;
 
-
         private final Character myTileChar;
-
 
         /**
          * Constructor when the tile character is variable.
@@ -44,13 +42,11 @@ public abstract class Tile {
     }
 
     private final char myTileChar;
-    private final boolean myTraversable;
-    private final boolean myInteractable;
+    private final boolean myDefaultTraversable;
 
-    public Tile(final char theTileChar, final boolean theTraversable, final boolean theInteractable) {
+    public Tile(final char theTileChar, final boolean theDefaultTraversable) {
         this.myTileChar = theTileChar;
-        this.myTraversable = theTraversable;
-        this.myInteractable = theInteractable;
+        this.myDefaultTraversable = theDefaultTraversable;
     }
 
     public char getTileChar() {
@@ -62,18 +58,14 @@ public abstract class Tile {
      * player to traverse over the tile during a specific state.
      */
     public boolean isTraversable() {
-        return this.myTraversable;
-    }
-
-    /**
-     * Returns if the tile can be interacted with. Can be overridden to allow
-     * player to interact with the tile during a specific state.
-     */
-    public boolean isInteractable() {
-        return this.myInteractable;
+        return this.myDefaultTraversable;
     }
 
     public void onStepOver(final DungeonCharacter target) {
+        // do nothing by default
+    }
+
+    public void onInteract() {
         // do nothing by default
     }
 

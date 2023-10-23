@@ -1,19 +1,16 @@
-package objects;
+package objects.items;
 
-public abstract class DungeonCharacter {
+public abstract class Item {
 
     private final char myDisplayChar;
 
-    public DungeonCharacter(final char theDisplayChar) {
+    public Item(final char theDisplayChar) {
         this.myDisplayChar = theDisplayChar;
     }
+
 
     public char getDisplayChar() {
         return myDisplayChar;
     }
-
-
-
-
 
 }

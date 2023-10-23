@@ -11,3 +11,8 @@ https://docs.google.com/document/d/1tIjDpIEHZTT-ze4Pu-7x68FCJaUmvQTU/edit?usp=sh
 
 UML:
 https://app.diagrams.net/#G1c-ypsWS3IY4ryL-B-XlXjTAmY8hkbJAv
+
+
+Code Todo:
+
+    - Put all visual chars in one class/file to easily change them

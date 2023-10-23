@@ -4,7 +4,7 @@ public class EntranceTile extends Tile {
 
 
     public EntranceTile() {
-        super(TileChars.ENTRANCE.getTileChar(), true);
+        super(TileChars.Room.ENTRANCE, true);
     }
 
 

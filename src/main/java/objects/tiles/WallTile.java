@@ -4,7 +4,7 @@ public class WallTile extends Tile {
 
 
     public WallTile() {
-        super(TileChars.WALL.getTileChar(), false);
+        super(TileChars.Room.WALL, false);
     }
 
 }

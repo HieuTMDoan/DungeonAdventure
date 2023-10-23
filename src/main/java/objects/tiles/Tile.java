@@ -4,43 +4,6 @@ import objects.DungeonCharacter;
 
 public abstract class Tile {
 
-    protected enum TileChars {
-        EMPTY(' '),
-        WALL('*'),
-        VERTICAL_DOOR('-'),
-        HORIZONTAL_DOOR('|'),
-        ENTRANCE('i'),
-        EXIT('O'),
-        ITEM,
-        DAMAGE,
-        NPC,
-        ;
-
-        private final Character myTileChar;
-
-        /**
-         * Constructor when the tile character is variable.
-         */
-        TileChars() {
-            myTileChar = null;
-        }
-
-        /**
-         * Constructor when the tile character is static.
-         *
-         * @param theTileChar The tile character.
-         */
-        TileChars(final Character theTileChar) {
-            this.myTileChar = theTileChar;
-        }
-
-        public Character getTileChar() {
-            return this.myTileChar;
-        }
-
-
-    }
-
     private final char myTileChar;
     private final boolean myDefaultTraversable;
 

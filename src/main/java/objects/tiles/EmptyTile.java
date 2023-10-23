@@ -4,7 +4,7 @@ class EmptyTile extends Tile {
 
 
     protected EmptyTile() {
-        super(TileChars.EMPTY.getTileChar(), true);
+        super(TileChars.Room.EMPTY, true);
     }
 
 }

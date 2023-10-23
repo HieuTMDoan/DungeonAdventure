@@ -6,8 +6,8 @@ public class DoorTile extends Tile {
 
     public DoorTile(final Directions.Axis axis) {
         super(axis == (Directions.Axis.VERTICAL)
-                        ? TileChars.VERTICAL_DOOR.getTileChar()
-                        : TileChars.HORIZONTAL_DOOR.getTileChar(),
+                        ? TileChars.Room.VERTICAL_DOOR
+                        : TileChars.Room.HORIZONTAL_DOOR,
                 true);
     }
 

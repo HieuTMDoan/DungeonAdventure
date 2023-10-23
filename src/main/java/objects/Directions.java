@@ -2,7 +2,6 @@ package objects;
 
 public class Directions {
 
-
     public enum Axis {
         HORIZONTAL, VERTICAL
     }

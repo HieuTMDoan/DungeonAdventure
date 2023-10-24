@@ -1,6 +1,7 @@
 package objects.tiles;
 
 import objects.Directions;
+import objects.TileChars;
 
 public class DoorTile extends Tile {
 

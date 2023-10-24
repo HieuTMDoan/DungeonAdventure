@@ -1,11 +1,18 @@
-package objects.tiles;
+package objects;
 
 /**
  * Class to contain what character represents each visual object.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ *
+ * @version Fall 2023
  */
-public class TileChars {
+public final class TileChars {
 
-    public static class Heroes {
+    public static class Player {
+        public static final char PLAYER = '+';
 
     }
 

@@ -1,4 +1,3 @@
-import objects.tiles.Tile;
 
 public final class Main {
 

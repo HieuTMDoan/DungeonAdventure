@@ -1,6 +1,7 @@
 package objects.heroes;
 
 import objects.DungeonCharacter;
+import objects.TileChars;
 import objects.skills.Skill;
 
 public abstract class Hero extends DungeonCharacter {
@@ -11,22 +12,22 @@ public abstract class Hero extends DungeonCharacter {
 
 
     public Hero(final String theName,
-                final char theDisplayChar,
                 final int theDefaultHealth,
                 final double theMinDamage,
                 final double theMaxDamage,
-                final double theAttackSpeed,
+                final int theAttackSpeed,
                 final double theAccuracy,
                 final double theBlockChance,
                 final Skill theSkill) {
 
         super(theName,
-                theDisplayChar,
+                TileChars.Player.PLAYER,
                 theDefaultHealth,
                 theMinDamage,
                 theMaxDamage,
                 theAttackSpeed,
                 theAccuracy);
+
         this.myBlockChance = theBlockChance;
         this.mySkill = theSkill;
     }
@@ -34,4 +35,6 @@ public abstract class Hero extends DungeonCharacter {
     public boolean useSkill(final DungeonCharacter theTarget) {
         return mySkill.activateSkill(theTarget);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package objects.tiles;
 
 import objects.DungeonCharacter;
+import objects.TileChars;
 
 public class DamageTile extends Tile {
 
@@ -10,7 +11,7 @@ public class DamageTile extends Tile {
     }
 
     @Override
-    public void onStepOver(final DungeonCharacter theTarget) {
+    public void onInteract(final DungeonCharacter theTarget) {
 
 
     }

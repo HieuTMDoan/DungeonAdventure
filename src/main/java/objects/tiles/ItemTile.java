@@ -1,5 +1,6 @@
 package objects.tiles;
 
+import objects.TileChars;
 import objects.items.Item;
 
 import java.util.ArrayList;

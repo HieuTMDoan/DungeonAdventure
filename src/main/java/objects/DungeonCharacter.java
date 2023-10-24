@@ -7,7 +7,7 @@ public abstract class DungeonCharacter {
     private final int myMaxHealthPoints;
     private final double myMinDamage;
     private final double myMaxDamage;
-    private final double myAttackSpeed;
+    private final int myAttackSpeed;
     private final double myAccuracy;
 
     private int myHealthPoints;
@@ -17,7 +17,7 @@ public abstract class DungeonCharacter {
                             final int theDefaultHealth,
                             final double theMinDamage,
                             final double theMaxDamage,
-                            final double theAttackSpeed,
+                            final int theAttackSpeed,
                             final double theAccuracy) {
 
         this.myName = theName;

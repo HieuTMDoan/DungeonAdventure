@@ -24,16 +24,18 @@ public abstract class Tile {
         return this.myDefaultTraversable;
     }
 
-    public void onStepOver(final DungeonCharacter theTarget) {
+    /**
+     * This method should be fired when the user steps on a tile.
+     *
+     * @param theTarget
+     */
+    public void onInteract(final DungeonCharacter theTarget) {
         if (!isTraversable()) {
             throw new RuntimeException(
                     "Target has entered a tile that should not be traversable");
         }
     }
 
-    public void onInteract() {
-        // do nothing by default
-    }
 
 
 }

@@ -12,6 +12,7 @@ public class DamageTile extends Tile {
     @Override
     public void onStepOver(final DungeonCharacter theTarget) {
 
+
     }
 
 

@@ -34,6 +34,7 @@ public abstract class DungeonCharacter {
         return false;
     }
 
+
     public char getDisplayChar() {
         return myDisplayChar;
     }
@@ -54,10 +55,6 @@ public abstract class DungeonCharacter {
     public void changeHealth(final int theChangeInHealth) {
         this.setHealth(this.myHealthPoints + theChangeInHealth);
     }
-
-
-
-
 
 
 }

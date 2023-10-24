@@ -24,8 +24,11 @@ public abstract class Tile {
         return this.myDefaultTraversable;
     }
 
-    public void onStepOver(final DungeonCharacter target) {
-        // do nothing by default
+    public void onStepOver(final DungeonCharacter theTarget) {
+        if (!isTraversable()) {
+            throw new RuntimeException(
+                    "Target has entered a tile that should not be traversable");
+        }
     }
 
     public void onInteract() {

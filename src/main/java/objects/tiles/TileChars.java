@@ -20,9 +20,12 @@ public class TileChars {
         public static final char HORIZONTAL_DOOR = '|';
         public static final char ENTRANCE = 'i';
         public static final char EXIT = 'O';
+        public static final char PIT = 'X';
     }
 
     public static class Items {
+
+        public static final char MULTIPLE = 'M';
         public static final char HEALING_POTION = 'H';
         public static final char VISION_POTION = 'V';
         public static final char PILLAR_OF_ENCAPSULATION = 'E';

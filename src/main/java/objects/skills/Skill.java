@@ -10,8 +10,6 @@ public abstract class Skill {
     }
 
 
-    public boolean activateSkill(final DungeonCharacter target) {
-        return false;
-    }
+    public abstract boolean activateSkill(DungeonCharacter theTarget);
 
 }

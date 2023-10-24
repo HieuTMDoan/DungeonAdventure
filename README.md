@@ -12,8 +12,11 @@ https://docs.google.com/document/d/1tIjDpIEHZTT-ze4Pu-7x68FCJaUmvQTU/edit?usp=sh
 UML:
 https://app.diagrams.net/#G1c-ypsWS3IY4ryL-B-XlXjTAmY8hkbJAv
 
-Toggl:
+Toggl (Time Log):
 https://track.toggl.com/timer
+
+Pivotal Tracker (User Stories):
+https://www.pivotaltracker.com/n/projects/2681151
 
 Project Description:
 https://github.com/atburn/TCSS360_Group3_CourseProject/blob/src/Project%20Details%20-%20Dungeon%20Adventure.pdf

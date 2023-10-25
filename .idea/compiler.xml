@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="TCSS360_Group3_CourseProject" />
+        <module name="DungeonAdventure" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="TCSS360_Group3_CourseProject" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>

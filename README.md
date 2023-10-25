@@ -1,4 +1,4 @@
-# TCSS360 Group 3 - CourseProject
+# TCSS360 Group 3 - Dungeon Adventure
 
 Group Members:
  - Aaron Burnham

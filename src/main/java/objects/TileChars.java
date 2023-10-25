@@ -17,7 +17,9 @@ public final class TileChars {
     }
 
     public static class Monsters {
-
+        public static final char OGRE = '7';
+        public static final char SKELETON = '8';
+        public static final char GREMLIN = '9';
     }
 
     public static class Room {
@@ -31,7 +33,6 @@ public final class TileChars {
     }
 
     public static class Items {
-
         public static final char MULTIPLE = 'M';
         public static final char HEALING_POTION = 'H';
         public static final char VISION_POTION = 'V';

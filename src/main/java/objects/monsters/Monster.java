@@ -5,17 +5,19 @@ import objects.DungeonCharacter;
 public abstract class Monster extends DungeonCharacter {
 
     private final double myHealChance;
-    private final int myHealAmount;
+    private final int myMinHeal;
+    private final int myMaxHeal;
 
     public Monster(final String theName,
                    final char theDisplayChar,
                    final int theDefaultHealth,
                    final double theMinDamage,
                    final double theMaxDamage,
-                   final double theAttackSpeed,
+                   final int theAttackSpeed,
                    final double theAccuracy,
                    final double theHealChance,
-                   final int theHealAmount) {
+                   final int theMinHeal,
+                   final int theMaxHeal) {
         super(theName,
                 theDisplayChar,
                 theDefaultHealth,
@@ -25,7 +27,8 @@ public abstract class Monster extends DungeonCharacter {
                 theAccuracy);
 
         this.myHealChance = theHealChance;
-        this.myHealAmount = theHealAmount;
+        this.myMinHeal = theMinHeal;
+        this.myMaxHeal = theMaxHeal;
     }
 
     @Override

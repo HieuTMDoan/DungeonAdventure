@@ -6,6 +6,4 @@ module com.tcss.dungeonadventure {
 
     opens com.tcss.dungeonadventure to javafx.fxml;
     exports com.tcss.dungeonadventure;
-    exports com.tcss.dungeonadventure.controller;
-    opens com.tcss.dungeonadventure.controller to javafx.fxml;
 }

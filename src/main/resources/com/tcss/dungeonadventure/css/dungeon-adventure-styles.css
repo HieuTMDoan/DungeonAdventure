@@ -1,5 +1,8 @@
 @import url("colors.css");
 
+
 * {
     -fx-background-color: -fx-default-background;
+    -fx-font-family: "Consolas";
 }
+

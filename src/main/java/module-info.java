@@ -4,6 +4,6 @@ module com.tcss.dungeonadventure {
     requires java.desktop;
 
 
-    opens com.tcss.dungeonadventure to javafx.fxml;
-    exports com.tcss.dungeonadventure;
+    exports com.tcss.dungeonadventure.view;
+    opens com.tcss.dungeonadventure.view to javafx.fxml;
 }

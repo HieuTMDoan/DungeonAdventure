@@ -32,6 +32,8 @@ public class Room {
         this.myRoomDimensions = new Dimension(theRoomWidth, theRoomHeight);
         this.myRoomLocation = new Point(theRoomX, theRoomY);
         this.myPlayerPosition = null;
+
+
     }
 
 

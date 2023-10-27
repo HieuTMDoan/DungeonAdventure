@@ -1,6 +1,6 @@
 package com.tcss.dungeonadventure.objects;
 
-public abstract class DungeonCharacter {
+public abstract class DungeonCharacter implements VisualComponent {
 
     private final char myDisplayChar;
     private final String myName;
@@ -34,9 +34,14 @@ public abstract class DungeonCharacter {
         return false;
     }
 
-
+    @Override
     public char getDisplayChar() {
         return myDisplayChar;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Name: " + this.myName;
     }
 
     public int getHealth() {

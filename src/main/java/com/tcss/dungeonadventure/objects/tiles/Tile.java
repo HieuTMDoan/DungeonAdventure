@@ -1,9 +1,10 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
 
+import com.tcss.dungeonadventure.objects.VisualComponent;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
-public abstract class Tile {
+public abstract class Tile implements VisualComponent {
 
     private final char myTileChar;
     private final boolean myDefaultTraversable;
@@ -13,8 +14,14 @@ public abstract class Tile {
         this.myDefaultTraversable = theDefaultTraversable;
     }
 
-    public char getTileChar() {
+    @Override
+    public char getDisplayChar() {
         return this.myTileChar;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Tile : " + getClass().getSimpleName() + "\nTraversable: " + myDefaultTraversable;
     }
 
     /**

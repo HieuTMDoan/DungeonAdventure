@@ -16,7 +16,7 @@ public class Gremlin extends Monster {
     private static final int DEFAULT_MAX_HEAL = 40;
 
     public Gremlin() {
-        super(Gremlin.class.getName(),
+        super(Gremlin.class.getSimpleName(),
                 TileChars.Monsters.GREMLIN,
                 DEFAULT_HIT_POINTS,
                 DEFAULT_MIN_DAMAGE,

@@ -15,7 +15,7 @@ public class Ogre extends Monster {
     private static final int DEFAULT_MAX_HEAL = 60;
 
     public Ogre() {
-        super(Ogre.class.getName(),
+        super(Ogre.class.getSimpleName(),
                 TileChars.Monsters.OGRE,
                 DEFAULT_HIT_POINTS,
                 DEFAULT_MIN_DAMAGE,

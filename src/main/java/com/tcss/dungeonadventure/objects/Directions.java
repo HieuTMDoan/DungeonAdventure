@@ -7,7 +7,7 @@ public class Directions {
     }
 
     public enum Cardinal {
-        NORTH, EAST, SOUTH, WEST
+        NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST
     }
 
 

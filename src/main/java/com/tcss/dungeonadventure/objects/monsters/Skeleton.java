@@ -15,7 +15,7 @@ public class Skeleton extends Monster {
 
 
     public Skeleton() {
-        super(Skeleton.class.getName(),
+        super(Skeleton.class.getSimpleName(),
                 TileChars.Monsters.SKELETON,
                 DEFAULT_HIT_POINTS,
                 DEFAULT_MIN_DAMAGE,

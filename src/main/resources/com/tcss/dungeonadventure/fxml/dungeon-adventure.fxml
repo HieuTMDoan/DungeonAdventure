@@ -20,6 +20,11 @@
                         <Font name="Consolas" size="36.0" />
                      </font>
                   </Label>
+                  <Label fx:id="tileInfoLabel" alignment="TOP_LEFT" layoutX="18.0" layoutY="69.0" prefHeight="242.0" prefWidth="166.0" text="Sample info" textFill="WHITE" wrapText="true" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="70.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                </children></AnchorPane>
          </left>
          <center>

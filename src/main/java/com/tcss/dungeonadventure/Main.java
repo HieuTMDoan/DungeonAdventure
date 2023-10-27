@@ -1,4 +1,4 @@
-package com.tcss.dungeonadventure.model;
+package com.tcss.dungeonadventure;
 
 import com.tcss.dungeonadventure.view.DungeonGUI;
 import javafx.application.Application;

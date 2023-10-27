@@ -12,4 +12,9 @@ public class NPCTile extends Tile {
         super(theDungeonCharacter.getDisplayChar(), false);
         this.myDungeonCharacter = theDungeonCharacter;
     }
+
+    @Override
+    public String getDescription() {
+        return myDungeonCharacter.getDescription();
+    }
 }

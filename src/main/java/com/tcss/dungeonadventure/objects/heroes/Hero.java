@@ -8,9 +8,11 @@ import com.tcss.dungeonadventure.objects.skills.Skill;
 public abstract class Hero extends DungeonCharacter {
 
     private final double myBlockChance;
-
     private final Skill mySkill;
-
+    private int myPillarCount;
+    private int myVisionPotionCount;
+    private int myBombCount;
+    private int myHealPotionCount;
 
     public Hero(final String theName,
                 final int theDefaultHealth,
@@ -31,6 +33,26 @@ public abstract class Hero extends DungeonCharacter {
 
         this.myBlockChance = theBlockChance;
         this.mySkill = theSkill;
+    }
+
+    public int getBlockChance() {
+        return (int) myBlockChance;
+    }
+
+    public int getVisionPotionCount() {
+        return myVisionPotionCount;
+    }
+
+    public int getBombCount() {
+        return myBombCount;
+    }
+
+    public int getPillarCount() {
+        return myPillarCount;
+    }
+
+    public void addPillarToInventory() {
+        myPillarCount++;
     }
 
     public boolean useSkill(final DungeonCharacter theTarget) {

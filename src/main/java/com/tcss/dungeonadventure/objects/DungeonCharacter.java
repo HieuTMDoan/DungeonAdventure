@@ -1,4 +1,5 @@
 package com.tcss.dungeonadventure.objects;
+import java.util.*;
 
 public abstract class DungeonCharacter implements VisualComponent {
 
@@ -8,9 +9,12 @@ public abstract class DungeonCharacter implements VisualComponent {
     private final double myMinDamage;
     private final double myMaxDamage;
     private final int myAttackSpeed;
+    private final int myHitRate;
+    private static final int RAND_UPPERBOUND = 100;
+    private static final Random myRand = new Random();
     private final double myAccuracy;
-
     private int myHealthPoints;
+    private DungeonCharacter theTarget;
 
     public DungeonCharacter(final String theName,
                             final char theDisplayChar,
@@ -18,6 +22,7 @@ public abstract class DungeonCharacter implements VisualComponent {
                             final double theMinDamage,
                             final double theMaxDamage,
                             final int theAttackSpeed,
+                            final int theHitRate,
                             final double theAccuracy) {
 
         this.myName = theName;
@@ -28,10 +33,16 @@ public abstract class DungeonCharacter implements VisualComponent {
         this.myMaxDamage = theMaxDamage;
         this.myAttackSpeed = theAttackSpeed;
         this.myAccuracy = theAccuracy;
+        this.myHitRate = theHitRate;
     }
 
-    public boolean attack(final DungeonCharacter theTarget) {
-        return false;
+    public void attack(final DungeonCharacter theTarget) {
+        this.theTarget = theTarget;
+        if ((myHitRate * 10) > myRand.nextInt(RAND_UPPERBOUND)) {
+            double damage = myRand.nextInt((int) (((myMinDamage + 1)) - myMaxDamage)) + myMinDamage;
+            theTarget.setHealth((int) (theTarget.getHealth() - damage));
+            System.out.println(theTarget.getClass().getSimpleName() + " lost " + damage + " health");
+        }
     }
 
     @Override
@@ -61,5 +72,14 @@ public abstract class DungeonCharacter implements VisualComponent {
         this.setHealth(this.myHealthPoints + theChangeInHealth);
     }
 
+    public double getMinDamage() {
+        return myMinDamage;
+    }
+    public static int generateRandomInt() {
+        return myRand.nextInt(RAND_UPPERBOUND + 1);
+    }
+    public double getMaxDamage() {
+        return myMaxDamage;
+    }
 
 }

@@ -16,8 +16,19 @@ public class CrushingBlow extends Skill {
 
     @Override
     public boolean activateSkill(final DungeonCharacter theTarget) {
-        return false;
+        if (theTarget != null && Math.random() <= DEFAULT_SUCCESS_CHANCE) {
+            int damage = DEFAULT_MIN_DAMAGE + (int) (Math.random() * (DEFAULT_MAX_DAMAGE - DEFAULT_MIN_DAMAGE + 1));
+            int newHealth = Math.max(theTarget.getHealth() - damage, 0);
+            theTarget.setHealth(newHealth);
+
+            System.out.println(theTarget.getClass().getSimpleName() + " takes " + damage + " points of damage from Crushing Blow!");
+            return true;
+        } else {
+            System.out.println("Crushing Blow failed to hit the target.");
+            return false;
+        }
     }
-
-
 }
+
+
+

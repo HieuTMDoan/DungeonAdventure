@@ -1,5 +1,7 @@
 package com.tcss.dungeonadventure.model;
 
+import java.util.Arrays;
+
 /**
  * Represents a randomly generated maze of {@link Room}.
  * @author Aaron, Sunny, Hieu
@@ -24,7 +26,7 @@ public class Dungeon {
     /**
      * The room that contains a pillar of Object-Oriented
      */
-    private final Room myPillarRoom;
+    private final Room[] myPillarRooms;
 
     /**
      * The current player's location
@@ -41,11 +43,12 @@ public class Dungeon {
     public Dungeon(final Room[][] theMaze,
                    final Room theStartingRoom,
                    final Room theExitRoom,
-                   final Room thePillarRoom) {
+                   final Room[] thePillarRooms) {
         myMaze = theMaze;
         myStartingRoom = theStartingRoom;
         myExitRoom = theExitRoom;
-        myPillarRoom = thePillarRoom;
+        myPillarRooms = thePillarRooms;
+        myCharacterLocation = theStartingRoom;
         //How do we go about initializing the starting, exiting, and pillar Rooms?
         generateDungeon();
     }
@@ -93,7 +96,29 @@ public class Dungeon {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+
         //TODO: implement operations to build the String representation of Dungeon
+        for (Room[] rooms : myMaze) {
+            for (Room room : rooms) {
+                stringBuilder.append("[");
+
+                if (room == myStartingRoom) {
+                    stringBuilder.append("entrance, ");
+                } else if (room == myExitRoom) {
+                    stringBuilder.append("exit, ");
+                } else if (Arrays.asList(myPillarRooms).contains(room)) {
+                    stringBuilder.append("contains ").append(room.getPillar()).append(", ");
+                } else if (room == myCharacterLocation) {
+                    stringBuilder.append("you are here, ");
+                } else {
+                    stringBuilder.append("dead-end, ");
+                }
+            }
+
+            stringBuilder.append("]");
+            stringBuilder.append("\n");
+        }
+
         return stringBuilder.toString();
     }
 }

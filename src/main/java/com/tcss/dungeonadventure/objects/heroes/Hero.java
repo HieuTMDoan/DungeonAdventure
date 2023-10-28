@@ -16,8 +16,8 @@ public abstract class Hero extends DungeonCharacter {
 
     public Hero(final String theName,
                 final int theDefaultHealth,
-                final double theMinDamage,
-                final double theMaxDamage,
+                final int theMinDamage,
+                final int theMaxDamage,
                 final int theAttackSpeed,
                 final double theAccuracy,
                 final double theBlockChance,

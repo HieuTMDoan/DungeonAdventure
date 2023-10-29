@@ -7,23 +7,23 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Represents a randomly generated maze of {@link Room}.
+ * Represents a randomly generated maze of type {@link Room}.
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360, Fall 2023
  */
 public class Dungeon {
     /**
-     * The 2D representation of the dungeon.
+     * The 2D representation of the {@link Dungeon}.
      */
     private final Room[][] myMaze;
 
     /**
-     * The entrance of the dungeon.
+     * The entrance of the {@link Dungeon}.
      */
     private final Room myStartingRoom;
 
     /**
-     * The exit of the dungeon.
+     * The exit of the {@link Dungeon}.
      */
     private final Room myExitRoom;
 
@@ -38,10 +38,10 @@ public class Dungeon {
     private final Room myCharacterLocation;
 
     /**
-     * Initializes a 6x6 traversable dungeon.
-     * @param theMaze the empty maze of rooms of size 6x6
-     * @param theStartingRoom the entrance of the dungeon
-     * @param theExitRoom the exit of the dungeon
+     * Initializes a 6x6 traversable {@link Dungeon}.
+     * @param theMaze the empty maze of type {@link Room}
+     * @param theStartingRoom the entrance of the {@link Dungeon}
+     * @param theExitRoom the exit of the {@link Dungeon}
      * @param thePillarRooms the room that contains a pillar of Object-Oriented
      */
     public Dungeon(final Room[][] theMaze,
@@ -57,11 +57,11 @@ public class Dungeon {
     }
 
     /**
-     * Constructs a random-generated maze of rooms
+     * Constructs a random-generated maze of type {@link Room}
      * with a traversable path from the entrance to the exit
      * and 4 pillars of Object-Oriented randomly placed in the maze.
      */
-    @SuppressWarnings("checkstyle:FinalLocalVariable")
+    @SuppressWarnings("checkstyle:LineLength")
     private void generateDungeon() {
         // Generates an array of essentials rooms in the maze
         final List<Room> essentialRooms = new ArrayList<>();
@@ -76,12 +76,12 @@ public class Dungeon {
          */
         final Random random = new Random();
 
-        // Shuffles the list of objects randomly
+        // Shuffles the list of rooms randomly
         Collections.shuffle(essentialRooms, random);
 
         /*
         totalSpots is the total # of indices in the maze,
-        filledCount is the # for occupied indices
+        filledCount is the # of occupied indices
         essentialRoomsIndex is the index of the shuffled essentialRooms
          */
         final int totalSpots = myMaze.length * myMaze[0].length;
@@ -93,7 +93,7 @@ public class Dungeon {
             final int randomRow = random.nextInt(myMaze.length);
             final int randomCol = random.nextInt(myMaze[0].length);
 
-            // A list which its chosen element can be either an essential room or a dead-end room
+            // A list in which its chosen element can be either an essential room or a dead-end room
             final List<Room> randomRooms = new ArrayList<>();
             randomRooms.add(essentialRooms.get(essentialRoomsIndex));
             randomRooms.add(new Room(randomRow, randomCol, 1, 1, false, false, null));
@@ -112,26 +112,26 @@ public class Dungeon {
     }
 
     /**
-     * Returns a maze of rooms.
-     * @return a maze of rooms
+     * Returns the dungeon as a maze of type {@link Room}.
+     * @return a maze of type {@link Room}
      */
     public Room[][] getRooms() {
         return myMaze;
     }
 
     /**
-     * Returns the player's current location in the Dungeon.
-     * @return the player's current location in the Dungeon
+     * Returns the player's current location in the {@link Dungeon}.
+     * @return the player's current location in the {@link Dungeon}
      */
     public Room getCharacterLocation() {
         return myCharacterLocation;
     }
 
     /**
-     * Returns the room in the maze at the specified coordinates.
-     * @param theX the x-coordinate of the room
-     * @param theY the y-coordinate of the room
-     * @return the room in the maze at the specified coordinates
+     * Returns the {@link Room} in the maze at the specified coordinates.
+     * @param theX the x-coordinate of the {@link Room}
+     * @param theY the y-coordinate of the {@link Room}
+     * @return the {@link Room} in the maze at the specified coordinates
      */
     public Room getRoomAt(final int theX, final int theY) {
         return myMaze[theX][theY];

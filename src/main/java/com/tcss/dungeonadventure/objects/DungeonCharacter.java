@@ -58,6 +58,10 @@ public abstract class DungeonCharacter implements VisualComponent {
     public int getHealth() {
         return this.myHealthPoints;
     }
+    public int getMaxHealthPoints() { return this.myMaxHealthPoints;
+    }
+    public String getName() { return this.myName;
+    }
 
     public void setHealth(final int theNewHealth) {
         if (theNewHealth > this.myMaxHealthPoints) {

@@ -3,7 +3,7 @@ package com.tcss.dungeonadventure.model;
 
 
 import com.tcss.dungeonadventure.objects.Directions;
-
+import com.tcss.dungeonadventure.objects.items.Item;
 import java.awt.Dimension;
 import java.awt.Point;
 
@@ -14,7 +14,7 @@ public class Room {
     private final boolean myIsExitRoom;
     private final Dimension myRoomDimensions;
     private final Point myRoomLocation;
-
+    private final Item myPillar;
     private Point myPlayerPosition;
 
 //    private final Tile[][] myRoomData;
@@ -25,10 +25,12 @@ public class Room {
                 final int theRoomWidth,
                 final int theRoomHeight,
                 final boolean theIsEntranceRoom,
-                final boolean theIsExitRoom) {
+                final boolean theIsExitRoom,
+                final Item thePillar) {
 
         this.myIsEntranceRoom = theIsEntranceRoom;
         this.myIsExitRoom = theIsExitRoom;
+        this.myPillar = thePillar;
         this.myRoomDimensions = new Dimension(theRoomWidth, theRoomHeight);
         this.myRoomLocation = new Point(theRoomX, theRoomY);
         this.myPlayerPosition = null;
@@ -93,6 +95,14 @@ public class Room {
     public Room[][] getSurroundingRooms() {
         return null;
     }
+    
+    public char getPillar() {
+        return myPillar.getDisplayChar();
+    }
 
-
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder.toString();
+    }
 }

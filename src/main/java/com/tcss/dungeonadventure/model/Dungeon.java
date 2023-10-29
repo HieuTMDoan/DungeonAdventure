@@ -1,6 +1,10 @@
 package com.tcss.dungeonadventure.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Represents a randomly generated maze of {@link Room}.
@@ -14,31 +18,31 @@ public class Dungeon {
     private final Room[][] myMaze;
 
     /**
-     * The entrance of the dungeon
+     * The entrance of the dungeon.
      */
     private final Room myStartingRoom;
 
     /**
-     * The exit of the dungeon
+     * The exit of the dungeon.
      */
     private final Room myExitRoom;
 
     /**
-     * The room that contains a pillar of Object-Oriented
+     * The room that contains a pillar of Object-Oriented.
      */
     private final Room[] myPillarRooms;
 
     /**
-     * The current player's location
+     * The current player's location.
      */
-    private Room myCharacterLocation;
+    private final Room myCharacterLocation;
 
     /**
      * Initializes a 6x6 traversable dungeon.
-     * @param theMaze the maze of rooms of size 6x6
+     * @param theMaze the empty maze of rooms of size 6x6
      * @param theStartingRoom the entrance of the dungeon
      * @param theExitRoom the exit of the dungeon
-     * @param thePillarRoom the room that contains a pillar of Object-Oriented
+     * @param thePillarRooms the room that contains a pillar of Object-Oriented
      */
     public Dungeon(final Room[][] theMaze,
                    final Room theStartingRoom,
@@ -49,7 +53,6 @@ public class Dungeon {
         myExitRoom = theExitRoom;
         myPillarRooms = thePillarRooms;
         myCharacterLocation = theStartingRoom;
-        //How do we go about initializing the starting, exiting, and pillar Rooms?
         generateDungeon();
     }
 
@@ -58,13 +61,54 @@ public class Dungeon {
      * with a traversable path from the entrance to the exit
      * and 4 pillars of Object-Oriented randomly placed in the maze.
      */
+    @SuppressWarnings("checkstyle:FinalLocalVariable")
     private void generateDungeon() {
-        //TODO: implement the algorithm to generate the Dungeon
-        for (int row = 0; row < myMaze.length; row++) {
-            for (int col = 0; col < myMaze[row].length; col++) {
-                myMaze[row][col] =
+        // Generates an array of essentials rooms in the maze
+        final List<Room> essentialRooms = new ArrayList<>();
+        essentialRooms.addAll(Arrays.asList(myStartingRoom, myExitRoom));
+        essentialRooms.addAll(Arrays.asList(myPillarRooms));
+
+        /*
+         A random generator for three uses:
+            -shuffling rooms in essentialRooms
+            -choosing random index in the maze
+            -randomly either choosing an essential room or a dead-end room
+         */
+        final Random random = new Random();
+
+        // Shuffles the list of objects randomly
+        Collections.shuffle(essentialRooms, random);
+
+        /*
+        totalSpots is the total # of indices in the maze,
+        filledCount is the # for occupied indices
+        essentialRoomsIndex is the index of the shuffled essentialRooms
+         */
+        final int totalSpots = myMaze.length * myMaze[0].length;
+        int filledCount = 0;
+        int essentialRoomsIndex = 0;
+
+        // Fills the 2D array until no empty spots are left
+        while (filledCount < totalSpots && essentialRoomsIndex < essentialRooms.size()) {
+            final int randomRow = random.nextInt(myMaze.length);
+            final int randomCol = random.nextInt(myMaze[0].length);
+
+            // A list which its chosen element can be either an essential room or a dead-end room
+            final List<Room> randomRooms = new ArrayList<>();
+            randomRooms.add(essentialRooms.get(essentialRoomsIndex));
+            randomRooms.add(new Room(randomRow, randomCol, 1, 1, false, false, null));
+            final int randomRoomsIndex = random.nextInt(randomRooms.size());
+
+            // Fills in the unoccupied spot in the maze with a room in randomRooms
+            if (myMaze[randomRow][randomCol] == null) {
+                myMaze[randomRow][randomCol] = randomRooms.get(randomRoomsIndex);
+                filledCount++;
+                essentialRoomsIndex++;
             }
         }
+
+        //TODO: implement the algorithm to check
+        // if the maze is traversable, otherwise regenerate a new maze
     }
 
     /**
@@ -95,9 +139,9 @@ public class Dungeon {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
 
-        //TODO: implement operations to build the String representation of Dungeon
+        //TODO: maybe improve this implementation
         for (Room[] rooms : myMaze) {
             for (Room room : rooms) {
                 stringBuilder.append("[");

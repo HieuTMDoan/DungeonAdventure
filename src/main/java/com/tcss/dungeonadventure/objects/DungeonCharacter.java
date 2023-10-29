@@ -3,26 +3,24 @@ import java.util.*;
 
 public abstract class DungeonCharacter implements VisualComponent {
 
+    private static final Random RANDOM = new Random();
+
     private final char myDisplayChar;
     private final String myName;
     private final int myMaxHealthPoints;
-    private final double myMinDamage;
-    private final double myMaxDamage;
+    private final int myMinDamage;
+    private final int myMaxDamage;
     private final int myAttackSpeed;
-    private final int myHitRate;
-    private static final int RAND_UPPERBOUND = 100;
-    private static final Random myRand = new Random();
-    private final double myAccuracy;
+    private final double myAccuracy; // same as hit rate
+
     private int myHealthPoints;
-    private DungeonCharacter theTarget;
 
     public DungeonCharacter(final String theName,
                             final char theDisplayChar,
                             final int theDefaultHealth,
-                            final double theMinDamage,
-                            final double theMaxDamage,
+                            final int theMinDamage,
+                            final int theMaxDamage,
                             final int theAttackSpeed,
-                            final int theHitRate,
                             final double theAccuracy) {
 
         this.myName = theName;
@@ -33,16 +31,19 @@ public abstract class DungeonCharacter implements VisualComponent {
         this.myMaxDamage = theMaxDamage;
         this.myAttackSpeed = theAttackSpeed;
         this.myAccuracy = theAccuracy;
-        this.myHitRate = theHitRate;
     }
 
     public void attack(final DungeonCharacter theTarget) {
-        this.theTarget = theTarget;
-        if ((myHitRate * 10) > myRand.nextInt(RAND_UPPERBOUND)) {
-            double damage = myRand.nextInt((int) (((myMinDamage + 1)) - myMaxDamage)) + myMinDamage;
-            theTarget.setHealth((int) (theTarget.getHealth() - damage));
-            System.out.println(theTarget.getClass().getSimpleName() + " lost " + damage + " health");
+        if (this.myAccuracy > RANDOM.nextDouble()) {
+            final int damage = RANDOM.nextInt(((myMinDamage + 1)) - myMaxDamage) + myMinDamage;
+            theTarget.changeHealth(damage);
+
+            System.out.println(theTarget.getName() + " lost " + damage + " health");
         }
+    }
+
+    public String getName() {
+        return this.myName;
     }
 
     @Override
@@ -78,9 +79,6 @@ public abstract class DungeonCharacter implements VisualComponent {
 
     public double getMinDamage() {
         return myMinDamage;
-    }
-    public static int generateRandomInt() {
-        return myRand.nextInt(RAND_UPPERBOUND + 1);
     }
     public double getMaxDamage() {
         return myMaxDamage;

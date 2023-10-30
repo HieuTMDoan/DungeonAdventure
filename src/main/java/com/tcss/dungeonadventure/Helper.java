@@ -20,7 +20,7 @@ public class Helper {
      * @return A random integer.
      */
     public static int getRandomIntBetween(final int theMin, final int theMax) {
-        return RANDOM.nextInt(theMin - theMax) + theMin;
+        return RANDOM.nextInt(theMax - theMin) + theMin;
     }
 
     public static double getRandomDoubleBetween(final double theMin, final double theMax) {

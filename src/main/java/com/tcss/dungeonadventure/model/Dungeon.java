@@ -8,6 +8,7 @@ import java.util.Random;
 
 /**
  * Represents a randomly generated maze of type {@link Room}.
+ *
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360, Fall 2023
  */
@@ -39,10 +40,11 @@ public class Dungeon {
 
     /**
      * Initializes a 6x6 traversable {@link Dungeon}.
-     * @param theMaze the empty maze of type {@link Room}
+     *
+     * @param theMaze         the empty maze of type {@link Room}
      * @param theStartingRoom the entrance of the {@link Dungeon}
-     * @param theExitRoom the exit of the {@link Dungeon}
-     * @param thePillarRooms the room that contains a pillar of Object-Oriented
+     * @param theExitRoom     the exit of the {@link Dungeon}
+     * @param thePillarRooms  the room that contains a pillar of Object-Oriented
      */
     public Dungeon(final Room[][] theMaze,
                    final Room theStartingRoom,
@@ -61,7 +63,6 @@ public class Dungeon {
      * with a traversable path from the entrance to the exit
      * and 4 pillars of Object-Oriented randomly placed in the maze.
      */
-    @SuppressWarnings("checkstyle:LineLength")
     private void generateDungeon() {
         // Generates an array of essentials rooms in the maze
         final List<Room> essentialRooms = new ArrayList<>();
@@ -93,10 +94,12 @@ public class Dungeon {
             final int randomRow = random.nextInt(myMaze.length);
             final int randomCol = random.nextInt(myMaze[0].length);
 
-            // A list in which its chosen element can be either an essential room or a dead-end room
+            // A list in which its chosen element
+            // can be either an essential room or a dead-end room
             final List<Room> randomRooms = new ArrayList<>();
             randomRooms.add(essentialRooms.get(essentialRoomsIndex));
             randomRooms.add(new Room(randomRow, randomCol, 1, 1, false, false, null));
+
             final int randomRoomsIndex = random.nextInt(randomRooms.size());
 
             // Fills in the unoccupied spot in the maze with a room in randomRooms
@@ -113,6 +116,7 @@ public class Dungeon {
 
     /**
      * Returns the dungeon as a maze of type {@link Room}.
+     *
      * @return a maze of type {@link Room}
      */
     public Room[][] getRooms() {
@@ -121,6 +125,7 @@ public class Dungeon {
 
     /**
      * Returns the player's current location in the {@link Dungeon}.
+     *
      * @return the player's current location in the {@link Dungeon}
      */
     public Room getCharacterLocation() {
@@ -129,6 +134,7 @@ public class Dungeon {
 
     /**
      * Returns the {@link Room} in the maze at the specified coordinates.
+     *
      * @param theX the x-coordinate of the {@link Room}
      * @param theY the y-coordinate of the {@link Room}
      * @return the {@link Room} in the maze at the specified coordinates

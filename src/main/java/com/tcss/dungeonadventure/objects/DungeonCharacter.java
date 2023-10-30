@@ -39,6 +39,7 @@ public abstract class DungeonCharacter implements VisualComponent {
             theTarget.changeHealth(damage);
             System.out.println(theTarget.getName() + " lost " + damage + " health");
         }
+
     }
 
     public String getName() {

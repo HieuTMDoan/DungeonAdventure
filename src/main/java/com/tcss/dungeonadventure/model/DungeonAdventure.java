@@ -1,6 +1,5 @@
 package com.tcss.dungeonadventure.model;
 
-import com.tcss.dungeonadventure.objects.heroes.Priestess;
 
 import java.util.Scanner;
 

@@ -54,14 +54,9 @@ public class DungeonGUI extends Application {
 
         for (int row = 0; row < myGridPane.getRowCount(); row++) {
             for (int col = 0; col < myGridPane.getColumnCount(); col++) {
-
-
                 if (row % 9 == 0 || col % 9 == 0) {
                     setTileAt(row, col, new WallTile());
                 }
-
-
-
             }
         }
 

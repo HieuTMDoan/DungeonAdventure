@@ -1,10 +1,11 @@
 package com.tcss.dungeonadventure.model;
 
+import com.tcss.dungeonadventure.Helper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Represents a randomly generated maze of type {@link Room}.
@@ -36,7 +37,7 @@ public class Dungeon {
     /**
      * The current player's location.
      */
-    private final Room myCharacterLocation;
+    private Room myCharacterLocation;
 
     /**
      * Initializes a 6x6 traversable {@link Dungeon}.
@@ -75,10 +76,9 @@ public class Dungeon {
             -choosing random index in the maze
             -randomly either choosing an essential room or a dead-end room
          */
-        final Random random = new Random();
 
         // Shuffles the list of rooms randomly
-        Collections.shuffle(essentialRooms, random);
+        Collections.shuffle(essentialRooms, Helper.getRandom());
 
         /*
         totalSpots is the total # of indices in the maze,
@@ -91,8 +91,8 @@ public class Dungeon {
 
         // Fills the 2D array until no empty spots are left
         while (filledCount < totalSpots && essentialRoomsIndex < essentialRooms.size()) {
-            final int randomRow = random.nextInt(myMaze.length);
-            final int randomCol = random.nextInt(myMaze[0].length);
+            final int randomRow = Helper.getRandomIntBetween(0, myMaze.length);
+            final int randomCol = Helper.getRandomIntBetween(0, myMaze[0].length);
 
             // A list in which its chosen element
             // can be either an essential room or a dead-end room
@@ -100,7 +100,7 @@ public class Dungeon {
             randomRooms.add(essentialRooms.get(essentialRoomsIndex));
             randomRooms.add(new Room(randomRow, randomCol, 1, 1, false, false, null));
 
-            final int randomRoomsIndex = random.nextInt(randomRooms.size());
+            final int randomRoomsIndex = Helper.getRandomIntBetween(0, randomRooms.size());
 
             // Fills in the unoccupied spot in the maze with a room in randomRooms
             if (myMaze[randomRow][randomCol] == null) {

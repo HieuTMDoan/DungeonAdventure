@@ -1,9 +1,9 @@
 package com.tcss.dungeonadventure.objects;
+import com.tcss.dungeonadventure.Helper;
+
 import java.util.*;
 
 public abstract class DungeonCharacter implements VisualComponent {
-
-    private static final Random RANDOM = new Random();
 
     private final char myDisplayChar;
     private final String myName;
@@ -34,10 +34,9 @@ public abstract class DungeonCharacter implements VisualComponent {
     }
 
     public void attack(final DungeonCharacter theTarget) {
-        if (this.myAccuracy > RANDOM.nextDouble()) {
-            final int damage = RANDOM.nextInt(((myMinDamage + 1)) - myMaxDamage) + myMinDamage;
+        if (this.myAccuracy > Helper.getRandomDoubleBetween(0, 1)) {
+            final int damage = Helper.getRandomIntBetween(myMinDamage + 1, myMaxDamage);
             theTarget.changeHealth(damage);
-
             System.out.println(theTarget.getName() + " lost " + damage + " health");
         }
     }

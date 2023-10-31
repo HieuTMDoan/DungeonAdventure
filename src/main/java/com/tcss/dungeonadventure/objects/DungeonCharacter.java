@@ -1,7 +1,7 @@
 package com.tcss.dungeonadventure.objects;
+
 import com.tcss.dungeonadventure.Helper;
 
-import java.util.*;
 
 public abstract class DungeonCharacter implements VisualComponent {
 
@@ -53,7 +53,16 @@ public abstract class DungeonCharacter implements VisualComponent {
 
     @Override
     public String getDescription() {
-        return "Name: " + this.myName;
+        return String.format(
+                """
+                        Name: %s
+                        Health: %s/%s
+                        Damage Range: %s - %s
+                        Attack Speed: %s
+                        Accuracy: %s
+                          """, myName, myHealthPoints, myMaxHealthPoints, myMinDamage, myMaxDamage, myAttackSpeed, myAccuracy
+
+        );
     }
 
     public int getHealth() {
@@ -76,6 +85,7 @@ public abstract class DungeonCharacter implements VisualComponent {
     public double getMinDamage() {
         return myMinDamage;
     }
+
     public double getMaxDamage() {
         return myMaxDamage;
     }

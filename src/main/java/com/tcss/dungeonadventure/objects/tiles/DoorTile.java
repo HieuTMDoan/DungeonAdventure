@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.objects.tiles;
 
 
 import com.tcss.dungeonadventure.objects.Directions;
+import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
 public class DoorTile extends Tile {
@@ -13,5 +14,8 @@ public class DoorTile extends Tile {
                 true);
     }
 
-
+    @Override
+    public void onInteract(final DungeonCharacter theTarget) {
+        // move player to new room
+    }
 }

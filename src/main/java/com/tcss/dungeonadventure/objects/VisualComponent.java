@@ -6,8 +6,14 @@ package com.tcss.dungeonadventure.objects;
  */
 public interface VisualComponent {
 
+    /**
+     * @return The display character of the component.
+     */
     char getDisplayChar();
 
+    /**
+     * @return The description of the component.
+     */
     String getDescription();
 
 }

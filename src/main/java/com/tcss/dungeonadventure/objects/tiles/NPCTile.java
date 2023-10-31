@@ -6,7 +6,11 @@ import com.tcss.dungeonadventure.objects.DungeonCharacter;
 public class NPCTile extends Tile {
 
 
+    /**
+     * The dungeon character occupying this tile.
+     */
     private final DungeonCharacter myDungeonCharacter;
+
 
     public NPCTile(final DungeonCharacter theDungeonCharacter) {
         super(theDungeonCharacter.getDisplayChar(), false);
@@ -17,4 +21,10 @@ public class NPCTile extends Tile {
     public String getDescription() {
         return myDungeonCharacter.getDescription();
     }
+
+    public DungeonCharacter getDungeonCharacter() {
+        return this.myDungeonCharacter;
+    }
 }
+
+

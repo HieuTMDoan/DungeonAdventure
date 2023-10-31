@@ -4,9 +4,25 @@ package com.tcss.dungeonadventure.objects.tiles;
 import com.tcss.dungeonadventure.objects.VisualComponent;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
+/**
+ * Parent class of all Tiles, which represents one square in
+ * a room. Can contain a multitude of things, such as the
+ * player, item, monsters, or interactables (doors, pits).
+ *
+ * @author Aaron Burnham
+ * @author Hieu Doan
+ * @author Sunny Ali
+ */
 public abstract class Tile implements VisualComponent {
 
+    /**
+     * The character of the tile.
+     */
     private final char myTileChar;
+
+    /**
+     * Boolean if the tile is traversable by the player.
+     */
     private final boolean myDefaultTraversable;
 
     public Tile(final char theTileChar, final boolean theDefaultTraversable) {
@@ -14,11 +30,18 @@ public abstract class Tile implements VisualComponent {
         this.myDefaultTraversable = theDefaultTraversable;
     }
 
+
+    /**
+     * @return The display character of the tile.
+     */
     @Override
     public char getDisplayChar() {
         return this.myTileChar;
     }
 
+    /**
+     * @return The description of the tile.
+     */
     @Override
     public String getDescription() {
         return "Tile : " + getClass().getSimpleName() + "\nTraversable: " + myDefaultTraversable;
@@ -43,7 +66,6 @@ public abstract class Tile implements VisualComponent {
                     "Target has entered a tile that should not be traversable");
         }
     }
-
 
 
 }

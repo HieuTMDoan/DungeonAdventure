@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemTile extends Tile {
+
+    /**
+     * The item(s) occupying this tile.
+     */
     private final List<Item> myStoredItems = new ArrayList<>();
 
 

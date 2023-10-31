@@ -1,4 +1,4 @@
-package com.tcss.dungeonadventure;
+package com.tcss.dungeonadventure.model;
 
 import org.sqlite.SQLiteDataSource;
 
@@ -43,7 +43,7 @@ public class SQLiteDB {
 
 
 
-        
+
 
         // Selecting
         final String querySearch = "SELECT * FROM questions";

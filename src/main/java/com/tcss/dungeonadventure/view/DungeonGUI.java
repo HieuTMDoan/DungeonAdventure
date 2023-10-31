@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.objects.Directions;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
 import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
@@ -92,12 +93,10 @@ public class DungeonGUI extends Application {
                 text.setBoundsType(TextBoundsType.VISUAL);
                 text.setStyle("-fx-font-size: 60; -fx-fill: rgb(255, 255, 255)");
 
-                final int finalRow = row;
+                final int finalRow = row; // these are needed for the lambda statements
                 final int finalCol = col;
 
-                hbox.setOnMouseEntered(e -> {
-                    onMouseOver(finalRow, finalCol);
-                });
+                hbox.setOnMouseEntered(e -> onMouseOver(finalRow, finalCol));
                 hbox.getChildren().add(text);
 
 
@@ -105,6 +104,26 @@ public class DungeonGUI extends Application {
             }
 
         }
+
+        myScene.setOnKeyPressed(e -> {
+            movePlayer(switch (e.getCode()) {
+                case UP, W -> Directions.Cardinal.NORTH;
+                case DOWN, S -> Directions.Cardinal.SOUTH;
+                case LEFT, A -> Directions.Cardinal.WEST;
+                case RIGHT, D -> Directions.Cardinal.EAST;
+                default -> null;
+            });
+        });
+    }
+
+    private void movePlayer(final Directions.Cardinal theDirection) {
+        if (theDirection == null) {
+            return;
+        }
+
+        // Ideally, this will fire some sort of property change event.
+
+
     }
 
     private void setTileAt(final int theRowIndex, final int theColIndex, final Tile theTile) {
@@ -128,7 +147,6 @@ public class DungeonGUI extends Application {
 
         // load some sort of description
         myTileInfoLabel.setText(t.getDescription());
-
     }
 
 

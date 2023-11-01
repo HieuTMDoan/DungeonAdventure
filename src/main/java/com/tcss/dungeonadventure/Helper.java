@@ -1,8 +1,6 @@
 package com.tcss.dungeonadventure;
 
-import com.tcss.dungeonadventure.objects.items.HealingPotion;
-import com.tcss.dungeonadventure.objects.items.Item;
-import com.tcss.dungeonadventure.objects.items.VisionPotion;
+import com.tcss.dungeonadventure.objects.items.*;
 import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.monsters.Ogre;
@@ -18,11 +16,29 @@ public class Helper {
 
     private static final Random RANDOM = new Random();
 
-    private static final Item[] ITEM_POOL =
-            new Item[]{new HealingPotion(), new VisionPotion()};
+    /**
+     * Contains all the class declaration of items that
+     * can randomly generate in rooms.
+     */
+    private static final Class<?>[] ITEM_POOL =
+            new Class[]{HealingPotion.class, VisionPotion.class};
 
-    private static final Monster[] MONSTER_POOL =
-            new Monster[]{new Gremlin(), new Ogre(), new Skeleton()};
+    /**
+     * Contains all the class declarations of the monsters
+     * that can randomly generate in rooms.
+     */
+    private static final Class<?>[] MONSTER_POOL =
+            new Class[]{Gremlin.class, Ogre.class, Skeleton.class};
+
+    /**
+     * Contains all the class declarations of all pillars.
+     */
+    private static final Class<?>[] PILLARS =
+            new Class[]{
+                PillarOfInheritance.class,
+                PillarOfAbstraction.class,
+                PillarOfPolymorphism.class,
+                PillarOfEncapsulation.class};
 
 
     private Helper() {
@@ -60,8 +76,8 @@ public class Helper {
 
     public static Item getRandomItem() {
         try {
-            return ITEM_POOL[Helper.getRandomIntBetween(0, ITEM_POOL.length)].
-                    getClass().getDeclaredConstructor().newInstance();
+            return (Item) ITEM_POOL[Helper.getRandomIntBetween(0, ITEM_POOL.length)].
+                    getDeclaredConstructor().newInstance();
         } catch (final Exception e) {
             return null;
         }
@@ -69,14 +85,16 @@ public class Helper {
 
     public static Monster getRandomMonster() {
         try {
-            return MONSTER_POOL[Helper.getRandomIntBetween(0, MONSTER_POOL.length)].
-                    getClass().getDeclaredConstructor().newInstance();
+            return (Monster) MONSTER_POOL[Helper.getRandomIntBetween(0, MONSTER_POOL.length)].
+                    getDeclaredConstructor().newInstance();
         } catch (final Exception e) {
             return null;
         }
     }
 
-
+    public static Class<?>[] getPillarList() {
+        return PILLARS;
+    }
 
 
 }

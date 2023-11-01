@@ -75,11 +75,7 @@ public class Dungeon {
 
     public static Room[] generatePillarRooms() {
         final Room[] pillarRooms = new Room[4];
-        final Class<?>[] pillars = new Class[]{
-            PillarOfInheritance.class,
-            PillarOfAbstraction.class,
-            PillarOfPolymorphism.class,
-            PillarOfEncapsulation.class};
+        final Class<?>[] pillars = Helper.getPillarList();
 
         for (int i = 0; i < pillars.length; i++) {
             pillarRooms[i] = new Room(false, false, pillars[i]);
@@ -120,15 +116,8 @@ public class Dungeon {
 
         // Fills the 2D array until no empty spots are left
         while (filledCount < totalSpots && essentialRoomsIndex < essentialRooms.size()) {
-
-            int randomRow;
-            int randomCol;
-
-            // prevents rooms from overwriting each other
-            do {
-                randomRow = Helper.getRandomIntBetween(0, myMaze.length);
-                randomCol = Helper.getRandomIntBetween(0, myMaze[0].length);
-            } while (myMaze[randomRow][randomCol] != null);
+            final int randomRow = Helper.getRandomIntBetween(0, myMaze.length);
+            final int randomCol = Helper.getRandomIntBetween(0, myMaze[0].length);
 
             // A list in which its chosen element
             // can be either an essential room or a dead-end room
@@ -136,19 +125,13 @@ public class Dungeon {
             randomRooms.add(essentialRooms.get(essentialRoomsIndex));
             randomRooms.add(new Room(false, false, null));
 
-            // 0 is essential, 1 is non essential
-            final boolean isEssential = Helper.getRandomDoubleBetween(0, 1) > 0.5;
+            final int randomRoomsIndex = Helper.getRandomIntBetween(0, randomRooms.size());
 
             // Fills in the unoccupied spot in the maze with a room in randomRooms
             if (myMaze[randomRow][randomCol] == null) {
-                if (isEssential) {
-                    myMaze[randomRow][randomCol] = randomRooms.get(0);
-                    essentialRoomsIndex++;
-                } else {
-                    myMaze[randomRow][randomCol] = randomRooms.get(1);
-                }
-
+                myMaze[randomRow][randomCol] = randomRooms.get(randomRoomsIndex);
                 filledCount++;
+                essentialRoomsIndex++;
             }
         }
 
@@ -198,7 +181,7 @@ public class Dungeon {
                     stringBuilder.append("ENTR");
                 } else if (room.isExitRoom()) {
                     stringBuilder.append("EXIT");
-                }else if (room.getPillar() != null) {
+                } else if (room.getPillar() != null) {
                     stringBuilder.append(" ").append(room.getPillar().getDisplayChar()).append("  ");
                 } else {
                     stringBuilder.append("ROOM");

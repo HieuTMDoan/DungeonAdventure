@@ -112,8 +112,10 @@ public class Room {
             myPillar = new PillarOfInheritance();
         } else if (contains(TileChars.Items.PILLAR_OF_ENCAPSULATION)) {
             myPillar = new PillarOfEncapsulation();
-        } else {
+        } else if (contains(TileChars.Items.PILLAR_OF_POLYMORPHISM)) {
             myPillar = new PillarOfPolymorphism();
+        } else {
+            myPillar = null;
         }
 
     }

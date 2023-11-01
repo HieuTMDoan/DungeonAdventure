@@ -15,7 +15,7 @@ public class Main {
 //        new DungeonAdventure(noGUI);
 
 
-        System.out.println(new Room(false, false, PillarOfPolymorphism.class));
+//        System.out.println(new Room(false, false, PillarOfPolymorphism.class));
 
         System.out.println(new Dungeon());
 

@@ -30,6 +30,10 @@ public class ItemTile extends Tile {
         this.myStoredItems.addAll(List.of(theItems));
     }
 
+    public List<Item> getItems() {
+        return this.myStoredItems;
+    }
+
 
 
 

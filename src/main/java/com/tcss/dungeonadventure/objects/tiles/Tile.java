@@ -67,5 +67,10 @@ public abstract class Tile implements VisualComponent {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(this.myTileChar);
+    }
+
 
 }

@@ -20,10 +20,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 
-public class DungeonGUI extends Application {
+public class DungeonGUI extends Application implements PropertyChangeListener {
 
     private static final double WINDOW_WIDTH = 900;
     private static final double WINDOW_HEIGHT = 600;
@@ -62,9 +64,7 @@ public class DungeonGUI extends Application {
         }
 
         setTileAt(5, 5, new NPCTile(new Warrior("Player")));
-
         setTileAt(2, 3, new NPCTile(new Gremlin()));
-
 
     }
 
@@ -78,7 +78,6 @@ public class DungeonGUI extends Application {
     }
 
     private void createGUI() {
-
         for (int row = 0; row < myGridPane.getRowCount(); row++) {
             for (int col = 0; col < myGridPane.getColumnCount(); col++) {
                 final HBox hbox = new HBox();
@@ -150,4 +149,8 @@ public class DungeonGUI extends Application {
     }
 
 
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+
+    }
 }

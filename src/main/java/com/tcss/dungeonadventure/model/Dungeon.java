@@ -1,7 +1,12 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
+import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
+import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
+import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +19,9 @@ import java.util.List;
  * @version TCSS 360, Fall 2023
  */
 public class Dungeon {
+
+    private static final Dimension MAZE_SIZE = new Dimension(6, 6);
+
     /**
      * The 2D representation of the {@link Dungeon}.
      */
@@ -42,22 +50,43 @@ public class Dungeon {
     /**
      * Initializes a 6x6 traversable {@link Dungeon}.
      *
-     * @param theMaze         the empty maze of type {@link Room}
      * @param theStartingRoom the entrance of the {@link Dungeon}
      * @param theExitRoom     the exit of the {@link Dungeon}
      * @param thePillarRooms  the room that contains a pillar of Object-Oriented
      */
-    public Dungeon(final Room[][] theMaze,
-                   final Room theStartingRoom,
+    public Dungeon(final Room theStartingRoom,
                    final Room theExitRoom,
                    final Room[] thePillarRooms) {
-        myMaze = theMaze;
+
+        myMaze = new Room[(int) MAZE_SIZE.getHeight()][(int) MAZE_SIZE.getWidth()];
         myStartingRoom = theStartingRoom;
         myExitRoom = theExitRoom;
         myPillarRooms = thePillarRooms;
         myCharacterLocation = theStartingRoom;
         generateDungeon();
     }
+
+    public Dungeon() {
+        this(
+                new Room(true, false, null),
+                new Room(false, true, null),
+                generatePillarRooms());
+    }
+
+    public static Room[] generatePillarRooms() {
+        final Room[] pillarRooms = new Room[4];
+        final Class<?>[] pillars = new Class[]{
+            PillarOfInheritance.class,
+            PillarOfAbstraction.class,
+            PillarOfPolymorphism.class,
+            PillarOfEncapsulation.class};
+
+        for (int i = 0; i < pillars.length; i++) {
+            pillarRooms[i] = new Room(false, false, pillars[i]);
+        }
+        return pillarRooms;
+    }
+
 
     /**
      * Constructs a random-generated maze of type {@link Room}
@@ -91,22 +120,35 @@ public class Dungeon {
 
         // Fills the 2D array until no empty spots are left
         while (filledCount < totalSpots && essentialRoomsIndex < essentialRooms.size()) {
-            final int randomRow = Helper.getRandomIntBetween(0, myMaze.length);
-            final int randomCol = Helper.getRandomIntBetween(0, myMaze[0].length);
+
+            int randomRow;
+            int randomCol;
+
+            // prevents rooms from overwriting each other
+            do {
+                randomRow = Helper.getRandomIntBetween(0, myMaze.length);
+                randomCol = Helper.getRandomIntBetween(0, myMaze[0].length);
+            } while (myMaze[randomRow][randomCol] != null);
 
             // A list in which its chosen element
             // can be either an essential room or a dead-end room
             final List<Room> randomRooms = new ArrayList<>();
             randomRooms.add(essentialRooms.get(essentialRoomsIndex));
-            randomRooms.add(new Room(randomRow, randomCol, 1, 1, false, false, null));
+            randomRooms.add(new Room(false, false, null));
 
-            final int randomRoomsIndex = Helper.getRandomIntBetween(0, randomRooms.size());
+            // 0 is essential, 1 is non essential
+            final boolean isEssential = Helper.getRandomDoubleBetween(0, 1) > 0.5;
 
             // Fills in the unoccupied spot in the maze with a room in randomRooms
             if (myMaze[randomRow][randomCol] == null) {
-                myMaze[randomRow][randomCol] = randomRooms.get(randomRoomsIndex);
+                if (isEssential) {
+                    myMaze[randomRow][randomCol] = randomRooms.get(0);
+                    essentialRoomsIndex++;
+                } else {
+                    myMaze[randomRow][randomCol] = randomRooms.get(1);
+                }
+
                 filledCount++;
-                essentialRoomsIndex++;
             }
         }
 
@@ -150,22 +192,22 @@ public class Dungeon {
         //TODO: maybe improve this implementation
         for (Room[] rooms : myMaze) {
             for (Room room : rooms) {
-                stringBuilder.append("[");
-
-                if (room == myStartingRoom) {
-                    stringBuilder.append("entrance, ");
-                } else if (room == myExitRoom) {
-                    stringBuilder.append("exit, ");
-                } else if (Arrays.asList(myPillarRooms).contains(room)) {
-                    stringBuilder.append("contains ").append(room.getPillar()).append(", ");
-                } else if (room == myCharacterLocation) {
-                    stringBuilder.append("you are here, ");
+                if (room == null) {
+                    stringBuilder.append("null"); // IDEALLY nothing should be null.
+                } else if (room.isEntranceRoom()) {
+                    stringBuilder.append("ENTR");
+                } else if (room.isExitRoom()) {
+                    stringBuilder.append("EXIT");
+                }else if (room.getPillar() != null) {
+                    stringBuilder.append(" ").append(room.getPillar().getDisplayChar()).append("  ");
                 } else {
-                    stringBuilder.append("dead-end, ");
+                    stringBuilder.append("ROOM");
                 }
+
+                stringBuilder.append(" ");
+
             }
 
-            stringBuilder.append("]");
             stringBuilder.append("\n");
         }
 

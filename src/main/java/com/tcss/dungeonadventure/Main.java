@@ -1,11 +1,10 @@
 package com.tcss.dungeonadventure;
 
-import com.tcss.dungeonadventure.model.DungeonAdventure;
-import com.tcss.dungeonadventure.view.DungeonGUI;
-import javafx.application.Application;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.tcss.dungeonadventure.model.Dungeon;
+import com.tcss.dungeonadventure.model.Room;
+import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
+
 
 public class Main {
 
@@ -16,8 +15,9 @@ public class Main {
 //        new DungeonAdventure(noGUI);
 
 
+        System.out.println(new Room(false, false, PillarOfPolymorphism.class));
 
-
+        System.out.println(new Dungeon());
 
     }
 

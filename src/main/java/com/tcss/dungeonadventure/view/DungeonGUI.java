@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
@@ -36,7 +37,7 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     private static final String WINDOW_TITLE = "Dungeon Adventure";
     private final Text[][] myRoomTextBoxes = new Text[10][10];
 
-    private final Tile[][] myRoomTiles = new Tile[10][10];
+    private Tile[][] myRoomTiles = new Tile[10][10];
     private Scene myScene;
     private GridPane myGridPane;
     private Label myTileInfoLabel;
@@ -53,19 +54,26 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
 
         locateNodes();
         createGUI();
-
-
-        for (int row = 0; row < myGridPane.getRowCount(); row++) {
-            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
-                if (row % 9 == 0 || col % 9 == 0) {
-                    setTileAt(row, col, new WallTile());
+        myScene.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case UP, W -> movePlayer(Directions.Cardinal.NORTH);
+                case DOWN, S -> movePlayer(Directions.Cardinal.SOUTH);
+                case LEFT, A -> movePlayer(Directions.Cardinal.WEST);
+                case RIGHT, D -> movePlayer(Directions.Cardinal.EAST);
+                case PERIOD -> {
+                    final Room room = new Room(false, false, null);
+                    System.out.println(room.toString());
+                    loadRoom(room);
+                }
+                default -> {
                 }
             }
-        }
+        });
 
-        setTileAt(5, 5, new NPCTile(new Warrior("Player")));
-        setTileAt(2, 3, new NPCTile(new Gremlin()));
+        final Room room = new Room(false, false, null);
+        System.out.println(room);
 
+        loadRoom(room);
     }
 
     Node lookup(final String theNodeID) {
@@ -104,15 +112,7 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
 
         }
 
-        myScene.setOnKeyPressed(e -> {
-            movePlayer(switch (e.getCode()) {
-                case UP, W -> Directions.Cardinal.NORTH;
-                case DOWN, S -> Directions.Cardinal.SOUTH;
-                case LEFT, A -> Directions.Cardinal.WEST;
-                case RIGHT, D -> Directions.Cardinal.EAST;
-                default -> null;
-            });
-        });
+
     }
 
     private void movePlayer(final Directions.Cardinal theDirection) {
@@ -121,8 +121,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         }
 
         // Ideally, this will fire some sort of property change event.
-
-
     }
 
     private void setTileAt(final int theRowIndex, final int theColIndex, final Tile theTile) {
@@ -138,14 +136,41 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         myRoomTextBoxes[theRowIndex][theColIndex].
                 setText(String.valueOf(theTile.getDisplayChar()));
 
-        myRoomTiles[theRowIndex][theColIndex] = theTile;
+    }
+
+    private void loadRoom(final Room theRoom) {
+        clearGrid();
+        myRoomTiles = theRoom.getRoomTiles();
+
+
+        for (int row = 0; row < myGridPane.getRowCount(); row++) {
+            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
+                try {
+                    setTileAt(row, col, myRoomTiles[row][col]);
+                } catch (Exception e) {
+                    setTileAt(row, col, new EmptyTile());
+                }
+            }
+        }
     }
 
     private void onMouseOver(final int theRowIndex, final int theColIndex) {
-        final Tile t = myRoomTiles[theRowIndex][theColIndex];
+        try {
+            final Tile t = myRoomTiles[theRowIndex][theColIndex];
+            myTileInfoLabel.setText(String.format("(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
 
-        // load some sort of description
-        myTileInfoLabel.setText(t.getDescription());
+        } catch (final Exception e) {
+            myTileInfoLabel.setText(" ");
+        }
+
+    }
+
+    private void clearGrid() {
+        for (int row = 0; row < myGridPane.getRowCount(); row++) {
+            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
+                setTileAt(row, col, new EmptyTile());
+            }
+        }
     }
 
 

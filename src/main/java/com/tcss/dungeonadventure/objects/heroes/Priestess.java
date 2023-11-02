@@ -1,9 +1,9 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
 
+import com.tcss.dungeonadventure.objects.skills.Skill;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.skills.Heal;
-import com.tcss.dungeonadventure.objects.skills.Skill;
 
 public class Priestess extends Hero {
     private static final int DEFAULT_HIT_POINTS = 75;

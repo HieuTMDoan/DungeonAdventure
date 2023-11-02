@@ -6,17 +6,18 @@ import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
 import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
 import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 
-import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.awt.Dimension;
+
 
 /**
  * Represents a randomly generated maze of type {@link Room}.
  *
  * @author Aaron, Sunny, Hieu
- * @version TCSS 360, Fall 2023
+ * @version TCSS 360: Fall 2023
  */
 public class Dungeon {
 
@@ -48,21 +49,22 @@ public class Dungeon {
     private Room myCharacterLocation;
 
     /**
-     * Initializes a 6x6 traversable {@link Dungeon}.
+     *  Initializes a 6x6 traversable {@link Dungeon}.
      *
-     * @param theStartingRoom the entrance of the {@link Dungeon}
-     * @param theExitRoom     the exit of the {@link Dungeon}
-     * @param thePillarRooms  the room that contains a pillar of Object-Oriented
+     *  @param theStartingRoom the entrance of the {@link Dungeon}
+     *  @param theExitRoom     the exit of the {@link Dungeon}
+     *  @param thePillarRooms  the room that contains a pillar of Object-Oriented
      */
     public Dungeon(final Room theStartingRoom,
                    final Room theExitRoom,
                    final Room[] thePillarRooms) {
 
         myMaze = new Room[(int) MAZE_SIZE.getHeight()][(int) MAZE_SIZE.getWidth()];
-        myStartingRoom = theStartingRoom;
         myExitRoom = theExitRoom;
-        myPillarRooms = thePillarRooms;
         myCharacterLocation = theStartingRoom;
+        myStartingRoom = theStartingRoom;
+        myPillarRooms = thePillarRooms;
+
         generateDungeon();
     }
 
@@ -70,6 +72,7 @@ public class Dungeon {
         this(
                 new Room(true, false, null),
                 new Room(false, true, null),
+
                 generatePillarRooms());
     }
 

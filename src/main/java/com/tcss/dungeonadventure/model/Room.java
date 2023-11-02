@@ -1,22 +1,21 @@
 package com.tcss.dungeonadventure.model;
-
-
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
-import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
+import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
 import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
 import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
 import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
-import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
-import com.tcss.dungeonadventure.objects.tiles.ExitTile;
-import com.tcss.dungeonadventure.objects.tiles.ItemTile;
-import com.tcss.dungeonadventure.objects.tiles.NPCTile;
-import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
+import com.tcss.dungeonadventure.objects.tiles.ExitTile;
+import com.tcss.dungeonadventure.objects.tiles.NPCTile;
+import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
+import com.tcss.dungeonadventure.objects.tiles.ItemTile;
+
 
 import java.awt.Dimension;
 import java.awt.Point;

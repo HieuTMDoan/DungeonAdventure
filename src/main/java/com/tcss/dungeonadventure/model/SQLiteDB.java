@@ -2,10 +2,11 @@ package com.tcss.dungeonadventure.model;
 
 import org.sqlite.SQLiteDataSource;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.Connection;
+
 
 public class SQLiteDB {
 
@@ -22,7 +23,7 @@ public class SQLiteDB {
             System.exit(0);
         }
 
-        System.out.println("Opened database successfully");
+        System.out.println("Successfully opened database");
 
         final String tableName = "questions";
         final String query = String.format(

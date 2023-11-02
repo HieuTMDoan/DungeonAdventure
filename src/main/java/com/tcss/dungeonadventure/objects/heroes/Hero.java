@@ -1,9 +1,10 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
 
-import com.tcss.dungeonadventure.objects.DungeonCharacter;
-import com.tcss.dungeonadventure.objects.TileChars;
+
 import com.tcss.dungeonadventure.objects.skills.Skill;
+import com.tcss.dungeonadventure.objects.TileChars;
+import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
 public abstract class Hero extends DungeonCharacter {
 

@@ -131,7 +131,7 @@ public class Room {
                 final boolean theIsExit,
                 final Class<?> thePillar) {
 
-        this(generateRandomRoom(theIsEntrance, theIsExit, thePillar));
+        this(generateRandomTileSet(theIsEntrance, theIsExit, thePillar));
 
     }
 
@@ -161,9 +161,9 @@ public class Room {
      * @param thePillar     The class of the pillar contained in the room - can be null.
      * @return Tile[][] that represents the room.
      */
-    public static Tile[][] generateRandomRoom(final boolean theIsEntrance,
-                                              final boolean theIsExit,
-                                              final Class<?> thePillar) {
+    public static Tile[][] generateRandomTileSet(final boolean theIsEntrance,
+                                                 final boolean theIsExit,
+                                                 final Class<?> thePillar) {
 
         if (theIsEntrance && theIsExit) {
             throw new IllegalArgumentException(
@@ -181,10 +181,10 @@ public class Room {
 
 
         final int roomWidth = Helper.getRandomIntBetween(
-                (int) MIN_ROOM_DIMENSION.getWidth(), (int) MAX_ROOM_DIMENSION.getWidth());
+                (int) MIN_ROOM_DIMENSION.getWidth(), (int) MAX_ROOM_DIMENSION.getWidth() + 1);
 
         final int roomHeight = Helper.getRandomIntBetween(
-                (int) MIN_ROOM_DIMENSION.getHeight(), (int) MAX_ROOM_DIMENSION.getHeight());
+                (int) MIN_ROOM_DIMENSION.getHeight(), (int) MAX_ROOM_DIMENSION.getHeight() + 1);
 
 
         final Tile[][] tiles = new Tile[roomHeight][roomWidth];
@@ -229,14 +229,16 @@ public class Room {
 
 
         final double itemRandom = Helper.getRandomDoubleBetween(0, 1);
-        final int itemNum = itemRandom < TWO_ITEM_CHANCE ? 2 : itemRandom > ONE_ITEM_CHANCE ? 1 : 0;
+        final int itemNum = itemRandom < TWO_ITEM_CHANCE
+                ? 2 : itemRandom < ONE_ITEM_CHANCE ? 1 : 0;
         for (int i = 0; i < itemNum; i++) {
             final Item randomItem = Helper.getRandomItem();
             putTileAtValidLocation(new ItemTile(randomItem), tiles);
         }
 
         final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
-        final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE) ? 2 : (monsterRandom < ONE_MONSTER_CHANCE) ? 1 : 0;
+        final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
+                ? 2 : monsterRandom < ONE_MONSTER_CHANCE ? 1 : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
             putTileAtValidLocation(new NPCTile(randomMonster), tiles);
@@ -323,6 +325,10 @@ public class Room {
 
     public Item getPillar() {
         return this.myPillar;
+    }
+
+    public Tile[][] getRoomTiles() {
+        return this.myRoomData;
     }
 
 

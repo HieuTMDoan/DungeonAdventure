@@ -44,7 +44,7 @@ public abstract class Tile implements VisualComponent {
      */
     @Override
     public String getDescription() {
-        return "Tile : " + getClass().getSimpleName() + "\nTraversable: " + myDefaultTraversable;
+        return "Tile: " + getClass().getSimpleName() + "\nTraversable: " + myDefaultTraversable;
     }
 
     /**

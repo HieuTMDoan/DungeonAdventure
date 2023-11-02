@@ -34,7 +34,16 @@ public class ItemTile extends Tile {
         return this.myStoredItems;
     }
 
+    @Override
+    public String getDescription() {
+        final StringBuilder desc = new StringBuilder("Items: ");
+        for (final Item item : myStoredItems) {
+            desc.append("\n").append(item.getClass().getSimpleName());
+        }
+        return desc.toString();
 
+
+    }
 
 
 }

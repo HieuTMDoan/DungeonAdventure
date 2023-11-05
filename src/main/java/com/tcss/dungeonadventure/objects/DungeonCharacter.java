@@ -37,7 +37,7 @@ public abstract class DungeonCharacter implements VisualComponent {
         double randomAccuracy = Helper.getRandomDoubleBetween(0, 1);
 
         if (this.myAccuracy > randomAccuracy) {
-            int damage = Helper.getRandomIntBetween(myMinDamage + 1, myMaxDamage);
+            final int damage = Helper.getRandomIntBetween(myMinDamage + 1, myMaxDamage);
             theTarget.changeHealth(damage);
             System.out.println(theTarget.getName() + " lost " + damage + " health");
         }
@@ -86,12 +86,19 @@ public abstract class DungeonCharacter implements VisualComponent {
         this.setHealth(this.myHealthPoints + theChangeInHealth);
     }
 
-    public double getMinDamage() {
+    public int getMinDamage() {
         return myMinDamage;
     }
 
-    public double getMaxDamage() {
+    public int getMaxDamage() {
         return myMaxDamage;
     }
 
+    public int getAttackSpeed() {
+        return myAttackSpeed;
+    }
+
+    public double getAccuracy() {
+        return myAccuracy;
+    }
 }

@@ -34,7 +34,7 @@ public abstract class DungeonCharacter implements VisualComponent {
     }
 
     public void attack(final DungeonCharacter theTarget) {
-        double randomAccuracy = Helper.getRandomDoubleBetween(0, 1);
+        final double randomAccuracy = Helper.getRandomDoubleBetween(0, 1);
 
         if (this.myAccuracy > randomAccuracy) {
             final int damage = Helper.getRandomIntBetween(myMinDamage + 1, myMaxDamage);

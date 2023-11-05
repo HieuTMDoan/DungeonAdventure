@@ -8,11 +8,29 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import org.sqlite.SQLiteDataSource;
 
+/**
+ * Utility class that uses JDBC API to store and manage the game's SQLite database.
+ * The database stores all of {@link DungeonCharacter}'s initial statistics.
+ *
+ * @author Hieu, Aaron, Sunny
+ * @version TCSS 360: Fall 2023
+ */
 public class SQLiteDB {
+    /**
+     * Represents the connection with the data source.
+     */
     private Connection myConn;
+
+    /**
+     * Represents the data source that is the SQLite database of the game.
+     */
     private SQLiteDataSource myDS;
 
 
+    /**
+     * Initializes the data source and establishes a connection with it.
+     * Auto-generates the data source if it doesn't already exist.
+     */
     public SQLiteDB() {
         try {
             myDS = new SQLiteDataSource();
@@ -28,6 +46,9 @@ public class SQLiteDB {
         System.out.println("Successfully opened database");
     }
 
+    /**
+     * Creates an empty table that will store {@link DungeonCharacter}'s statistics.
+     */
     public void createTable() {
         final String tableName = "dungeonCharacters";
         final String query = String.format(
@@ -52,6 +73,9 @@ public class SQLiteDB {
         }
     }
 
+    /**
+     * Prints a list of all {@link DungeonCharacter}'s initial statistics.
+     */
     public void getCharacters() {
         final String querySearch = "SELECT * FROM dungeonCharacters";
         try (Connection conn = myDS.getConnection(); Statement stmt = conn.createStatement()) {
@@ -74,16 +98,21 @@ public class SQLiteDB {
         }
     }
 
+    /**
+     * Stores a {@link DungeonCharacter}'s statistics in a new row in the database table.
+     *
+     * @param theCharacter the character to be stored in the database
+     */
     public void insertCharacter(final DungeonCharacter theCharacter) {
-        final String insertSQL = "INSERT INTO characters (name, level, health, damage_min, damage_max, attack_speed, accuracy) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        final String insertSQL = "INSERT INTO characters (name, health, damage_min, damage_max, attack_speed, accuracy) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = myConn.prepareStatement(insertSQL)) {
             statement.setString(1, theCharacter.getName());
-            statement.setInt(3, theCharacter.getHealth());
-            statement.setInt(4, theCharacter.getMinDamage());
-            statement.setInt(5, theCharacter.getMaxDamage());
-            statement.setInt(6, theCharacter.getAttackSpeed());
-            statement.setDouble(7, theCharacter.getAccuracy());
+            statement.setInt(2, theCharacter.getHealth());
+            statement.setInt(3, theCharacter.getMinDamage());
+            statement.setInt(4, theCharacter.getMaxDamage());
+            statement.setInt(5, theCharacter.getAttackSpeed());
+            statement.setDouble(6, theCharacter.getAccuracy());
             statement.executeUpdate();
 
         } catch (final SQLException e) {

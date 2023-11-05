@@ -1,17 +1,11 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
-import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
-import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
-import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
-import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
-
+import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.ArrayList;
 import java.util.List;
-import java.awt.Dimension;
-
 
 /**
  * Represents a randomly generated maze of type {@link Room}.
@@ -20,7 +14,9 @@ import java.awt.Dimension;
  * @version TCSS 360: Fall 2023
  */
 public class Dungeon {
-
+    /**
+     * The default dungeon size.
+     */
     private static final Dimension MAZE_SIZE = new Dimension(6, 6);
 
     /**
@@ -46,7 +42,7 @@ public class Dungeon {
     /**
      * The current player's location.
      */
-    private Room myCharacterLocation;
+    private final Room myCharacterLocation;
 
     /**
      *  Initializes a 6x6 traversable {@link Dungeon}.
@@ -68,6 +64,9 @@ public class Dungeon {
         generateDungeon();
     }
 
+    /**
+     * Default constructor of {@link Dungeon} class.
+     */
     public Dungeon() {
         this(
                 new Room(true, false, null),
@@ -76,6 +75,11 @@ public class Dungeon {
                 generatePillarRooms());
     }
 
+    /**
+     * Generates and returns an array of all Pillar rooms.
+     *
+     * @return an array of Pillar rooms.
+     */
     public static Room[] generatePillarRooms() {
         final Room[] pillarRooms = new Room[4];
         final Class<?>[] pillars = Helper.getPillarList();
@@ -83,6 +87,7 @@ public class Dungeon {
         for (int i = 0; i < pillars.length; i++) {
             pillarRooms[i] = new Room(false, false, pillars[i]);
         }
+
         return pillarRooms;
     }
 
@@ -97,13 +102,6 @@ public class Dungeon {
         final List<Room> essentialRooms = new ArrayList<>();
         essentialRooms.addAll(Arrays.asList(myStartingRoom, myExitRoom));
         essentialRooms.addAll(Arrays.asList(myPillarRooms));
-
-        /*
-         A random generator for three uses:
-            -shuffling rooms in essentialRooms
-            -choosing random index in the maze
-            -randomly either choosing an essential room or a dead-end room
-         */
 
         // Shuffles the list of rooms randomly
         Collections.shuffle(essentialRooms, Helper.getRandom());
@@ -128,6 +126,7 @@ public class Dungeon {
             randomRooms.add(essentialRooms.get(essentialRoomsIndex));
             randomRooms.add(new Room(false, false, null));
 
+            //randomly either chooses the index of an essential room or a dead-end room
             final int randomRoomsIndex = Helper.getRandomIntBetween(0, randomRooms.size());
 
             // Fills in the unoccupied spot in the maze with a room in randomRooms

@@ -9,7 +9,7 @@ public class PillarOfAbstraction extends Item {
 
 
     public PillarOfAbstraction() {
-        super(TileChars.Items.PILLAR_OF_ABSTRACTION);
+        super(TileChars.Items.PILLAR_OF_ABSTRACTION, ItemTypes.PILLAR);
 
     }
 

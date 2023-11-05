@@ -7,7 +7,7 @@ import com.tcss.dungeonadventure.objects.TileChars;
 public class PillarOfInheritance extends Item {
 
     public PillarOfInheritance() {
-        super(TileChars.Items.PILLAR_OF_INHERITANCE);
+        super(TileChars.Items.PILLAR_OF_INHERITANCE, ItemTypes.PILLAR);
 
     }
 

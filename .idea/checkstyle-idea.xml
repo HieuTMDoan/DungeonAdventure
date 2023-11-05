@@ -7,13 +7,13 @@
     <copyLibs>true</copyLibs>
     <option name="thirdPartyClasspath" />
     <option name="activeLocationIds">
-      <option value="01e5f8e9-709b-488b-a01f-de5034fa870a" />
+      <option value="763acd0e-f643-4cef-a419-bc3890d66ea7" />
     </option>
     <option name="locations">
       <list>
         <ConfigurationLocation id="bundled-sun-checks" type="BUNDLED" scope="All" description="Sun Checks">(bundled)</ConfigurationLocation>
         <ConfigurationLocation id="bundled-google-checks" type="BUNDLED" scope="All" description="Google Checks">(bundled)</ConfigurationLocation>
-        <ConfigurationLocation id="01e5f8e9-709b-488b-a01f-de5034fa870a" type="LOCAL_FILE" scope="All" description="380 Checkstyle">$PROJECT_DIR$/tcss305_checkstyle_sameline_test.xml</ConfigurationLocation>
+        <ConfigurationLocation id="763acd0e-f643-4cef-a419-bc3890d66ea7" type="LOCAL_FILE" scope="All" description="360 Checkstyle">$PROJECT_DIR$/tcss305_checkstyle_sameline_test.xml</ConfigurationLocation>
       </list>
     </option>
   </component>

@@ -2,7 +2,9 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.model.Dungeon;
-
+import com.tcss.dungeonadventure.model.Room;
+import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
+import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 
 
 public class Main {
@@ -14,9 +16,9 @@ public class Main {
 //        new DungeonAdventure(noGUI);
 
 
-//        System.out.println(new Room(false, false, PillarOfPolymorphism.class));
+        System.out.println(new Room(false, false, PillarOfEncapsulation.class));
 
-        System.out.println(new Dungeon());
+//        System.out.println(new Dungeon());
 
     }
 

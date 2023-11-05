@@ -2,19 +2,53 @@ package com.tcss.dungeonadventure.objects.items;
 
 
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
+import com.tcss.dungeonadventure.objects.VisualComponent;
 
 import java.util.Objects;
 
-public abstract class Item {
+public abstract class Item implements VisualComponent {
 
-    private final char myDisplayChar;
+    public enum ItemTypes {
 
-    public Item(final char theDisplayChar) {
-        this.myDisplayChar = theDisplayChar;
+        /**
+         * This item type is for all items that can be used, such as potions.
+         */
+        CONSUMABLE,
+
+        /**
+         * This item type is for all pillars.
+         */
+        PILLAR
+
     }
 
+    /**
+     * The display character of the item.
+     */
+    private final char myDisplayChar;
+
+    /**
+     * The type of the item.
+     */
+    private final ItemTypes myItemType;
+
+    public Item(final char theDisplayChar, final ItemTypes theItemType) {
+        this.myDisplayChar = theDisplayChar;
+        this.myItemType = theItemType;
+    }
+
+    @Override
     public char getDisplayChar() {
         return myDisplayChar;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Item: " + getClass().getSimpleName();
+    }
+
+    public ItemTypes getItemType() {
+        return this.myItemType;
     }
 
     public abstract void useItem(DungeonCharacter theTarget);

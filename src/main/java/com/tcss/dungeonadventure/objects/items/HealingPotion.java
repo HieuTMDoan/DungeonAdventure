@@ -9,7 +9,7 @@ public class HealingPotion extends Item {
     private static final int HEAL_AMOUNT = 10;
 
     public HealingPotion() {
-        super(TileChars.Items.HEALING_POTION);
+        super(TileChars.Items.HEALING_POTION, ItemTypes.CONSUMABLE);
     }
 
     @Override

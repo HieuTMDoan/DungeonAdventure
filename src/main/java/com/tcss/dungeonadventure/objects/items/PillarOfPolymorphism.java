@@ -8,7 +8,7 @@ public class PillarOfPolymorphism extends Item {
 
 
     public PillarOfPolymorphism() {
-        super(TileChars.Items.PILLAR_OF_POLYMORPHISM);
+        super(TileChars.Items.PILLAR_OF_POLYMORPHISM, ItemTypes.PILLAR);
 
     }
 

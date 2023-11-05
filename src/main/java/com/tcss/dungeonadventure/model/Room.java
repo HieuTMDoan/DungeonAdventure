@@ -82,7 +82,7 @@ public class Room {
     /**
      * The pillar that this room contains. May be null.
      */
-    private final Item myPillar;
+    private Item myPillar;
 
 
     /**
@@ -102,20 +102,20 @@ public class Room {
         this.myIsEntranceRoom = contains(TileChars.Room.ENTRANCE);
         this.myIsExitRoom = contains(TileChars.Room.EXIT);
         this.myRoomDimensions = new Dimension(theTiles[0].length, theTiles.length);
-        this.myPlayerPosition = null;
 
-
-        // jank asf
-        if (contains(TileChars.Items.PILLAR_OF_ABSTRACTION)) {
-            myPillar = new PillarOfAbstraction();
-        } else if (contains(TileChars.Items.PILLAR_OF_INHERITANCE)) {
-            myPillar = new PillarOfInheritance();
-        } else if (contains(TileChars.Items.PILLAR_OF_ENCAPSULATION)) {
-            myPillar = new PillarOfEncapsulation();
-        } else if (contains(TileChars.Items.PILLAR_OF_POLYMORPHISM)) {
-            myPillar = new PillarOfPolymorphism();
-        } else {
-            myPillar = null;
+        loop:
+        for (final Tile[] row : myRoomData) {
+            for (final Tile tile : row) {
+                if (tile.getClass() != ItemTile.class) {
+                    continue;
+                }
+                for (final Item item : ((ItemTile) tile).getItems()) {
+                    if (item.getItemType() == Item.ItemTypes.PILLAR) {
+                        myPillar = item;
+                        break loop;
+                    }
+                }
+            }
         }
 
     }
@@ -235,8 +235,11 @@ public class Room {
 
 
         final double itemRandom = Helper.getRandomDoubleBetween(0, 1);
-        final int itemNum = itemRandom < TWO_ITEM_CHANCE
-                ? 2 : itemRandom < ONE_ITEM_CHANCE ? 1 : 0;
+        final int itemNum = (itemRandom < TWO_ITEM_CHANCE)
+                ? 2
+                : (itemRandom < ONE_ITEM_CHANCE)
+                    ? 1
+                    : 0;
         for (int i = 0; i < itemNum; i++) {
             final Item randomItem = Helper.getRandomItem();
             putTileAtValidLocation(new ItemTile(randomItem), tiles);
@@ -244,7 +247,10 @@ public class Room {
 
         final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
         final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
-                ? 2 : monsterRandom < ONE_MONSTER_CHANCE ? 1 : 0;
+                ? 2
+                : (monsterRandom < ONE_MONSTER_CHANCE)
+                    ? 1
+                    : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
             putTileAtValidLocation(new NPCTile(randomMonster), tiles);
@@ -259,10 +265,9 @@ public class Room {
      *
      * @param theTile  The tile to add to the tile set.
      * @param theTiles The current tile set.
-     * @return Point of the location the tile was set at.
      */
-    private static Point putTileAtValidLocation(final Tile theTile,
-                                                final Tile[][] theTiles) {
+    private static void putTileAtValidLocation(final Tile theTile,
+                                               final Tile[][] theTiles) {
 
         final Dimension size = new Dimension(theTiles[0].length, theTiles.length);
 
@@ -274,7 +279,7 @@ public class Room {
                 continue;
             }
             theTiles[y][x] = theTile;
-            return new Point(x, y);
+            return;
         }
 
     }

@@ -83,7 +83,10 @@ public class Helper {
                        | NoSuchMethodException
                        | IllegalAccessException
                        | InvocationTargetException e) {
-            return null;
+            e.printStackTrace();
+
+
+            throw new RuntimeException("Randomly generated item threw an exception.");
         }
     }
 
@@ -95,7 +98,9 @@ public class Helper {
                        | NoSuchMethodException
                        | IllegalAccessException
                        | InvocationTargetException e) {
-            return null;
+            e.printStackTrace();
+
+            throw new RuntimeException("Randomly generated monster threw an exception.");
         }
     }
 

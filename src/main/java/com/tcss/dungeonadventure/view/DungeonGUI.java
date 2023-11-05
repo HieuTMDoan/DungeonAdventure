@@ -2,13 +2,8 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
-import com.tcss.dungeonadventure.objects.heroes.Hero;
-import com.tcss.dungeonadventure.objects.heroes.Warrior;
-import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
-import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -28,18 +23,57 @@ import java.io.IOException;
 
 public class DungeonGUI extends Application implements PropertyChangeListener {
 
+    /**
+     * The width of the window.
+     */
     private static final double WINDOW_WIDTH = 900;
+
+    /**
+     * The height of the window.
+     */
     private static final double WINDOW_HEIGHT = 600;
+
+    /**
+     * The path for the FXML file for the home screen.
+     */
     private static final String HOME_FXML_PATH =
             "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-home-screen.fxml";
+
+    /**
+     * The path for the FXML file for the adventuring screen.
+     */
     private static final String ADVENTURE_FXML_PATH =
             "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-adventure.fxml";
+
+    /**
+     * The title of the window.
+     */
     private static final String WINDOW_TITLE = "Dungeon Adventure";
+
+
+    /**
+     * A 2D array of Text nodes, representing each character of the room grid.
+     */
     private final Text[][] myRoomTextBoxes = new Text[10][10];
 
+    /**
+     * A 2D array of Tiles, which is what the current room looks like.
+     */
     private Tile[][] myRoomTiles = new Tile[10][10];
+
+    /**
+     * The current scene.
+     */
     private Scene myScene;
+
+    /**
+     * The room grid. 10x10.
+     */
     private GridPane myGridPane;
+
+    /**
+     * The text box containing tile information on mouse-over.
+     */
     private Label myTileInfoLabel;
 
     @Override
@@ -54,6 +88,8 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
 
         locateNodes();
         createGUI();
+
+        // This is the key event system
         myScene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case UP, W -> movePlayer(Directions.Cardinal.NORTH);
@@ -62,7 +98,7 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
                 case RIGHT, D -> movePlayer(Directions.Cardinal.EAST);
                 case PERIOD -> {
                     final Room room = new Room(false, false, null);
-                    System.out.println(room.toString());
+                    System.out.println(room);
                     loadRoom(room);
                 }
                 default -> {
@@ -76,15 +112,27 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         loadRoom(room);
     }
 
+    /**
+     * Using a node ID, you can access nodes in the FXML by ID.
+     *
+     * @param theNodeID The ID of the node to access.
+     * @return The looked-up node, or null if it isn't found.
+     */
     Node lookup(final String theNodeID) {
         return this.myScene.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
     }
 
+    /**
+     * Helper method to organize the binding of nodes to variables.
+     */
     private void locateNodes() {
         myGridPane = (GridPane) this.lookup("roomGrid");
         myTileInfoLabel = (Label) this.lookup("tileInfoLabel");
     }
 
+    /**
+     * Helper method which populates the grid with text boxes.
+     */
     private void createGUI() {
         for (int row = 0; row < myGridPane.getRowCount(); row++) {
             for (int col = 0; col < myGridPane.getColumnCount(); col++) {
@@ -115,6 +163,11 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
 
     }
 
+    /**
+     * This is called when a movement command is executed.
+     *
+     * @param theDirection The direction the player moved in.
+     */
     private void movePlayer(final Directions.Cardinal theDirection) {
         if (theDirection == null) {
             return;
@@ -123,6 +176,13 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         // Ideally, this will fire some sort of property change event.
     }
 
+    /**
+     * 
+     *
+     * @param theRowIndex
+     * @param theColIndex
+     * @param theTile
+     */
     private void setTileAt(final int theRowIndex, final int theColIndex, final Tile theTile) {
         if (theRowIndex > myGridPane.getRowCount()
                 || theColIndex > myGridPane.getColumnCount()) {
@@ -147,7 +207,7 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
             for (int col = 0; col < myGridPane.getColumnCount(); col++) {
                 try {
                     setTileAt(row, col, myRoomTiles[row][col]);
-                } catch (Exception e) {
+                } catch (final ArrayIndexOutOfBoundsException e) {
                     setTileAt(row, col, new EmptyTile());
                 }
             }

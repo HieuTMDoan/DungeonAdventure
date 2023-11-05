@@ -2,7 +2,7 @@ package com.tcss.dungeonadventure.model;
 
 
 
-import java.util.*;
+import java.util.Scanner;
 
 
 public class DungeonAdventure {

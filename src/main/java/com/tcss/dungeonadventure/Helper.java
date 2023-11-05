@@ -6,6 +6,7 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.monsters.Ogre;
 import com.tcss.dungeonadventure.objects.monsters.Skeleton;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 
@@ -78,7 +79,10 @@ public class Helper {
         try {
             return (Item) ITEM_POOL[Helper.getRandomIntBetween(0, ITEM_POOL.length)].
                     getDeclaredConstructor().newInstance();
-        } catch (final Exception e) {
+        } catch (final InstantiationException
+                       | NoSuchMethodException
+                       | IllegalAccessException
+                       | InvocationTargetException e) {
             return null;
         }
     }
@@ -87,7 +91,10 @@ public class Helper {
         try {
             return (Monster) MONSTER_POOL[Helper.getRandomIntBetween(0, MONSTER_POOL.length)].
                     getDeclaredConstructor().newInstance();
-        } catch (final Exception e) {
+        } catch (final InstantiationException
+                       | NoSuchMethodException
+                       | IllegalAccessException
+                       | InvocationTargetException e) {
             return null;
         }
     }

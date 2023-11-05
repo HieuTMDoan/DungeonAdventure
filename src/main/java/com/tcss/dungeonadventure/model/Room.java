@@ -19,6 +19,7 @@ import com.tcss.dungeonadventure.objects.tiles.ItemTile;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.lang.reflect.InvocationTargetException;
 
 
 public class Room {
@@ -180,10 +181,12 @@ public class Room {
 
 
         final int roomWidth = Helper.getRandomIntBetween(
-                (int) MIN_ROOM_DIMENSION.getWidth(), (int) MAX_ROOM_DIMENSION.getWidth() + 1);
+                (int) MIN_ROOM_DIMENSION.getWidth(),
+                (int) MAX_ROOM_DIMENSION.getWidth() + 1);
 
         final int roomHeight = Helper.getRandomIntBetween(
-                (int) MIN_ROOM_DIMENSION.getHeight(), (int) MAX_ROOM_DIMENSION.getHeight() + 1);
+                (int) MIN_ROOM_DIMENSION.getHeight(),
+                (int) MAX_ROOM_DIMENSION.getHeight() + 1);
 
 
         final Tile[][] tiles = new Tile[roomHeight][roomWidth];
@@ -221,7 +224,11 @@ public class Room {
             try {
                 final Item pillar = (Item) thePillar.getConstructor().newInstance();
                 putTileAtValidLocation(new ItemTile(pillar), tiles);
-            } catch (final Exception e) {
+            } catch (final InstantiationException
+                           | NoSuchMethodException
+                           | IllegalAccessException
+                           | InvocationTargetException e) {
+
                 e.printStackTrace();
             }
         }

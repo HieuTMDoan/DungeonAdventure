@@ -1,19 +1,16 @@
 package com.tcss.dungeonadventure.view;
 
-import com.tcss.dungeonadventure.model.Room;
-import com.tcss.dungeonadventure.objects.Directions;
-import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
-import com.tcss.dungeonadventure.objects.tiles.Tile;
+import com.tcss.dungeonadventure.objects.heroes.Priestess;
+import com.tcss.dungeonadventure.objects.heroes.Thief;
+import com.tcss.dungeonadventure.objects.heroes.Warrior;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextBoundsType;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
 
 import java.beans.PropertyChangeEvent;
@@ -50,36 +47,38 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private static final String WINDOW_TITLE = "Dungeon Adventure";
 
-
-    /**
-     * A 2D array of Text nodes, representing each character of the room grid.
-     */
-    private final Text[][] myRoomTextBoxes = new Text[10][10];
-
-    /**
-     * A 2D array of Tiles, which is what the current room looks like.
-     */
-    private Tile[][] myRoomTiles = new Tile[10][10];
-
     /**
      * The current scene.
      */
     private Scene myScene;
 
     /**
-     * The room grid. 10x10.
+     * The currently selected class. Set to warrior by default.
      */
-    private GridPane myGridPane;
+    private Class<?> mySelectedClass = Warrior.class;
+
 
     /**
-     * The text box containing tile information on mouse-over.
+     * The new game button.
      */
-    private Label myTileInfoLabel;
+    private Button myNewGameButton;
+
+    /**
+     * The load game button.
+     */
+    private Button myLoadGameButton;
+
+    /**
+     * The help button.
+     */
+    private Button myHelpButton;
+
+    private TextField myHeroNameTextField;
 
     @Override
     public void start(final Stage theStage) throws IOException {
         final FXMLLoader fxmlLoader = new FXMLLoader(
-                new File(ADVENTURE_FXML_PATH).toURI().toURL());
+                new File(HOME_FXML_PATH).toURI().toURL());
 
         myScene = new Scene(fxmlLoader.load(), WINDOW_WIDTH, WINDOW_HEIGHT);
         theStage.setTitle(WINDOW_TITLE);
@@ -87,29 +86,8 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         theStage.show();
 
         locateNodes();
-        createGUI();
+        attachEvents();
 
-        // This is the key event system
-        myScene.setOnKeyPressed(e -> {
-            switch (e.getCode()) {
-                case UP, W -> movePlayer(Directions.Cardinal.NORTH);
-                case DOWN, S -> movePlayer(Directions.Cardinal.SOUTH);
-                case LEFT, A -> movePlayer(Directions.Cardinal.WEST);
-                case RIGHT, D -> movePlayer(Directions.Cardinal.EAST);
-                case PERIOD -> {
-                    final Room room = new Room(false, false, null);
-                    System.out.println(room);
-                    loadRoom(room);
-                }
-                default -> {
-                }
-            }
-        });
-
-        final Room room = new Room(false, false, null);
-        System.out.println(room);
-
-        loadRoom(room);
     }
 
     /**
@@ -126,112 +104,65 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      * Helper method to organize the binding of nodes to variables.
      */
     private void locateNodes() {
-        myGridPane = (GridPane) this.lookup("roomGrid");
-        myTileInfoLabel = (Label) this.lookup("tileInfoLabel");
-    }
-
-    /**
-     * Helper method which populates the grid with text boxes.
-     */
-    private void createGUI() {
-        for (int row = 0; row < myGridPane.getRowCount(); row++) {
-            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
-                final HBox hbox = new HBox();
-                hbox.setAlignment(Pos.CENTER);
-
-                final Text text = new Text(" ");
-                myRoomTextBoxes[row][col] = text;
-
-                final Tile tile = new EmptyTile();
-                myRoomTiles[row][col] = tile;
-
-                text.setBoundsType(TextBoundsType.VISUAL);
-                text.setStyle("-fx-font-size: 60; -fx-fill: rgb(255, 255, 255)");
-
-                final int finalRow = row; // these are needed for the lambda statements
-                final int finalCol = col;
-
-                hbox.setOnMouseEntered(e -> onMouseOver(finalRow, finalCol));
-                hbox.getChildren().add(text);
+        this.myNewGameButton = (Button) lookup("newGameButton");
+        this.myLoadGameButton = (Button) lookup("loadGameButton");
+        this.myHelpButton = (Button) lookup("helpButton");
+        this.myHeroNameTextField = (TextField) lookup("heroNameTextField");
 
 
-                this.myGridPane.add(hbox, col, row);
-            }
-
-        }
 
 
     }
 
     /**
-     * This is called when a movement command is executed.
-     *
-     * @param theDirection The direction the player moved in.
+     * Helper method to attach mouse events to certain nodes.
      */
-    private void movePlayer(final Directions.Cardinal theDirection) {
-        if (theDirection == null) {
-            return;
-        }
-
-        // Ideally, this will fire some sort of property change event.
-    }
-
-    /**
-     * 
-     *
-     * @param theRowIndex
-     * @param theColIndex
-     * @param theTile
-     */
-    private void setTileAt(final int theRowIndex, final int theColIndex, final Tile theTile) {
-        if (theRowIndex > myGridPane.getRowCount()
-                || theColIndex > myGridPane.getColumnCount()) {
-            throw new IllegalArgumentException("Row or col must be within bounds "
-                    + "row: " + myGridPane.getRowCount()
-                    + " col: " + myGridPane.getColumnCount()
-                    + "; " + theRowIndex + " " + theColIndex);
-        }
+    private void attachEvents() {
+        this.myNewGameButton.setOnAction(e -> {
+            System.out.println("Name: " + myHeroNameTextField.getText());
+            System.out.println("Class: " + mySelectedClass.getSimpleName());
 
 
-        myRoomTextBoxes[theRowIndex][theColIndex].
-                setText(String.valueOf(theTile.getDisplayChar()));
-
-    }
-
-    private void loadRoom(final Room theRoom) {
-        clearGrid();
-        myRoomTiles = theRoom.getRoomTiles();
-
-
-        for (int row = 0; row < myGridPane.getRowCount(); row++) {
-            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
-                try {
-                    setTileAt(row, col, myRoomTiles[row][col]);
-                } catch (final ArrayIndexOutOfBoundsException e) {
-                    setTileAt(row, col, new EmptyTile());
-                }
+            try {
+                new AdventuringGUI(myScene);
+            } catch (final IOException exception) {
+                System.err.println("Error loading the adventuring GUI: ");
+                exception.printStackTrace();
             }
-        }
+        });
+
+        this.myLoadGameButton.setOnAction(e -> {
+            System.out.println("Load button pressed");
+        });
+
+        this.myHelpButton.setOnAction(e -> {
+            System.out.println("Help button pressed");
+        });
+
+
+        // Toggle groups make it so class selection is mutually exclusive
+        final ToggleGroup classGroup = new ToggleGroup();
+        final ToggleButton warriorRadioButton =
+                (ToggleButton) lookup("warriorRadioButton");
+        warriorRadioButton.setToggleGroup(classGroup);
+        warriorRadioButton.setOnAction(e -> mySelectedClass = Warrior.class);
+        warriorRadioButton.setSelected(true);
+
+
+        final ToggleButton priestessRadioButton =
+                (ToggleButton) lookup("priestessRadioButton");
+        priestessRadioButton.setToggleGroup(classGroup);
+        priestessRadioButton.setOnAction(e -> mySelectedClass = Priestess.class);
+
+
+        final ToggleButton thiefRadioButton =
+                (ToggleButton) lookup("thiefRadioButton");
+        thiefRadioButton.setToggleGroup(classGroup);
+        thiefRadioButton.setOnAction(e -> mySelectedClass = Thief.class);
+
     }
 
-    private void onMouseOver(final int theRowIndex, final int theColIndex) {
-        try {
-            final Tile t = myRoomTiles[theRowIndex][theColIndex];
-            myTileInfoLabel.setText(String.format("(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
 
-        } catch (final Exception e) {
-            myTileInfoLabel.setText(" ");
-        }
-
-    }
-
-    private void clearGrid() {
-        for (int row = 0; row < myGridPane.getRowCount(); row++) {
-            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
-                setTileAt(row, col, new EmptyTile());
-            }
-        }
-    }
 
 
     @Override

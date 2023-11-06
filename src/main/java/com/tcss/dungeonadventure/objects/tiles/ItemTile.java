@@ -1,48 +1,34 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
 
-import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemTile extends Tile {
 
     /**
-     * The item(s) occupying this tile.
+     * The item occupying this tile.
      */
-    private final List<Item> myStoredItems = new ArrayList<>();
+    private final Item myItem;
 
 
     /**
-     * Constructor for multiple items on the same tile, IF this
-     * is implemented
+     * Constructor for an item tile with a specified item.
      *
-     * @param theItems Items stored in this tile
+     * @param theItem Item stored in this tile
      */
-    public ItemTile(final Item... theItems) {
-        super(theItems.length == 1
-                        ? theItems[0].getDisplayChar()
-                        : TileChars.Items.MULTIPLE,
-                true);
+    public ItemTile(final Item theItem) {
+        super(theItem.getDisplayChar(), true);
 
-        this.myStoredItems.addAll(List.of(theItems));
+        this.myItem = theItem;
     }
 
-    public List<Item> getItems() {
-        return this.myStoredItems;
+    public Item getItem() {
+        return this.myItem;
     }
 
     @Override
     public String getDescription() {
-        final StringBuilder desc = new StringBuilder();
-        for (final Item item : myStoredItems) {
-            desc.append(item.getDescription()).append("\n");
-        }
-        return desc.toString();
-
-
+        return myItem.getDescription();
     }
 
 

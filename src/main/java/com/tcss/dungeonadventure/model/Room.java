@@ -109,11 +109,10 @@ public class Room {
                 if (tile.getClass() != ItemTile.class) {
                     continue;
                 }
-                for (final Item item : ((ItemTile) tile).getItems()) {
-                    if (item.getItemType() == Item.ItemTypes.PILLAR) {
-                        myPillar = item;
-                        break loop;
-                    }
+                final Item item = ((ItemTile) tile).getItem();
+                if (item.getItemType() == Item.ItemTypes.PILLAR) {
+                    myPillar = item;
+                    break loop;
                 }
             }
         }

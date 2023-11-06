@@ -7,12 +7,17 @@ import java.util.Scanner;
 
 public class DungeonAdventure {
 
+
+
     public DungeonAdventure(final boolean theGUIActive) {
 //        From main, choose between gui mode or not based on command line arguments
 //            Something like --nogui or something idk
 
+        startup();
 
+    }
 
+    private void startup() {
         System.out.println("---- Dungeon Adventure ----");
 
         final Scanner scanner = new Scanner(System.in);
@@ -49,8 +54,6 @@ public class DungeonAdventure {
         }
 
         System.out.println("Name: " + playerName + " | Class: " + playerClass);
-
-
 
 
     }

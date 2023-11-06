@@ -1,5 +1,46 @@
 @import url("colors.css");
 
-* {
+
+.root {
     -fx-background-color: -fx-default-background;
+    -fx-font-family: "Consolas";
+
+
 }
+
+
+.text-input {
+    -fx-control-inner-background: black;
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-prompt-text-fill: #989898;
+    -fx-font-family: "Consolas";
+
+}
+
+.button {
+    -fx-background-color: black;
+    -fx-border-color: white;
+    -fx-text-fill: white;
+
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-family: "Consolas";
+
+}
+
+
+.radio-button .radio {
+    -fx-background-color: black;
+    -fx-border-color: white;
+    -fx-border-radius: 5;
+    -fx-padding: 0px;
+}
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+}
+

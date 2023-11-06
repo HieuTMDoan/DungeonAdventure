@@ -1,11 +1,14 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.objects.heroes.Priestess;
+import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
@@ -70,6 +73,8 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private Button myHelpButton;
 
+    private TextField myHeroNameTextField;
+
     @Override
     public void start(final Stage theStage) throws IOException {
         final FXMLLoader fxmlLoader = new FXMLLoader(
@@ -102,25 +107,9 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         this.myNewGameButton = (Button) lookup("newGameButton");
         this.myLoadGameButton = (Button) lookup("loadGameButton");
         this.myHelpButton = (Button) lookup("helpButton");
-
-        final ToggleGroup classGroup = new ToggleGroup();
-        final ToggleButton warriorRadioButton =
-                (ToggleButton) lookup("warriorRadioButton");
-        warriorRadioButton.setToggleGroup(classGroup);
-        warriorRadioButton.setOnAction(e -> mySelectedClass = Warrior.class);
-        warriorRadioButton.setSelected(true);
+        this.myHeroNameTextField = (TextField) lookup("heroNameTextField");
 
 
-        final ToggleButton priestessRadioButton =
-                (ToggleButton) lookup("priestessRadioButton");
-        priestessRadioButton.setToggleGroup(classGroup);
-        priestessRadioButton.setOnAction(e -> mySelectedClass = Warrior.class);
-
-
-        final ToggleButton thiefRadioButton =
-                (ToggleButton) lookup("thiefRadioButton");
-        thiefRadioButton.setToggleGroup(classGroup);
-        thiefRadioButton.setOnAction(e -> mySelectedClass = Warrior.class);
 
 
     }
@@ -130,6 +119,10 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private void attachEvents() {
         this.myNewGameButton.setOnAction(e -> {
+            System.out.println("Name: " + myHeroNameTextField.getText());
+            System.out.println("Class: " + mySelectedClass.getSimpleName());
+
+
             try {
                 new AdventuringGUI(myScene);
             } catch (final IOException exception) {
@@ -145,6 +138,27 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         this.myHelpButton.setOnAction(e -> {
             System.out.println("Help button pressed");
         });
+
+
+        // Toggle groups make it so class selection is mutually exclusive
+        final ToggleGroup classGroup = new ToggleGroup();
+        final ToggleButton warriorRadioButton =
+                (ToggleButton) lookup("warriorRadioButton");
+        warriorRadioButton.setToggleGroup(classGroup);
+        warriorRadioButton.setOnAction(e -> mySelectedClass = Warrior.class);
+        warriorRadioButton.setSelected(true);
+
+
+        final ToggleButton priestessRadioButton =
+                (ToggleButton) lookup("priestessRadioButton");
+        priestessRadioButton.setToggleGroup(classGroup);
+        priestessRadioButton.setOnAction(e -> mySelectedClass = Priestess.class);
+
+
+        final ToggleButton thiefRadioButton =
+                (ToggleButton) lookup("thiefRadioButton");
+        thiefRadioButton.setToggleGroup(classGroup);
+        thiefRadioButton.setOnAction(e -> mySelectedClass = Thief.class);
 
     }
 

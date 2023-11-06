@@ -33,7 +33,6 @@ public final class TileChars {
     }
 
     public static class Items {
-        public static final char MULTIPLE = 'M';
         public static final char HEALING_POTION = 'H';
         public static final char VISION_POTION = 'V';
         public static final char PILLAR_OF_ENCAPSULATION = 'E';

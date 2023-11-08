@@ -1,8 +1,9 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
-import com.tcss.dungeonadventure.objects.TileChars;
-import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.heroes.Priestess;
+import com.tcss.dungeonadventure.objects.heroes.Thief;
+import com.tcss.dungeonadventure.objects.heroes.Warrior;
 import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.monsters.Ogre;
 import com.tcss.dungeonadventure.objects.monsters.Skeleton;
@@ -10,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 import org.sqlite.SQLiteDataSource;
 
 /**
@@ -26,6 +26,11 @@ public class SQLiteDB {
      */
     private Connection myConn;
 
+    /**
+     * Represents the {@link DungeonCharacter} object
+     * with initial stats extracted from the database.
+     */
+    private DungeonCharacter myCharacter;
 
     /**
      * Initializes the data source and establishes a connection with it.
@@ -57,10 +62,15 @@ public class SQLiteDB {
                         (NAME TEXT NOT NULL,\s
                         DISPLAY_CHAR TEXT NOT NULL,\s
                         HEALTH INTEGER NOT NULL,\s
-                        DAMAGE_MIN REAL,\s
-                        DAMAGE_MAX REAL,\s
-                        ATTACK_SPEED INTEGER,\s
-                        ACCURACY REAL
+                        DAMAGE_MIN REAL NOT NULL,\s
+                        DAMAGE_MAX REAL NOT NULL,\s
+                        ATTACK_SPEED INTEGER NOT NULL,\s
+                        ACCURACY REAL NOT NULL,\s
+                        HEAL_CHANCE REAL,\s
+                        HEAL_MIN INTEGER,\s
+                        HEAL_MAX INTEGER,\s
+                        BLOCK_CHANCE REAL,\s
+                        SKILL TEXT
                         )
                         """, tableName);
 
@@ -75,64 +85,71 @@ public class SQLiteDB {
     }
 
     /**
-     * Stores a {@link DungeonCharacter}'s statistics in a new row in the database table.
-     *
-     * @param theCharacter the character to be stored in the database
-     */
-    public void insertCharacter(final DungeonCharacter theCharacter) {
-        //TODO: figure out how to insert info of the Heroes and Monsters,
-        // as this method currently only works for storing info of the abstract Dungeon Characters
-        final String insertSQL = "INSERT INTO dungeonCharacters "
-                                 + "(name, display_char, health, damage_min, damage_max, attack_speed, accuracy) "
-                                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement statement = myConn.prepareStatement(insertSQL)) {
-            statement.setString(1, theCharacter.getName());
-            statement.setString(2, String.valueOf(theCharacter.getDisplayChar()));
-            statement.setInt(3, theCharacter.getHealth());
-            statement.setInt(4, theCharacter.getMinDamage());
-            statement.setInt(5, theCharacter.getMaxDamage());
-            statement.setInt(6, theCharacter.getAttackSpeed());
-            statement.setDouble(7, theCharacter.getAccuracy());
-            statement.executeUpdate();
-
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Prints a list of all {@link DungeonCharacter}'s initial statistics.
+     * Only use this method for testing.
      */
     public void getCharacters() {
-        //TODO: figure out how to printing out info of the Heroes and Monsters,
-        // as this method currently only works for printing out info of the abstract Dungeon Characters
         final String querySearch = "SELECT * FROM dungeonCharacters";
 
         try (PreparedStatement stmt = myConn.prepareStatement(querySearch)) {
             final ResultSet rs = stmt.executeQuery();
-
+            
             while (rs.next()) {
+                //prints the common stats among all Dungeon Characters first
                 final String name = rs.getString("NAME");
                 final String displayChar = rs.getString("DISPLAY_CHAR");
-                final String health = rs.getString("HEALTH");
-                final String damageMin = rs.getString("DAMAGE_MIN");
-                final String damageMax = rs.getString("DAMAGE_MAX");
-                final String attackSpeed = rs.getString("ATTACK_SPEED");
-                final String accuracy = rs.getString("ACCURACY");
+                final int health = rs.getInt("HEALTH");
+                final int damageMin = rs.getInt("DAMAGE_MIN");
+                final int damageMax = rs.getInt("DAMAGE_MAX");
+                final int attackSpeed = rs.getInt("ATTACK_SPEED");
+                final double accuracy = rs.getDouble("ACCURACY");
 
-                System.out.printf(
-                        """
-                        Result:\s
-                        [NAME: %s |\s
-                        DISPLAY_CHAR: %s |\s
-                        HEALTH: %s |\s
-                        DAMAGE_MIN: %s |\s
-                        DAMAGE_MAX: %s |\s
-                        ATTACK_SPEED: %s |\s
-                        ACCURACY: %s]%n
-                        """,
-                        name, displayChar, health, damageMin, damageMax, attackSpeed, accuracy);
+                //if current row contains hero stats, prints relevant hero stats
+                if ("+".equals(displayChar)) {
+                    final double blockChance = rs.getDouble("BLOCK_CHANCE");
+                    final String skill = rs.getString("SKILL");
+
+                    System.out.printf(
+                            """
+                            Result:\s
+                            [
+                            NAME: %s |\s
+                            DISPLAY_CHAR: %s |\s
+                            HEALTH: %s |\s
+                            DAMAGE_MIN: %s |\s
+                            DAMAGE_MAX: %s |\s
+                            ATTACK_SPEED: %s |\s
+                            ACCURACY: %s |\s
+                            BLOCK_CHANCE: %s |\s
+                            SKILL: %s |\s
+                            ]%n
+                            """,
+                            name, displayChar, health, damageMin, damageMax,
+                            attackSpeed, accuracy, blockChance, skill);
+                } else { //prints relevant monster stats otherwise
+                    final double healChance = rs.getDouble("HEAL_CHANCE");
+                    final int healMin = rs.getInt("HEAL_MIN");
+                    final int healMax = rs.getInt("HEAL_MAX");
+
+                    System.out.printf(
+                            """
+                            Result:\s
+                            [
+                            NAME: %s |\s
+                            DISPLAY_CHAR: %s |\s
+                            HEALTH: %s |\s
+                            DAMAGE_MIN: %s |\s
+                            DAMAGE_MAX: %s |\s
+                            ATTACK_SPEED: %s |\s
+                            ACCURACY: %s |\s
+                            HEAL_CHANCE: %s |\s
+                            HEAL_MIN: %s |\s
+                            HEAL_MAX: %s |\s
+                            ]%n
+                            """,
+                            name, displayChar, health, damageMin, damageMax,
+                            attackSpeed, accuracy, healChance, healMin, healMax);
+                }
             }
         } catch (final SQLException e) {
             e.printStackTrace();
@@ -148,28 +165,20 @@ public class SQLiteDB {
      */
     public DungeonCharacter getCharacterByName(final String theName) {
         final String querySearch = "SELECT * FROM dungeonCharacters WHERE NAME = ?";
-        DungeonCharacter character = null;
 
         try (PreparedStatement stmt = myConn.prepareStatement(querySearch)) {
             stmt.setString(1, theName);
             final ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-//                final String name = rs.getString("NAME");
-//                final String displayChar = rs.getString("DISPLAY_CHAR");
-//                final int health = rs.getInt("HEALTH");
-//                final int damageMin = rs.getInt("DAMAGE_MIN");
-//                final int damageMax = rs.getInt("DAMAGE_MAX");
-//                final int attackSpeed = rs.getInt("ATTACK_SPEED");
-//                final double accuracy = rs.getDouble("ACCURACY");
-                character = createCharacterFromResultSet(rs);
+                myCharacter = createCharacterFromResultSet(rs);
             }
         } catch (final SQLException e) {
             e.printStackTrace();
             System.exit(0);
         }
 
-        return character;
+        return myCharacter;
     }
 
     /**
@@ -181,23 +190,21 @@ public class SQLiteDB {
      * @return the queried child class of {@link DungeonCharacter}
      */
     private DungeonCharacter createCharacterFromResultSet(final ResultSet theResultSet) {
-        //TODO: figure out how to return info of the Heroes and Monsters,
-        // as this method currently only works for returning info of the abstract Dungeon Characters
         DungeonCharacter character = null;
-
         try {
             if (theResultSet.next()) {
-                String characterType = theResultSet.getString("DISPLAY_CHAR");
-                if (Objects.equals(characterType, String.valueOf(TileChars.Player.PLAYER))) {
-                    character = new Hero();
-                } else if (Objects.equals(characterType, String.valueOf(TileChars.Monsters.OGRE))) {
-                    character = new Ogre();
-                } else if (Objects.equals(characterType, String.valueOf(TileChars.Monsters.GREMLIN))) {
-                    character = new Gremlin();
-                } else if (Objects.equals(characterType, String.valueOf(TileChars.Monsters.SKELETON))) {
-                    character = new Skeleton();
+                final String name = theResultSet.getString("NAME");
+                switch (name) {
+                    case "Priestess" -> character = new Priestess(name);
+                    case "Thief" -> character = new Thief(name);
+                    case "Warrior" -> character = new Warrior(name);
+                    case "Ogre" -> character = new Ogre();
+                    case "Gremlin" -> character = new Gremlin();
+                    case "Skeleton" -> character = new Skeleton();
+                    default -> { }
                 }
             }
+
         } catch (final SQLException e) {
             e.printStackTrace();
         }

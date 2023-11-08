@@ -1,12 +1,15 @@
 package com.tcss.dungeonadventure.model;
 
 
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Scanner;
 
 
-public class DungeonAdventure {
+public class DungeonAdventure implements PropertyChangeListener {
 
+    private final PropertyChangeSupport myPcs = new PropertyChangeSupport(this);
 
 
     public DungeonAdventure(final boolean theGUIActive) {
@@ -59,5 +62,21 @@ public class DungeonAdventure {
     }
 
 
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
 
+    }
+
+    public void firePropertyChanged(final String thePropertyName,
+                                    final Object theNewValue) {
+
+        this.firePropertyChanged(thePropertyName, null, theNewValue);
+    }
+
+    public void firePropertyChanged(final String thePropertyName,
+                                    final Object theOldValue,
+                                    final Object theNewValue) {
+
+        this.myPcs.firePropertyChange(thePropertyName, theOldValue, theNewValue);
+    }
 }

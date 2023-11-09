@@ -22,6 +22,14 @@ public enum PCS {
     MOVE_PLAYER,
 
     /**
+     * The property of player location change.
+     * Not to be confused with MOVE_PLAYER.
+     * Should be paired with
+     *
+     */
+    UPDATED_PLAYER_LOCATION,
+
+    /**
      * The property of loading a new room.
      * Should be paired with {@link Room}
      */
@@ -29,7 +37,8 @@ public enum PCS {
 
     /**
      * The property of starting a BRAND-NEW game.
-     * Should be paired with nothing.
+     * Should be paired with a new Warrior/Priestess/Thief, with
+     * the name being whatever the user set it as.
      */
     START_NEW_GAME,
 

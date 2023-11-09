@@ -3,6 +3,10 @@ package com.tcss.dungeonadventure.view;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.heroes.Priestess;
+import com.tcss.dungeonadventure.objects.heroes.Thief;
+import com.tcss.dungeonadventure.objects.heroes.Warrior;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -30,9 +34,11 @@ public class ConsoleView implements PropertyChangeListener {
     public void startup() {
         System.out.println("---- Dungeon Adventure ----");
 
-        switch (validInputChecker(
+        switch (
+                validInputChecker(
                 "Start a new game (N), or load an existing one (L)?: ",
-                "N", "L")) {
+                "N", "L"
+                )) {
             case "N" -> newGameStartup();
             case "L" -> System.out.println("Not yet implemented");
             default -> {
@@ -47,15 +53,17 @@ public class ConsoleView implements PropertyChangeListener {
         final String playerName = validInputChecker("Enter player name: ");
 
 
-        final String playerClass = switch (validInputChecker(
+        final Hero playerClass = switch (validInputChecker(
                 "Warrior (W), Priestess (P), Thief (T)"
                         + "\nChoose your class: ", "W", "P", "T")) {
 
-            case "W" -> "Warrior";
-            case "P" -> "Priestess";
-            case "T" -> "Thief";
+            case "W" -> new Warrior(playerName);
+            case "P" -> new Priestess(playerName);
+            case "T" -> new Thief(playerName);
             default -> null;
         };
+
+        PCS.firePropertyChanged(PCS.START_NEW_GAME, playerClass);
 
 
         System.out.println("Name: " + playerName + " | Class: " + playerClass);
@@ -105,8 +113,11 @@ public class ConsoleView implements PropertyChangeListener {
 
     private void loadRoom(final Room theRoom) {
         this.myCurrentRoom = theRoom;
-
         System.out.println(this.myCurrentRoom);
+    }
+
+    private void printRoomWithPlayer() {
+
     }
 
     private void movePlayer(final Directions.Cardinal theDirection) {
@@ -124,7 +135,9 @@ public class ConsoleView implements PropertyChangeListener {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
             case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
             case MOVE_PLAYER -> movePlayer((Directions.Cardinal) theEvent.getNewValue());
+            case UPDATED_PLAYER_LOCATION -> {
 
+            }
         }
     }
 }

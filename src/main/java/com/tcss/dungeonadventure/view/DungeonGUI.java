@@ -1,6 +1,8 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
@@ -18,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class DungeonGUI extends Application implements PropertyChangeListener {
 
@@ -115,13 +118,15 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private void attachEvents() {
         this.myNewGameButton.setOnAction(e -> {
-            System.out.println("Name: " + myHeroNameTextField.getText());
-            System.out.println("Class: " + mySelectedClass.getSimpleName());
-
             try {
-                new AdventuringGUI(myScene);
-            } catch (final IOException exception) {
-                System.err.println("Error loading the adventuring GUI: ");
+                PCS.firePropertyChanged(PCS.START_NEW_GAME, mySelectedClass.
+                        getDeclaredConstructor(String.class).
+                        newInstance(myHeroNameTextField.getText()));
+
+            } catch (final InstantiationException
+                           | NoSuchMethodException
+                           | IllegalAccessException
+                           | InvocationTargetException exception) {
                 exception.printStackTrace();
             }
         });
@@ -158,10 +163,21 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     }
 
 
-
-
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
+        switch (PCS.valueOf(theEvent.getPropertyName())) {
+            case START_NEW_GAME -> {
+                try {
+                    new AdventuringGUI(myScene);
+                } catch (final IOException e) {
+                    System.err.println("Error loading the adventuring GUI: ");
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+
 
     }
 }

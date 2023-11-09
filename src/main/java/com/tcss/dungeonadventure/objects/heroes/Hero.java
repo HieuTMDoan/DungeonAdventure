@@ -53,6 +53,10 @@ public abstract class Hero extends DungeonCharacter {
         myPillarCount++;
     }
 
+    public Class<?> getHeroClass() {
+        return this.getClass();
+    }
+
     public boolean useSkill(final DungeonCharacter theTarget) {
         return mySkill.activateSkill(theTarget);
     }

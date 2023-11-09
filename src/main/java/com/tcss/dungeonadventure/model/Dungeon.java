@@ -14,6 +14,7 @@ import java.util.List;
  * @version TCSS 360: Fall 2023
  */
 public class Dungeon {
+
     /**
      * The default dungeon size.
      */
@@ -39,10 +40,6 @@ public class Dungeon {
      */
     private final Room[] myPillarRooms;
 
-    /**
-     * The current player's location.
-     */
-    private final Room myCharacterLocation;
 
     /**
      *  Initializes a 6x6 traversable {@link Dungeon}.
@@ -57,7 +54,6 @@ public class Dungeon {
 
         myMaze = new Room[(int) MAZE_SIZE.getHeight()][(int) MAZE_SIZE.getWidth()];
         myExitRoom = theExitRoom;
-        myCharacterLocation = theStartingRoom;
         myStartingRoom = theStartingRoom;
         myPillarRooms = thePillarRooms;
 
@@ -150,14 +146,12 @@ public class Dungeon {
         return myMaze;
     }
 
-    /**
-     * Returns the player's current location in the {@link Dungeon}.
-     *
-     * @return the player's current location in the {@link Dungeon}
-     */
-    public Room getCharacterLocation() {
-        return myCharacterLocation;
+    public void loadHeroIntoStartingRoom() {
+        myStartingRoom.loadPlayerToEntrance();
     }
+
+
+
 
     /**
      * Returns the {@link Room} in the maze at the specified coordinates.

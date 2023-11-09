@@ -1,5 +1,8 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.Dungeon;
+import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
@@ -17,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class DungeonGUI extends Application implements PropertyChangeListener {
 
@@ -35,12 +39,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private static final String HOME_FXML_PATH =
             "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-home-screen.fxml";
-
-    /**
-     * The path for the FXML file for the adventuring screen.
-     */
-    private static final String ADVENTURE_FXML_PATH =
-            "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-adventure.fxml";
 
     /**
      * The title of the window.
@@ -73,10 +71,15 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private Button myHelpButton;
 
+    /**
+     * The text input for hero name.
+     */
     private TextField myHeroNameTextField;
 
     @Override
     public void start(final Stage theStage) throws IOException {
+        PCS.addPropertyListener(this);
+
         final FXMLLoader fxmlLoader = new FXMLLoader(
                 new File(HOME_FXML_PATH).toURI().toURL());
 
@@ -108,10 +111,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         this.myLoadGameButton = (Button) lookup("loadGameButton");
         this.myHelpButton = (Button) lookup("helpButton");
         this.myHeroNameTextField = (TextField) lookup("heroNameTextField");
-
-
-
-
     }
 
     /**
@@ -119,14 +118,15 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private void attachEvents() {
         this.myNewGameButton.setOnAction(e -> {
-            System.out.println("Name: " + myHeroNameTextField.getText());
-            System.out.println("Class: " + mySelectedClass.getSimpleName());
-
-
             try {
-                new AdventuringGUI(myScene);
-            } catch (final IOException exception) {
-                System.err.println("Error loading the adventuring GUI: ");
+                PCS.firePropertyChanged(PCS.START_NEW_GAME, mySelectedClass.
+                        getDeclaredConstructor(String.class).
+                        newInstance(myHeroNameTextField.getText()));
+
+            } catch (final InstantiationException
+                           | NoSuchMethodException
+                           | IllegalAccessException
+                           | InvocationTargetException exception) {
                 exception.printStackTrace();
             }
         });
@@ -163,10 +163,21 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     }
 
 
-
-
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
+        switch (PCS.valueOf(theEvent.getPropertyName())) {
+            case START_NEW_GAME -> {
+                try {
+                    new AdventuringGUI(myScene);
+                } catch (final IOException e) {
+                    System.err.println("Error loading the adventuring GUI: ");
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+
 
     }
 }

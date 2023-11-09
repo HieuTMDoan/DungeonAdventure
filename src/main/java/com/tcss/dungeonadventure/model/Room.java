@@ -152,6 +152,8 @@ public class Room {
     }
 
 
+
+
     /**
      * Generates the tile data of a random room based on a set of parameters.
      *
@@ -298,6 +300,28 @@ public class Room {
             default -> throw new IllegalArgumentException(
                     "Illegal enum passed: " + theDirection);
         }
+
+        PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, new Point(myPlayerPosition));
+    }
+
+    public void loadPlayerToEntrance() {
+        if (!this.myIsEntranceRoom) {
+            throw new IllegalArgumentException("Cannot load player to non-entrance room.");
+        }
+
+        for (int y = 0; y < myRoomData.length; y++) {
+            final Tile[] row = myRoomData[y];
+            for (int x = 0; x < row.length; x++) {
+                if (row[x].getClass() != EntranceTile.class) {
+                    myPlayerPosition = new Point(y, x);
+                    PCS.firePropertyChanged(PCS.LOAD_ROOM, this);
+                    return;
+                }
+
+            }
+        }
+
+
     }
 
 

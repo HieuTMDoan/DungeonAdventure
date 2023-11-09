@@ -1,6 +1,12 @@
 package com.tcss.dungeonadventure.model;
 
 
+import com.tcss.dungeonadventure.objects.Directions;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.view.ConsoleView;
+import com.tcss.dungeonadventure.view.DungeonGUI;
+import javafx.application.Application;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -9,54 +15,23 @@ import java.util.Scanner;
 
 public class DungeonAdventure implements PropertyChangeListener {
 
-    private final PropertyChangeSupport myPcs = new PropertyChangeSupport(this);
+
+    private Hero myHero;
+
+    private Dungeon myDungeon;
+
+    private Room myCurrentRoom;
 
 
     public DungeonAdventure(final boolean theGUIActive) {
-//        From main, choose between gui mode or not based on command line arguments
-//            Something like --nogui or something idk
+        PCS.addPropertyListener(this);
 
-        startup();
 
-    }
-
-    private void startup() {
-        System.out.println("---- Dungeon Adventure ----");
-
-        final Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter player name: ");
-
-        String playerName;
-        while (true) {
-            playerName = scanner.nextLine();
-            if (playerName.isBlank()) {
-                System.out.print("Invalid player name. Please re-enter the player name: ");
-                continue;
-            }
-            break;
+        if (theGUIActive) {
+            new ConsoleView();
+        } else {
+            Application.launch(DungeonGUI.class);
         }
-
-        System.out.println("Warrior (W), Priestess (P), Thief (T)");
-        System.out.print("Choose your class: ");
-
-        String playerClass;
-        while (true) {
-            playerClass = switch (scanner.nextLine()) {
-                case "W" -> "Warrior";
-                case "P" -> "Priestess";
-                case "T" -> "Thief";
-                default -> null;
-            };
-
-            if (playerClass == null) {
-                System.out.print("Invalid class; please enter W, P or T: ");
-                continue;
-            }
-            break;
-
-        }
-
-        System.out.println("Name: " + playerName + " | Class: " + playerClass);
 
 
     }
@@ -64,19 +39,23 @@ public class DungeonAdventure implements PropertyChangeListener {
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
+        switch (PCS.valueOf(theEvent.getPropertyName())) {
+            case START_NEW_GAME -> {
+                this.myHero = (Hero) theEvent.getNewValue();
+                this.myDungeon = new Dungeon();
+                this.myDungeon.loadHeroIntoStartingRoom();
+
+            }
+            case LOAD_ROOM -> {
+                this.myCurrentRoom = (Room) theEvent.getNewValue();
+            }
+
+            case MOVE_PLAYER -> {
+                this.myCurrentRoom.movePlayer((Directions.Cardinal) theEvent.getNewValue());
+            }
+
+        }
 
     }
 
-    public void firePropertyChanged(final String thePropertyName,
-                                    final Object theNewValue) {
-
-        this.firePropertyChanged(thePropertyName, null, theNewValue);
-    }
-
-    public void firePropertyChanged(final String thePropertyName,
-                                    final Object theOldValue,
-                                    final Object theNewValue) {
-
-        this.myPcs.firePropertyChange(thePropertyName, theOldValue, theNewValue);
-    }
 }

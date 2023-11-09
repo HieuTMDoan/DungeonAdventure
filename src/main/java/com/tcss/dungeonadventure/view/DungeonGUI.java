@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
@@ -37,12 +38,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
             "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-home-screen.fxml";
 
     /**
-     * The path for the FXML file for the adventuring screen.
-     */
-    private static final String ADVENTURE_FXML_PATH =
-            "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-adventure.fxml";
-
-    /**
      * The title of the window.
      */
     private static final String WINDOW_TITLE = "Dungeon Adventure";
@@ -73,10 +68,15 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private Button myHelpButton;
 
+    /**
+     * The text input for hero name.
+     */
     private TextField myHeroNameTextField;
 
     @Override
     public void start(final Stage theStage) throws IOException {
+        PCS.addPropertyListener(this);
+
         final FXMLLoader fxmlLoader = new FXMLLoader(
                 new File(HOME_FXML_PATH).toURI().toURL());
 
@@ -108,10 +108,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         this.myLoadGameButton = (Button) lookup("loadGameButton");
         this.myHelpButton = (Button) lookup("helpButton");
         this.myHeroNameTextField = (TextField) lookup("heroNameTextField");
-
-
-
-
     }
 
     /**
@@ -121,7 +117,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         this.myNewGameButton.setOnAction(e -> {
             System.out.println("Name: " + myHeroNameTextField.getText());
             System.out.println("Class: " + mySelectedClass.getSimpleName());
-
 
             try {
                 new AdventuringGUI(myScene);

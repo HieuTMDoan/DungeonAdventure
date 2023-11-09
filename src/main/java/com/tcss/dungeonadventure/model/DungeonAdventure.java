@@ -1,6 +1,9 @@
 package com.tcss.dungeonadventure.model;
 
 
+import com.tcss.dungeonadventure.view.ConsoleView;
+import com.tcss.dungeonadventure.view.DungeonGUI;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -15,51 +18,19 @@ public class DungeonAdventure implements PropertyChangeListener {
     public DungeonAdventure(final boolean theGUIActive) {
 //        From main, choose between gui mode or not based on command line arguments
 //            Something like --nogui or something idk
+        PCS.addPropertyListener(this);
 
-        startup();
+
+
+        if (theGUIActive) {
+            new ConsoleView();
+        } else {
+            new DungeonGUI();
+        }
+
 
     }
 
-    private void startup() {
-        System.out.println("---- Dungeon Adventure ----");
-
-        final Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter player name: ");
-
-        String playerName;
-        while (true) {
-            playerName = scanner.nextLine();
-            if (playerName.isBlank()) {
-                System.out.print("Invalid player name. Please re-enter the player name: ");
-                continue;
-            }
-            break;
-        }
-
-        System.out.println("Warrior (W), Priestess (P), Thief (T)");
-        System.out.print("Choose your class: ");
-
-        String playerClass;
-        while (true) {
-            playerClass = switch (scanner.nextLine()) {
-                case "W" -> "Warrior";
-                case "P" -> "Priestess";
-                case "T" -> "Thief";
-                default -> null;
-            };
-
-            if (playerClass == null) {
-                System.out.print("Invalid class; please enter W, P or T: ");
-                continue;
-            }
-            break;
-
-        }
-
-        System.out.println("Name: " + playerName + " | Class: " + playerClass);
-
-
-    }
 
 
     @Override
@@ -67,16 +38,4 @@ public class DungeonAdventure implements PropertyChangeListener {
 
     }
 
-    public void firePropertyChanged(final String thePropertyName,
-                                    final Object theNewValue) {
-
-        this.firePropertyChanged(thePropertyName, null, theNewValue);
-    }
-
-    public void firePropertyChanged(final String thePropertyName,
-                                    final Object theOldValue,
-                                    final Object theNewValue) {
-
-        this.myPcs.firePropertyChange(thePropertyName, theOldValue, theNewValue);
-    }
 }

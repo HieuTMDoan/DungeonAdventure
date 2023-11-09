@@ -7,6 +7,8 @@ import com.tcss.dungeonadventure.objects.heroes.Warrior;
 import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.monsters.Ogre;
 import com.tcss.dungeonadventure.objects.monsters.Skeleton;
+import com.tcss.dungeonadventure.objects.skills.Skill;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,9 +54,10 @@ public class SQLiteDB {
     }
 
     /**
-     * Creates an empty table that will store {@link DungeonCharacter}'s statistics.
+     * Utility method that creates an empty table that will store
+     * {@link DungeonCharacter}'s statistics.
      */
-    public void createTable() {
+    private void createTable() {
         final String tableName = "dungeonCharacters";
         final String query = String.format(
                         """
@@ -170,45 +173,58 @@ public class SQLiteDB {
             stmt.setString(1, theName);
             final ResultSet rs = stmt.executeQuery();
 
+            //Retrieves the relevant stats of both Monster and Hero characters
             if (rs.next()) {
-                myCharacter = createCharacterFromResultSet(rs);
+                final String name = rs.getString("NAME");
+                final char displayChar = rs.getString("DISPLAY_CHAR").charAt(0);
+                final int health = rs.getInt("HEALTH");
+                final int damageMin = rs.getInt("DAMAGE_MIN");
+                final int damageMax = rs.getInt("DAMAGE_MAX");
+                final int attackSpeed = rs.getInt("ATTACK_SPEED");
+                final double accuracy = rs.getDouble("ACCURACY");
+                final double healChance = rs.getDouble("HEAL_CHANCE");
+                final int healMin = rs.getInt("HEAL_MIN");
+                final int healMax = rs.getInt("HEAL_MAX");
+                final double blockChance = rs.getDouble("BLOCK_CHANCE");
+
+                //Instantiates the appropriate Skill object based on the skill name
+                final String skillName = rs.getString("SKILL");
+                final Class<?> skillClass = Class.forName(skillName);
+                final Skill skill = (Skill) skillClass.getDeclaredConstructor().newInstance();
+
+                //Instantiates the appropriate DungeonCharacter object based on its name
+                switch (name) {
+                    case "Priestess" -> myCharacter =
+                            new Priestess(name, displayChar, health, damageMin, damageMax,
+                                    attackSpeed, accuracy, blockChance, skill);
+                    case "Thief" -> myCharacter =
+                            new Thief(name, displayChar, health, damageMin, damageMax,
+                                    attackSpeed, accuracy, blockChance, skill);
+                    case "Warrior" -> myCharacter =
+                            new Warrior(name, displayChar, health, damageMin, damageMax,
+                                    attackSpeed, accuracy, blockChance, skill);
+                    case "Ogre" -> myCharacter =
+                            new Ogre(name, displayChar, health, damageMin, damageMax,
+                                    attackSpeed, accuracy, healChance, healMin, healMax);
+                    case "Gremlin" -> myCharacter =
+                            new Gremlin(name, displayChar, health, damageMin, damageMax,
+                                    attackSpeed, accuracy, healChance, healMin, healMax);
+                    case "Skeleton" -> myCharacter =
+                            new Skeleton(name, displayChar, health, damageMin, damageMax,
+                                    attackSpeed, accuracy, healChance, healMin, healMax);
+                    default -> myCharacter = null;
+                }
             }
-        } catch (final SQLException e) {
+        } catch (final SQLException
+                       | ClassNotFoundException
+                       | InvocationTargetException
+                       | InstantiationException
+                       | IllegalAccessException
+                       | NoSuchMethodException e) {
             e.printStackTrace();
             System.exit(0);
         }
 
         return myCharacter;
-    }
-
-    /**
-     * Private factory method that takes the retrieved result set
-     * and returns an instance of the appropriate child class of {@link DungeonCharacter}.
-     *
-     * @param theResultSet the retrieved result set containing the statistics
-     *                     of the queried {@link DungeonCharacter}
-     * @return the queried child class of {@link DungeonCharacter}
-     */
-    private DungeonCharacter createCharacterFromResultSet(final ResultSet theResultSet) {
-        DungeonCharacter character = null;
-        try {
-            if (theResultSet.next()) {
-                final String name = theResultSet.getString("NAME");
-                switch (name) {
-                    case "Priestess" -> character = new Priestess(name);
-                    case "Thief" -> character = new Thief(name);
-                    case "Warrior" -> character = new Warrior(name);
-                    case "Ogre" -> character = new Ogre();
-                    case "Gremlin" -> character = new Gremlin();
-                    case "Skeleton" -> character = new Skeleton();
-                    default -> { }
-                }
-            }
-
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        }
-
-        return character;
     }
 }

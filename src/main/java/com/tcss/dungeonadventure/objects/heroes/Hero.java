@@ -1,13 +1,9 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
-
-
-import com.tcss.dungeonadventure.objects.skills.Skill;
-import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
+import com.tcss.dungeonadventure.objects.skills.Skill;
 
 public abstract class Hero extends DungeonCharacter {
-
     private final double myBlockChance;
     private final Skill mySkill;
     private int myPillarCount;
@@ -16,6 +12,7 @@ public abstract class Hero extends DungeonCharacter {
     private int myHealPotionCount;
 
     public Hero(final String theName,
+                final char theDisplayChar,
                 final int theDefaultHealth,
                 final int theMinDamage,
                 final int theMaxDamage,
@@ -25,7 +22,7 @@ public abstract class Hero extends DungeonCharacter {
                 final Skill theSkill) {
 
         super(theName,
-                TileChars.Player.PLAYER,
+                theDisplayChar,
                 theDefaultHealth,
                 theMinDamage,
                 theMaxDamage,
@@ -59,6 +56,4 @@ public abstract class Hero extends DungeonCharacter {
     public boolean useSkill(final DungeonCharacter theTarget) {
         return mySkill.activateSkill(theTarget);
     }
-
-
 }

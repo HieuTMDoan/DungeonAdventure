@@ -1,35 +1,35 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
-
-import com.tcss.dungeonadventure.objects.skills.Skill;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
-import com.tcss.dungeonadventure.objects.skills.Heal;
+import com.tcss.dungeonadventure.objects.skills.Skill;
 
 public class Priestess extends Hero {
-    private static final int DEFAULT_HIT_POINTS = 75;
-    private static final int DEFAULT_ATTACK_SPEED = 5;
-    private static final double DEFAULT_ACCURACY = 0.7;
-    private static final int DEFAULT_MIN_DAMAGE = 25;
-    private static final int DEFAULT_MAX_DAMAGE = 45;
-    private static final double DEFAULT_BLOCK_CHANCE = 0.3;
-    private static final Skill PRIESTESS_SKILL = new Heal();
-
-    public Priestess(final String theName) {
-
+    public Priestess(final String theName,
+                     final char theDisplayChar,
+                     final int theDefaultHealth,
+                     final int theMinDamage,
+                     final int theMaxDamage,
+                     final int theAttackSpeed,
+                     final double theAccuracy,
+                     final double theBlockChance,
+                     final Skill theSkill) {
         super(theName,
-                DEFAULT_HIT_POINTS,
-                DEFAULT_MIN_DAMAGE,
-                DEFAULT_MAX_DAMAGE,
-                DEFAULT_ATTACK_SPEED,
-                DEFAULT_ACCURACY,
-                DEFAULT_BLOCK_CHANCE,
-                PRIESTESS_SKILL);
+                theDisplayChar,
+                theDefaultHealth,
+                theMinDamage,
+                theMaxDamage,
+                theAttackSpeed,
+                theAccuracy,
+                theBlockChance,
+                theSkill);
     }
-
-    @Override
-    public boolean useSkill(final DungeonCharacter theTarget) {
-        return super.useSkill(this);
-    }
-
-
+    //TODO: Isn't this override redundant
+    // since it's basically calling its parent method to do the work,
+    // which is what it would do anyway even without overriding the parent method?
+    // also, having this override makes the parent method always to be inverted.
+    // Not sure what that meant, but it doesn't sound right.
+//    @Override
+//    public boolean useSkill(final DungeonCharacter theTarget) {
+//        return super.useSkill(this);
+//    }
 }

@@ -193,27 +193,24 @@ public class SQLiteDB {
                 final Skill skill = (Skill) skillClass.getDeclaredConstructor().newInstance();
 
                 //Instantiates the appropriate DungeonCharacter object based on its name
-                switch (name) {
-                    case "Priestess" -> myCharacter =
-                            new Priestess(name, displayChar, health, damageMin, damageMax,
-                                    attackSpeed, accuracy, blockChance, skill);
-                    case "Thief" -> myCharacter =
-                            new Thief(name, displayChar, health, damageMin, damageMax,
-                                    attackSpeed, accuracy, blockChance, skill);
-                    case "Warrior" -> myCharacter =
-                            new Warrior(name, displayChar, health, damageMin, damageMax,
-                                    attackSpeed, accuracy, blockChance, skill);
-                    case "Ogre" -> myCharacter =
-                            new Ogre(name, displayChar, health, damageMin, damageMax,
-                                    attackSpeed, accuracy, healChance, healMin, healMax);
-                    case "Gremlin" -> myCharacter =
-                            new Gremlin(name, displayChar, health, damageMin, damageMax,
-                                    attackSpeed, accuracy, healChance, healMin, healMax);
-                    case "Skeleton" -> myCharacter =
-                            new Skeleton(name, displayChar, health, damageMin, damageMax,
-                                    attackSpeed, accuracy, healChance, healMin, healMax);
-                    default -> myCharacter = null;
-                }
+                myCharacter = switch (name) {
+                    case "Priestess" -> new Priestess(name, displayChar, health,
+                            damageMin, damageMax, attackSpeed, accuracy, blockChance, skill);
+                    case "Thief" -> new Thief(name, displayChar, health,
+                            damageMin, damageMax, attackSpeed, accuracy, blockChance, skill);
+                    case "Warrior" -> new Warrior(name, displayChar, health,
+                            damageMin, damageMax, attackSpeed, accuracy, blockChance, skill);
+                    case "Ogre" -> new Ogre(name, displayChar, health,
+                            damageMin, damageMax, attackSpeed, accuracy,
+                            healChance, healMin, healMax);
+                    case "Gremlin" -> new Gremlin(name, displayChar, health,
+                            damageMin, damageMax, attackSpeed, accuracy,
+                            healChance, healMin, healMax);
+                    case "Skeleton" -> new Skeleton(name, displayChar, health,
+                            damageMin, damageMax, attackSpeed, accuracy,
+                            healChance, healMin, healMax);
+                    default -> null;
+                };
             }
         } catch (final SQLException
                        | ClassNotFoundException

@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import org.sqlite.SQLiteDataSource;
 
 /**
@@ -192,23 +193,17 @@ public final class SQLiteDB {
      */
     private static boolean hasData() {
         final String queryCount = "SELECT COUNT(*) FROM dungeonCharacters";
-        boolean hasData = false;
+        int count = 0;
 
-        try (PreparedStatement stmt = myConn.prepareStatement(queryCount)) {
-            final ResultSet rs = stmt.executeQuery(queryCount);
-
-            // Assuming the query returns a single value representing the count
+        try (ResultSet rs = myConn.createStatement().executeQuery(queryCount)) {
             if (rs.next()) {
-                final int count = rs.getInt(1);
-                hasData = count > 0;
+                count = rs.getInt(1);
             }
-
         } catch (final SQLException e) {
             e.printStackTrace();
         }
 
-        // In case of an exception or no data, return false
-        return hasData;
+        return count > 0;
     }
 
     /**
@@ -272,15 +267,35 @@ public final class SQLiteDB {
                 + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, HEAL_CHANCE, HEAL_MIN, HEAL_MAX) "
                 + "VALUES (\"Skeleton\", \"8\", 100, 30, 50, 3, 0.8, 0.3, 30, 50)";
 
-        //Groups all of SQLite's INSERT statements above and executes the statement group
-        final String insertAll = insertPriestess + insertThief + insertWarrior
-                + insertGremlin + insertOgre + insertSkeleton;
-
         try (Statement stmt = myConn.createStatement()) {
-            stmt.execute(insertAll);
+            //Disables auto-commit to enable batching
+            myConn.setAutoCommit(false);
+
+            //Adds statements to the batch to execute all at once
+            stmt.addBatch(insertPriestess);
+            stmt.addBatch(insertThief);
+            stmt.addBatch(insertWarrior);
+            stmt.addBatch(insertGremlin);
+            stmt.addBatch(insertOgre);
+            stmt.addBatch(insertSkeleton);
+
+            //Executes the batch
+            System.out.println(Arrays.toString(stmt.executeBatch()));
+
+            //Commits the transaction
+            myConn.commit();
 
         } catch (final SQLException e) {
             e.printStackTrace();
+
+            //Rolls back the transaction in case of an error to maintain data consistency
+            try {
+                if (myConn != null) {
+                    myConn.rollback();
+                }
+            } catch (final SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
         }
     }
 }

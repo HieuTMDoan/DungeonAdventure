@@ -2,11 +2,9 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
-import com.tcss.dungeonadventure.model.SQLiteDB;
-import com.tcss.dungeonadventure.objects.heroes.Warrior;
 
 
-public class Main {
+public final class Main {
 
     private Main() {
         throw new RuntimeException("Main should not be instantiated");

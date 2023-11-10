@@ -1,11 +1,14 @@
 package com.tcss.dungeonadventure.view;
 
-import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.PCS;
-import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,12 +18,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 public class DungeonGUI extends Application implements PropertyChangeListener {
 
@@ -131,13 +128,9 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
             }
         });
 
-        this.myLoadGameButton.setOnAction(e -> {
-            System.out.println("Load button pressed");
-        });
+        this.myLoadGameButton.setOnAction(e -> System.out.println("Load button pressed"));
 
-        this.myHelpButton.setOnAction(e -> {
-            System.out.println("Help button pressed");
-        });
+        this.myHelpButton.setOnAction(e -> System.out.println("Help button pressed"));
 
 
         // Toggle groups make it so class selection is mutually exclusive

@@ -1,18 +1,22 @@
 package com.tcss.dungeonadventure;
 
 import com.tcss.dungeonadventure.model.SQLiteDB;
-import com.tcss.dungeonadventure.objects.items.*;
-import com.tcss.dungeonadventure.objects.monsters.Gremlin;
+import com.tcss.dungeonadventure.objects.items.HealingPotion;
+import com.tcss.dungeonadventure.objects.items.Item;
+import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
+import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
+import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
+import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
+import com.tcss.dungeonadventure.objects.items.VisionPotion;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import com.tcss.dungeonadventure.objects.monsters.Ogre;
-import com.tcss.dungeonadventure.objects.monsters.Skeleton;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
-
 /**
  * This class contains static helper methods to use around the program.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360 : Fall 2023
  */
 public final class Helper {
 

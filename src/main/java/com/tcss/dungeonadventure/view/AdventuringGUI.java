@@ -197,6 +197,10 @@ public class AdventuringGUI implements PropertyChangeListener {
         }
     }
 
+    private void renderRoomWithPlayer() {
+
+    }
+
     private void onMouseOver(final int theRowIndex, final int theColIndex) {
         try {
             final Tile t = myRoomTiles[theRowIndex][theColIndex];
@@ -226,6 +230,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                 loadRoom(room);
                 System.out.println(room);
             }
+            case UPDATED_PLAYER_LOCATION -> renderRoomWithPlayer();
             default -> {
             }
 

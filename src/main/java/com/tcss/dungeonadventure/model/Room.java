@@ -301,12 +301,12 @@ public class Room {
                     "Illegal enum passed: " + theDirection);
         }
 
-        if (myRoomData[tempPoint.x][tempPoint.y].isTraversable()) {
+        if (myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()].isTraversable()) {
             myPlayerPosition = new Point(tempPoint);
             PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, new Point(myPlayerPosition));
             return;
         }
-        PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, myPlayerPosition);
+        PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, new Point(myPlayerPosition));
 
 
 

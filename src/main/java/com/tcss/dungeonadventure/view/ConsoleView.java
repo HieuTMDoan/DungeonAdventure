@@ -140,11 +140,7 @@ public class ConsoleView implements PropertyChangeListener {
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
             case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
-            case UPDATED_PLAYER_LOCATION -> {
-                printRoomWithPlayer();
-
-
-            }
+            case UPDATED_PLAYER_LOCATION -> printRoomWithPlayer();
         }
     }
 }

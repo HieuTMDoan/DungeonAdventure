@@ -31,11 +31,6 @@ public class AdventuringGUI implements PropertyChangeListener {
     private static final String ADVENTURE_FXML_PATH =
             "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-adventure.fxml";
 
-    /**
-     * The title of the window.
-     */
-    private static final String WINDOW_TITLE = "Dungeon Adventure";
-
 
     /**
      * A 2D array of Text nodes, representing each character of the room grid.
@@ -45,7 +40,7 @@ public class AdventuringGUI implements PropertyChangeListener {
     /**
      * A 2D array of Tiles, which is what the current room looks like.
      */
-    private Tile[][] myRoomTiles = new Tile[10][10];
+    private Room myCurrentRoom;
 
     /**
      * The current scene.
@@ -66,7 +61,6 @@ public class AdventuringGUI implements PropertyChangeListener {
         PCS.addPropertyListener(this);
         final FXMLLoader fxmlLoader = new FXMLLoader(new File(ADVENTURE_FXML_PATH).toURI().toURL());
         this.myScene = theScene;
-
         theScene.setRoot(fxmlLoader.load());
 
         locateNodes();
@@ -75,11 +69,6 @@ public class AdventuringGUI implements PropertyChangeListener {
         // This is the key event system
         myScene.setOnKeyPressed(this::handleKeyPress);
 
-        final Room room = new Room(false, false, null);
-        System.out.println("Room");
-        System.out.println(room);
-
-        loadRoom(room);
     }
 
     /**
@@ -98,7 +87,6 @@ public class AdventuringGUI implements PropertyChangeListener {
             case DOWN, S -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.SOUTH);
             case LEFT, A -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.WEST);
             case RIGHT, D -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.EAST);
-            case PERIOD -> PCS.firePropertyChanged(PCS.LOAD_ROOM, new Room(false, false, null));
             default -> {
             }
         }
@@ -124,9 +112,6 @@ public class AdventuringGUI implements PropertyChangeListener {
                 final Text text = new Text(" ");
                 myRoomTextBoxes[row][col] = text;
 
-                final Tile tile = new EmptyTile();
-                myRoomTiles[row][col] = tile;
-
                 text.setBoundsType(TextBoundsType.VISUAL);
                 text.setStyle("-fx-font-size: 60; -fx-fill: rgb(255, 255, 255)");
 
@@ -145,19 +130,6 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     }
 
-    /**
-     * This is called when a movement command is executed.
-     *
-     * @param theDirection The direction the player moved in.
-     */
-    private void movePlayer(final Directions.Cardinal theDirection) {
-        if (theDirection == null) {
-            return;
-        }
-
-
-
-    }
 
     /**
      * Changes the tile at a specified index.
@@ -167,6 +139,10 @@ public class AdventuringGUI implements PropertyChangeListener {
      * @param theTile     The new tile.
      */
     private void setTileAt(final int theRowIndex, final int theColIndex, final Tile theTile) {
+        setTileAt(theRowIndex, theColIndex, theTile.getDisplayChar());
+    }
+
+    private void setTileAt(final int theRowIndex, final int theColIndex, final char theChar) {
         if (theRowIndex > myGridPane.getRowCount()
                 || theColIndex > myGridPane.getColumnCount()) {
             throw new IllegalArgumentException("Row or col must be within bounds "
@@ -176,20 +152,36 @@ public class AdventuringGUI implements PropertyChangeListener {
         }
 
 
-        myRoomTextBoxes[theRowIndex][theColIndex].
-                setText(String.valueOf(theTile.getDisplayChar()));
-
+        myRoomTextBoxes[theRowIndex][theColIndex].setText(String.valueOf(theChar));
     }
+
 
     private void loadRoom(final Room theRoom) {
         clearGrid();
-        myRoomTiles = theRoom.getRoomTiles();
+        myCurrentRoom = theRoom;
 
+        renderRoomWithPlayer();
 
+    }
+
+    /**
+     * This gets called to re-render the room, with the player on top of the tile.
+     * Pretty inefficient, as it's an O(n^2) process each time a movement command is
+     * fired, but for the current scale of 10x10, it still feels completely lag-less.
+     */
+    private void renderRoomWithPlayer() {
         for (int row = 0; row < myGridPane.getRowCount(); row++) {
             for (int col = 0; col < myGridPane.getColumnCount(); col++) {
                 try {
-                    setTileAt(row, col, myRoomTiles[row][col]);
+                    if (myCurrentRoom.getPlayerXPosition() != null
+                            && row == myCurrentRoom.getPlayerXPosition()
+                            && col == myCurrentRoom.getPlayerYPosition()) {
+
+                        setTileAt(row, col, '/');
+                    } else {
+                        setTileAt(row, col, myCurrentRoom.getRoomTiles()[row][col]);
+                    }
+
                 } catch (final ArrayIndexOutOfBoundsException e) {
                     setTileAt(row, col, new EmptyTile());
                 }
@@ -197,13 +189,9 @@ public class AdventuringGUI implements PropertyChangeListener {
         }
     }
 
-    private void renderRoomWithPlayer() {
-
-    }
-
     private void onMouseOver(final int theRowIndex, final int theColIndex) {
         try {
-            final Tile t = myRoomTiles[theRowIndex][theColIndex];
+            final Tile t = myCurrentRoom.getRoomTiles()[theRowIndex][theColIndex];
             myTileInfoLabel.setText(String.format("(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
 
         } catch (final ArrayIndexOutOfBoundsException e) {
@@ -224,11 +212,9 @@ public class AdventuringGUI implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
-            case MOVE_PLAYER -> movePlayer((Directions.Cardinal) theEvent.getNewValue());
             case LOAD_ROOM -> {
-                final Room room = (Room) theEvent.getNewValue();
-                loadRoom(room);
-                System.out.println(room);
+                System.out.println("called");
+                loadRoom((Room) theEvent.getNewValue());
             }
             case UPDATED_PLAYER_LOCATION -> renderRoomWithPlayer();
             default -> {

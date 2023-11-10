@@ -40,7 +40,7 @@ public class DungeonAdventure implements PropertyChangeListener {
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
-        switch (PCS.valueOf(theEvent.getPropertyName())) {
+        switch (PCS.valueOf(theEvent.getPropertyName())) { // converts the name to an enum
             case START_NEW_GAME -> {
                 final Object[] data = (Object[]) theEvent.getNewValue();
 

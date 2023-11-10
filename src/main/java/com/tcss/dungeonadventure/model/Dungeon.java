@@ -76,9 +76,9 @@ public class Dungeon {
      *
      * @return an array of Pillar rooms.
      */
-    public static Room[] generatePillarRooms() {
-        final Room[] pillarRooms = new Room[4];
+    private static Room[] generatePillarRooms() {
         final Class<?>[] pillars = Helper.getPillarList();
+        final Room[] pillarRooms = new Room[pillars.length];
 
         for (int i = 0; i < pillars.length; i++) {
             pillarRooms[i] = new Room(false, false, pillars[i]);

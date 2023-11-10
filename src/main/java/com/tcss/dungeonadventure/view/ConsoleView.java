@@ -68,7 +68,6 @@ public class ConsoleView implements PropertyChangeListener {
 
         PCS.firePropertyChanged(PCS.START_NEW_GAME, new Object[]{playerName, playerClass});
 
-        System.out.println("Name: " + playerName + " | Class: " + playerClass.getClass().getSimpleName());
 
     }
 

@@ -312,8 +312,8 @@ public class Room {
         for (int y = 0; y < myRoomData.length; y++) {
             final Tile[] row = myRoomData[y];
             for (int x = 0; x < row.length; x++) {
-                if (row[x].getClass() != EntranceTile.class) {
-                    myPlayerPosition = new Point(y, x);
+                if (row[x].getClass() == EntranceTile.class) {
+                    myPlayerPosition = new Point(x, y);
                     System.out.println("Player is at: " + myPlayerPosition);
                     PCS.firePropertyChanged(PCS.LOAD_ROOM, this);
                     return;

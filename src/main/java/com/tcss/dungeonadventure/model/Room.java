@@ -1,4 +1,5 @@
 package com.tcss.dungeonadventure.model;
+
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -152,8 +153,6 @@ public class Room {
     }
 
 
-
-
     /**
      * Generates the tile data of a random room based on a set of parameters.
      *
@@ -239,8 +238,8 @@ public class Room {
         final int itemNum = (itemRandom < TWO_ITEM_CHANCE)
                 ? 2
                 : (itemRandom < ONE_ITEM_CHANCE)
-                    ? 1
-                    : 0;
+                ? 1
+                : 0;
         for (int i = 0; i < itemNum; i++) {
             final Item randomItem = Helper.getRandomItem();
             putTileAtValidLocation(new ItemTile(randomItem), tiles);
@@ -250,8 +249,8 @@ public class Room {
         final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
                 ? 2
                 : (monsterRandom < ONE_MONSTER_CHANCE)
-                    ? 1
-                    : 0;
+                ? 1
+                : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
             putTileAtValidLocation(new NPCTile(randomMonster), tiles);
@@ -292,16 +291,25 @@ public class Room {
         }
 
 
+        final Point tempPoint = new Point(myPlayerPosition);
         switch (theDirection) {
-            case NORTH -> myPlayerPosition.translate(0, 1); // TODO: Check for proper bounds before moving
-            case EAST -> myPlayerPosition.translate(1, 0);
-            case SOUTH -> myPlayerPosition.translate(0, -1);
-            case WEST -> myPlayerPosition.translate(-1, 0);
+            case NORTH -> tempPoint.translate(-1, 0);
+            case EAST -> tempPoint.translate(0, 1);
+            case SOUTH -> tempPoint.translate(1, 0);
+            case WEST -> tempPoint.translate(0, -1);
             default -> throw new IllegalArgumentException(
                     "Illegal enum passed: " + theDirection);
         }
 
-        PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, new Point(myPlayerPosition));
+        if (myRoomData[tempPoint.x][tempPoint.y].isTraversable()) {
+            myPlayerPosition = new Point(tempPoint);
+            PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, new Point(myPlayerPosition));
+            return;
+        }
+        PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, myPlayerPosition);
+
+
+
     }
 
     public void loadPlayerToEntrance() {
@@ -309,18 +317,19 @@ public class Room {
             throw new IllegalArgumentException("Cannot load player to non-entrance room.");
         }
 
-        for (int y = 0; y < myRoomData.length; y++) {
-            final Tile[] row = myRoomData[y];
-            for (int x = 0; x < row.length; x++) {
-                if (row[x].getClass() != EntranceTile.class) {
-                    myPlayerPosition = new Point(y, x);
-                    System.out.println("Player is at: " + myPlayerPosition);
+        for (int i = 0; i < myRoomData.length; i++) {
+            for (int j = 0; j < myRoomData[i].length; j++) {
+                if (myRoomData[i][j].getClass() == EntranceTile.class) {
+                    myPlayerPosition = new Point(i, j);
                     PCS.firePropertyChanged(PCS.LOAD_ROOM, this);
                     return;
                 }
-
             }
+
+
         }
+
+
         throw new IllegalArgumentException("Player was not loaded into entrance.");
 
 
@@ -373,14 +382,12 @@ public class Room {
         final StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < myRoomData.length; i++) {
-            final Tile[] row = myRoomData[i];
             String prefix = "";
-            for (int j = 0; j < row.length; j++) {
+            for (int j = 0; j < myRoomData[i].length; j++) {
                 if (new Point(i, j).equals(myPlayerPosition)) {
-                    stringBuilder.append(prefix).append("/");// TODO CHANGE TO PLAYER CHARACTER
+                    stringBuilder.append(prefix).append("/"); // TODO CHANGE TO PLAYER CHARACTER
                 } else {
-                    final Tile tile = row[j];
-                    stringBuilder.append(prefix).append(tile.getDisplayChar());
+                    stringBuilder.append(prefix).append(myRoomData[i][j].getDisplayChar());
                 }
                 prefix = " ";
             }

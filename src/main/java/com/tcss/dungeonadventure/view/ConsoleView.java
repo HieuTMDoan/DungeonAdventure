@@ -88,13 +88,13 @@ public class ConsoleView implements PropertyChangeListener {
         System.out.print(thePrompt);
 
         if (theValidChoices.length == 0) {
-            return myScanner.nextLine();
+            return myScanner.nextLine().toUpperCase();
         }
 
         final List<String> list = Arrays.asList(theValidChoices);
 
         while (true) {
-            final String line = myScanner.nextLine();
+            final String line = myScanner.nextLine().toUpperCase();
             if (list.contains(line)) {
                 return line;
             } else {
@@ -134,26 +134,13 @@ public class ConsoleView implements PropertyChangeListener {
             default -> {
             }
         }
-
-
     }
-
-    private void movePlayer(final Directions.Cardinal theDirection) {
-        if (theDirection == null) {
-            return;
-        }
-
-
-    }
-
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
             case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
-            case MOVE_PLAYER -> movePlayer((Directions.Cardinal) theEvent.getNewValue());
             case UPDATED_PLAYER_LOCATION -> {
-                System.out.println("Player is at: " + theEvent.getNewValue());
                 printRoomWithPlayer();
 
 

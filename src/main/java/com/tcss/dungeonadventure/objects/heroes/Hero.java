@@ -4,6 +4,9 @@ import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.skills.Skill;
 
 public abstract class Hero extends DungeonCharacter {
+
+
+
     private final double myBlockChance;
     private final Skill mySkill;
     private int myPillarCount;
@@ -53,9 +56,7 @@ public abstract class Hero extends DungeonCharacter {
         myPillarCount++;
     }
 
-    public Class<?> getHeroClass() {
-        return this.getClass();
-    }
+
 
     public boolean useSkill(final DungeonCharacter theTarget) {
         return mySkill.activateSkill(theTarget);

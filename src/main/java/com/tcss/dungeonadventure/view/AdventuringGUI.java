@@ -76,6 +76,7 @@ public class AdventuringGUI implements PropertyChangeListener {
         myScene.setOnKeyPressed(this::handleKeyPress);
 
         final Room room = new Room(false, false, null);
+        System.out.println("Room");
         System.out.println(room);
 
         loadRoom(room);

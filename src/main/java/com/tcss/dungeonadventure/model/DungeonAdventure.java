@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class DungeonAdventure implements PropertyChangeListener {
 
 
+    private String myPlayerName;
     private Hero myHero;
 
     private Dungeon myDungeon;
@@ -41,7 +42,10 @@ public class DungeonAdventure implements PropertyChangeListener {
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
             case START_NEW_GAME -> {
-                this.myHero = (Hero) theEvent.getNewValue();
+                final Object[] data = (Object[]) theEvent.getNewValue();
+
+                this.myPlayerName = (String) data[0];
+                this.myHero = (Hero) data[1];
                 this.myDungeon = new Dungeon();
                 this.myDungeon.loadHeroIntoStartingRoom();
 

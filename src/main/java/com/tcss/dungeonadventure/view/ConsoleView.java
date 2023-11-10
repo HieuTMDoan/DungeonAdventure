@@ -1,13 +1,15 @@
 package com.tcss.dungeonadventure.view;
 
-import com.tcss.dungeonadventure.model.PCS;
-import com.tcss.dungeonadventure.model.Room;
+import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.*;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
 
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -28,6 +30,7 @@ public class ConsoleView implements PropertyChangeListener {
 
 
     public ConsoleView() {
+        PCS.addPropertyListener(this);
         startup();
     }
 
@@ -36,8 +39,8 @@ public class ConsoleView implements PropertyChangeListener {
 
         switch (
                 validInputChecker(
-                "Start a new game (N), or load an existing one (L)?: ",
-                "N", "L"
+                        "Start a new game (N), or load an existing one (L)?: ",
+                        "N", "L"
                 )) {
             case "N" -> newGameStartup();
             case "L" -> System.out.println("Not yet implemented");
@@ -57,16 +60,16 @@ public class ConsoleView implements PropertyChangeListener {
                 "Warrior (W), Priestess (P), Thief (T)"
                         + "\nChoose your class: ", "W", "P", "T")) {
 
-            case "W" -> new Warrior(playerName);
-            case "P" -> new Priestess(playerName);
-            case "T" -> new Thief(playerName);
+            case "W" -> (Warrior) SQLiteDB.getCharacterByName(Helper.Characters.WARRIOR);
+            case "P" -> (Priestess) SQLiteDB.getCharacterByName(Helper.Characters.PRIESTESS);
+            case "T" -> (Thief) SQLiteDB.getCharacterByName(Helper.Characters.THIEF);
             default -> null;
         };
 
-        PCS.firePropertyChanged(PCS.START_NEW_GAME, playerClass);
+        PCS.firePropertyChanged(PCS.START_NEW_GAME, new Object[]{playerName, playerClass});
 
+        System.out.println("Name: " + playerName + " | Class: " + playerClass.getClass().getSimpleName());
 
-        System.out.println("Name: " + playerName + " | Class: " + playerClass);
     }
 
 
@@ -76,7 +79,7 @@ public class ConsoleView implements PropertyChangeListener {
      * until a valid input is received.
      * If no valid choices are provided, it will return the first input received.
      *
-     * @param thePrompt The prompt to display.
+     * @param thePrompt       The prompt to display.
      * @param theValidChoices The possible valid choices.
      * @return The valid choice.
      */
@@ -113,10 +116,25 @@ public class ConsoleView implements PropertyChangeListener {
 
     private void loadRoom(final Room theRoom) {
         this.myCurrentRoom = theRoom;
-        System.out.println(this.myCurrentRoom);
+
+        printRoomWithPlayer();
+
+
     }
 
     private void printRoomWithPlayer() {
+        System.out.println(this.myCurrentRoom);
+
+        switch (validInputChecker("Enter WASD: ", "W", "A", "S", "D")) {
+            case "W" -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.NORTH);
+            case "S" -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.SOUTH);
+            case "A" -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.WEST);
+            case "D" -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.EAST);
+
+            default -> {
+            }
+        }
+
 
     }
 
@@ -124,7 +142,6 @@ public class ConsoleView implements PropertyChangeListener {
         if (theDirection == null) {
             return;
         }
-
 
 
     }
@@ -136,6 +153,9 @@ public class ConsoleView implements PropertyChangeListener {
             case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
             case MOVE_PLAYER -> movePlayer((Directions.Cardinal) theEvent.getNewValue());
             case UPDATED_PLAYER_LOCATION -> {
+                System.out.println("Player is at: " + theEvent.getNewValue());
+                printRoomWithPlayer();
+
 
             }
         }

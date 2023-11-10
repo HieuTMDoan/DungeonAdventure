@@ -23,13 +23,6 @@ public class Thief extends Hero {
                 theBlockChance,
                 theSkill);
     }
-    //TODO: Isn't this override redundant
-    // since it's basically calling its parent method to do the work,
-    // which is what it would do anyway even without overriding the parent method?
-    // also, having this override makes the parent method always to be inverted.
-    // Not sure what that meant, but it doesn't sound right.
-//    @Override
-//    public boolean useSkill(final DungeonCharacter theTarget) {
-//        return super.useSkill(this);
-//    }
+
+
 }

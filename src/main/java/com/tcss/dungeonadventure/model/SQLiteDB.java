@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
@@ -8,12 +9,16 @@ import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.monsters.Ogre;
 import com.tcss.dungeonadventure.objects.monsters.Skeleton;
 import com.tcss.dungeonadventure.objects.skills.Skill;
+
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.sqlite.SQLiteDataSource;
+
+
 
 /**
  * Utility class that uses JDBC API to store and manage the game's SQLite database.
@@ -22,23 +27,21 @@ import org.sqlite.SQLiteDataSource;
  * @author Hieu, Aaron, Sunny
  * @version TCSS 360: Fall 2023
  */
-public class SQLiteDB {
+public final class SQLiteDB {
     /**
      * Represents the connection with the data source.
      */
-    private Connection myConn;
+    private static Connection myConn;
 
-    /**
-     * Represents the {@link DungeonCharacter} object
-     * with initial stats extracted from the database.
-     */
-    private DungeonCharacter myCharacter;
+    private SQLiteDB() {
 
-    /**
-     * Initializes the data source and establishes a connection with it.
-     * Auto-generates the data source if it doesn't already exist.
-     */
-    public SQLiteDB() {
+    }
+
+    static {
+        /*
+         * Initializes the data source and establishes a connection with it.
+         * Auto-generates the data source if it doesn't already exist.
+         */
         try {
             final SQLiteDataSource ds = new SQLiteDataSource();
             ds.setUrl("jdbc:sqlite:dungeonCharacters.sqlite");
@@ -49,7 +52,6 @@ public class SQLiteDB {
             e.printStackTrace();
             System.exit(0);
         }
-
         System.out.println("Successfully opened database");
     }
 
@@ -57,10 +59,10 @@ public class SQLiteDB {
      * Utility method that creates an empty table that will store
      * {@link DungeonCharacter}'s statistics.
      */
-    private void createTable() {
+    private static void createTable() {
         final String tableName = "dungeonCharacters";
         final String query = String.format(
-                        """
+                """
                         CREATE TABLE IF NOT EXISTS %s
                         (NAME TEXT NOT NULL,\s
                         DISPLAY_CHAR TEXT NOT NULL,\s
@@ -91,12 +93,12 @@ public class SQLiteDB {
      * Prints a list of all {@link DungeonCharacter}'s initial statistics.
      * Only use this method for testing.
      */
-    public void getCharacters() {
+    public static void getCharacters() {
         final String querySearch = "SELECT * FROM dungeonCharacters";
 
         try (PreparedStatement stmt = myConn.prepareStatement(querySearch)) {
             final ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 //prints the common stats among all Dungeon Characters first
                 final String name = rs.getString("NAME");
@@ -114,19 +116,19 @@ public class SQLiteDB {
 
                     System.out.printf(
                             """
-                            Result:\s
-                            [
-                            NAME: %s |\s
-                            DISPLAY_CHAR: %s |\s
-                            HEALTH: %s |\s
-                            DAMAGE_MIN: %s |\s
-                            DAMAGE_MAX: %s |\s
-                            ATTACK_SPEED: %s |\s
-                            ACCURACY: %s |\s
-                            BLOCK_CHANCE: %s |\s
-                            SKILL: %s |\s
-                            ]%n
-                            """,
+                                    Result:\s
+                                    [
+                                    NAME: %s |\s
+                                    DISPLAY_CHAR: %s |\s
+                                    HEALTH: %s |\s
+                                    DAMAGE_MIN: %s |\s
+                                    DAMAGE_MAX: %s |\s
+                                    ATTACK_SPEED: %s |\s
+                                    ACCURACY: %s |\s
+                                    BLOCK_CHANCE: %s |\s
+                                    SKILL: %s |\s
+                                    ]%n
+                                    """,
                             name, displayChar, health, damageMin, damageMax,
                             attackSpeed, accuracy, blockChance, skill);
                 } else { //prints relevant monster stats otherwise
@@ -136,20 +138,20 @@ public class SQLiteDB {
 
                     System.out.printf(
                             """
-                            Result:\s
-                            [
-                            NAME: %s |\s
-                            DISPLAY_CHAR: %s |\s
-                            HEALTH: %s |\s
-                            DAMAGE_MIN: %s |\s
-                            DAMAGE_MAX: %s |\s
-                            ATTACK_SPEED: %s |\s
-                            ACCURACY: %s |\s
-                            HEAL_CHANCE: %s |\s
-                            HEAL_MIN: %s |\s
-                            HEAL_MAX: %s |\s
-                            ]%n
-                            """,
+                                    Result:\s
+                                    [
+                                    NAME: %s |\s
+                                    DISPLAY_CHAR: %s |\s
+                                    HEALTH: %s |\s
+                                    DAMAGE_MIN: %s |\s
+                                    DAMAGE_MAX: %s |\s
+                                    ATTACK_SPEED: %s |\s
+                                    ACCURACY: %s |\s
+                                    HEAL_CHANCE: %s |\s
+                                    HEAL_MIN: %s |\s
+                                    HEAL_MAX: %s |\s
+                                    ]%n
+                                    """,
                             name, displayChar, health, damageMin, damageMax,
                             attackSpeed, accuracy, healChance, healMin, healMax);
                 }
@@ -163,14 +165,14 @@ public class SQLiteDB {
     /**
      * Returns a {@link DungeonCharacter}'s initial statistics based on its name.
      *
-     * @param theName the name of the {@link DungeonCharacter} to be printed
+     * @param theCharacter the enum of the {@link DungeonCharacter} to be printed
      * @return the queried {@link DungeonCharacter}'s initial statistics
      */
-    public DungeonCharacter getCharacterByName(final String theName) {
+    public static DungeonCharacter getCharacterByName(final Helper.Characters theCharacter) {
         final String querySearch = "SELECT * FROM dungeonCharacters WHERE NAME = ?";
 
         try (PreparedStatement stmt = myConn.prepareStatement(querySearch)) {
-            stmt.setString(1, theName);
+            stmt.setString(1, theCharacter.toString());
             final ResultSet rs = stmt.executeQuery();
 
             //Retrieves the relevant stats of both Monster and Hero characters
@@ -188,40 +190,47 @@ public class SQLiteDB {
                 final double blockChance = rs.getDouble("BLOCK_CHANCE");
 
                 //Instantiates the appropriate Skill object based on the skill name
-                final String skillName = rs.getString("SKILL");
-                final Class<?> skillClass = Class.forName(skillName);
-                final Skill skill = (Skill) skillClass.getDeclaredConstructor().newInstance();
+//                final String skillName = rs.getString("SKILL");
+//                final Class<?> skillClass = Class.forName(skillName);
+//                final Skill skill = (Skill) skillClass.getDeclaredConstructor().newInstance();
 
+                final Skill skill = null;
                 //Instantiates the appropriate DungeonCharacter object based on its name
-                myCharacter = switch (name) {
-                    case "Priestess" -> new Priestess(name, displayChar, health,
+
+                return switch (theCharacter) {
+                    case WARRIOR -> new Warrior(name, displayChar, health,
                             damageMin, damageMax, attackSpeed, accuracy, blockChance, skill);
-                    case "Thief" -> new Thief(name, displayChar, health,
+
+                    case PRIESTESS -> new Priestess(name, displayChar, health,
                             damageMin, damageMax, attackSpeed, accuracy, blockChance, skill);
-                    case "Warrior" -> new Warrior(name, displayChar, health,
+
+                    case THIEF -> new Thief(name, displayChar, health,
                             damageMin, damageMax, attackSpeed, accuracy, blockChance, skill);
-                    case "Ogre" -> new Ogre(name, displayChar, health,
+
+                    case OGRE -> new Ogre(name, displayChar, health,
                             damageMin, damageMax, attackSpeed, accuracy,
                             healChance, healMin, healMax);
-                    case "Gremlin" -> new Gremlin(name, displayChar, health,
+
+                    case GREMLIN -> new Gremlin(name, displayChar, health,
                             damageMin, damageMax, attackSpeed, accuracy,
                             healChance, healMin, healMax);
-                    case "Skeleton" -> new Skeleton(name, displayChar, health,
+
+                    case SKELETON -> new Skeleton(name, displayChar, health,
                             damageMin, damageMax, attackSpeed, accuracy,
                             healChance, healMin, healMax);
-                    default -> null;
                 };
             }
-        } catch (final SQLException
-                       | ClassNotFoundException
-                       | InvocationTargetException
-                       | InstantiationException
-                       | IllegalAccessException
-                       | NoSuchMethodException e) {
+
+        } catch (final SQLException e) {
+//                       | ClassNotFoundException e) {
+//                       | InvocationTargetException
+//                       | InstantiationException
+//                       | IllegalAccessException
+//                       | NoSuchMethodException e) {
             e.printStackTrace();
             System.exit(0);
         }
 
-        return myCharacter;
+        return null;
     }
 }

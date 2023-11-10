@@ -21,5 +21,6 @@ public class Skeleton extends Monster {
                 theHealChance,
                 theHealMin,
                 theHealMax);
+
     }
 }

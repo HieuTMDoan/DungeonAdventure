@@ -96,8 +96,10 @@ public class Dungeon {
     private void generateDungeon() {
         // Generates an array of essentials rooms in the maze
         final List<Room> essentialRooms = new ArrayList<>();
-        essentialRooms.addAll(Arrays.asList(myStartingRoom, myExitRoom));
+        essentialRooms.add(myExitRoom);
         essentialRooms.addAll(Arrays.asList(myPillarRooms));
+
+        myMaze[0][0] = myStartingRoom;
 
         // Shuffles the list of rooms randomly
         Collections.shuffle(essentialRooms, Helper.getRandom());

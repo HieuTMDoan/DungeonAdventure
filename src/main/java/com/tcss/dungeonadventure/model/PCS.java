@@ -24,7 +24,8 @@ public enum PCS {
     /**
      * The property of player location change.
      * Not to be confused with MOVE_PLAYER.
-     * Should be paired with
+     * Should be paired with a {@link java.awt.Point} representing
+     * the players current position in the room.
      *
      */
     UPDATED_PLAYER_LOCATION,
@@ -37,8 +38,9 @@ public enum PCS {
 
     /**
      * The property of starting a BRAND-NEW game.
-     * Should be paired with a new Warrior/Priestess/Thief, with
-     * the name being whatever the user set it as.
+     * Should be paired with an Object[] with:
+     *  0: The players name
+     *  1: A Hero object, as the players class.
      */
     START_NEW_GAME,
 

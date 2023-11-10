@@ -288,7 +288,7 @@ public class Room {
 
     public void movePlayer(final Directions.Cardinal theDirection) {
         if (this.myPlayerPosition == null) {
-            this.myPlayerPosition = new Point(0, 0); // TODO: Change this to where the player enters the room
+            this.myPlayerPosition = new Point(1, 1); // TODO: Change this to where the player enters the room
         }
 
 
@@ -314,12 +314,14 @@ public class Room {
             for (int x = 0; x < row.length; x++) {
                 if (row[x].getClass() != EntranceTile.class) {
                     myPlayerPosition = new Point(y, x);
+                    System.out.println("Player is at: " + myPlayerPosition);
                     PCS.firePropertyChanged(PCS.LOAD_ROOM, this);
                     return;
                 }
 
             }
         }
+        throw new IllegalArgumentException("Player was not loaded into entrance.");
 
 
     }
@@ -370,10 +372,16 @@ public class Room {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        for (final Tile[] row : this.myRoomData) {
+        for (int i = 0; i < myRoomData.length; i++) {
+            final Tile[] row = myRoomData[i];
             String prefix = "";
-            for (final Tile tile : row) {
-                stringBuilder.append(prefix).append(tile.getDisplayChar());
+            for (int j = 0; j < row.length; j++) {
+                if (new Point(i, j).equals(myPlayerPosition)) {
+                    stringBuilder.append(prefix).append("/");// TODO CHANGE TO PLAYER CHARACTER
+                } else {
+                    final Tile tile = row[j];
+                    stringBuilder.append(prefix).append(tile.getDisplayChar());
+                }
                 prefix = " ";
             }
             stringBuilder.append("\n");

@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
 
 
@@ -13,8 +14,10 @@ public class Main {
 
     public static void main(final String[] theArgs) {
 
-        final boolean noGUI = false; // This should be specified via command line
+        final boolean noGUI = true; // This should be specified via command line
         new DungeonAdventure(noGUI);
+
+//        SQLiteDB.getCharacters();
 
 
 

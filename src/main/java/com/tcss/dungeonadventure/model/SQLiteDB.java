@@ -52,7 +52,8 @@ public final class SQLiteDB {
             e.printStackTrace();
             System.exit(0);
         }
-        System.out.println("Successfully opened database");
+
+        System.out.println("Successfully opened database\n");
     }
 
     /**
@@ -141,8 +142,6 @@ public final class SQLiteDB {
 
                     System.out.printf(
                             """
-                                    Result:\s
-                                    [
                                     NAME: %s |\s
                                     DISPLAY_CHAR: %s |\s
                                     HEALTH: %s |\s
@@ -151,7 +150,7 @@ public final class SQLiteDB {
                                     ATTACK_SPEED: %s |\s
                                     ACCURACY: %s |\s
                                     BLOCK_CHANCE: %s |\s
-                                    ]%n
+                                    %n
                                     """,
                             name, displayChar, health, damageMin, damageMax,
                             attackSpeed, accuracy, blockChance);
@@ -162,8 +161,6 @@ public final class SQLiteDB {
 
                     System.out.printf(
                             """
-                                    Result:\s
-                                    [
                                     NAME: %s |\s
                                     DISPLAY_CHAR: %s |\s
                                     HEALTH: %s |\s
@@ -174,7 +171,7 @@ public final class SQLiteDB {
                                     HEAL_CHANCE: %s |\s
                                     HEAL_MIN: %s |\s
                                     HEAL_MAX: %s |\s
-                                    ]%n
+                                    %n
                                     """,
                             name, displayChar, health, damageMin, damageMax,
                             attackSpeed, accuracy, healChance, healMin, healMax);
@@ -225,9 +222,7 @@ public final class SQLiteDB {
                         HEAL_CHANCE REAL,\s
                         HEAL_MIN INTEGER,\s
                         HEAL_MAX INTEGER,\s
-                        BLOCK_CHANCE REAL,\s
-                        SKILL TEXT
-                        )
+                        BLOCK_CHANCE REAL)
                         """, tableName);
 
         try (PreparedStatement stmt = myConn.prepareStatement(queryCreate)) {

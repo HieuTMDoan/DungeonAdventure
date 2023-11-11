@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure;
 
 
+import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 
 
@@ -16,6 +17,7 @@ public final class Main {
         new DungeonAdventure(noGUI);
 
 //        SQLiteDB.getCharacters();
+//        System.out.println(new Dungeon());
 
 
 

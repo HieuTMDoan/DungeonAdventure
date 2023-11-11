@@ -22,27 +22,27 @@ public class Dungeon {
     /**
      * The 2D representation of the {@link Dungeon}.
      */
-    private final Room[][] myMaze;
+    private Room[][] myMaze;
 
     /**
      * The entrance of the {@link Dungeon}.
      */
-    private final Room myStartingRoom;
+    private Room myStartingRoom;
 
     /**
      * The exit of the {@link Dungeon}.
      */
-    private final Room myExitRoom;
+    private Room myExitRoom;
 
     /**
      * The room that contains a pillar of Object-Oriented.
      */
-    private final Room[] myPillarRooms;
+    private Room[] myPillarRooms;
 
     /**
      * The current player's location.
      */
-    private final Room myCharacterLocation;
+    private Room myCharacterLocation;
 
     /**
      *  Initializes a 6x6 traversable {@link Dungeon}.
@@ -65,8 +65,76 @@ public class Dungeon {
     }
 
     /**
-     * Default constructor of {@link Dungeon} class.
+     * Memento class to store the state of the Dungeon.
      */
+    private static class DungeonMemento {
+        private final Room[][] myMaze;
+        private final Room myStartingRoom;
+        private final Room myExitRoom;
+        private final Room[] myPillarRooms;
+
+        private final Room myCharacterLocation;
+
+        /**
+         * Constructs a new DungeonMemento.
+         *
+         * @param maze              The maze.
+         * @param startingRoom      The starting room.
+         * @param exitRoom          The exit room.
+         * @param pillarRooms       The array of pillar rooms.
+         * @param characterLocation The character's location.
+         */
+        public DungeonMemento(Room[][] maze, Room startingRoom, Room exitRoom,
+                              Room[] pillarRooms, Room characterLocation) {
+            this.myMaze = deepCopyRooms(maze);
+            this.myStartingRoom = startingRoom;
+            this.myExitRoom = exitRoom;
+            this.myPillarRooms = Arrays.copyOf(pillarRooms, pillarRooms.length);
+            this.myCharacterLocation = characterLocation;
+        }
+
+        /**
+         * Deep copy of the rooms array.
+         *
+         * @param originalRooms The original rooms array.
+         * @return The deep copy of the rooms array.
+         */
+        private Room[][] deepCopyRooms(Room[][] originalRooms) {
+            Room[][] copy = new Room[originalRooms.length][];
+            for (int i = 0; i < originalRooms.length; i++) {
+                copy[i] = Arrays.copyOf(originalRooms[i], originalRooms[i].length);
+            }
+            return copy;
+        }
+
+
+    }
+
+    /**
+     * Saves the current state of the Dungeon and returns a Memento object.
+     *
+     * @return Memento object representing the current state of the Dungeon.
+     */
+    public DungeonMemento save() {
+        return new DungeonMemento(myMaze, myStartingRoom, myExitRoom, myPillarRooms, myCharacterLocation);
+    }
+
+    /**
+     * Restores the state of the Dungeon using the provided Memento.
+     *
+     * @param memento Memento object representing the state to restore.
+     */
+    public void restore(DungeonMemento memento) {
+        myMaze = memento.myMaze;
+        myStartingRoom = memento.myStartingRoom;
+        myExitRoom = memento.myExitRoom;
+        myPillarRooms = Arrays.copyOf(memento.myPillarRooms, memento.myPillarRooms.length);
+        myCharacterLocation = memento.myCharacterLocation;
+    }
+
+/**
+ * Default constructor of {@link Dungeon} class.
+ */
     public Dungeon() {
         this(
                 new Room(true, false, null),

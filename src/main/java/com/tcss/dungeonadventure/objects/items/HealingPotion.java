@@ -23,4 +23,9 @@ public class HealingPotion extends Item {
             System.out.println(theTarget.getName() + " used a Healing Potion and healed for " + HEAL_AMOUNT + " hit points.");
         }
     }
+    @Override
+    public Item copy() {
+        // Create a new instance of HealingPotion with the same display character and item type
+        return new HealingPotion();
+    }
 }

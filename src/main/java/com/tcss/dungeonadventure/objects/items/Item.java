@@ -53,6 +53,10 @@ public abstract class Item implements VisualComponent {
 
     public abstract void useItem(DungeonCharacter theTarget);
 
+    // Add a copy method to create a copy of the Item
+    public abstract Item copy();
+
+
     @Override
     public boolean equals(final Object theOther) {
         if (this == theOther) {

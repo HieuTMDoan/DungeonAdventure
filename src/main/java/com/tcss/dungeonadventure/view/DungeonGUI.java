@@ -163,8 +163,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     }
 
 
-
-
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
 

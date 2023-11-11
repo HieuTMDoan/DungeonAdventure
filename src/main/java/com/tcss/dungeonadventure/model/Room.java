@@ -20,6 +20,7 @@ import com.tcss.dungeonadventure.objects.tiles.ItemTile;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 
 public class Room {
@@ -76,7 +77,7 @@ public class Room {
     /**
      * The tiles in the room.
      */
-    private final Tile[][] myRoomData;
+    private Tile[][] myRoomData;
 
 
     /**
@@ -237,8 +238,8 @@ public class Room {
         final int itemNum = (itemRandom < TWO_ITEM_CHANCE)
                 ? 2
                 : (itemRandom < ONE_ITEM_CHANCE)
-                    ? 1
-                    : 0;
+                ? 1
+                : 0;
         for (int i = 0; i < itemNum; i++) {
             final Item randomItem = Helper.getRandomItem();
             putTileAtValidLocation(new ItemTile(randomItem), tiles);
@@ -248,8 +249,8 @@ public class Room {
         final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
                 ? 2
                 : (monsterRandom < ONE_MONSTER_CHANCE)
-                    ? 1
-                    : 0;
+                ? 1
+                : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
             putTileAtValidLocation(new NPCTile(randomMonster), tiles);
@@ -356,5 +357,46 @@ public class Room {
         }
 
         return stringBuilder.toString();
+    }
+
+    /**
+     * Copy constructor for creating a deep copy of the Room.
+     *
+     * @param originalRoom The Room to copy.
+     */
+    public Room(Room originalRoom) {
+        myIsEntranceRoom = originalRoom.myIsEntranceRoom;
+        myIsExitRoom = originalRoom.myIsExitRoom;
+        myRoomDimensions = new Dimension(originalRoom.myRoomDimensions);
+        myPillar = (originalRoom.myPillar != null) ? originalRoom.myPillar.copy() : null;
+        myPlayerPosition = (originalRoom.myPlayerPosition != null) ? new Point(originalRoom.myPlayerPosition) : null;
+        deepCopyRoomData(originalRoom.myRoomData);
+    }
+
+    /**
+     * Copy method to create a deep copy of the Room.
+     *
+     * @return A deep copy of the Room.
+     */
+    public Room copy() {
+        return new Room(this);
+    }
+
+    private void deepCopyRoomData(Tile[][] originalRoomData) {
+        myRoomData = new Tile[originalRoomData.length][];
+        for (int i = 0; i < originalRoomData.length; i++) {
+            myRoomData[i] = Arrays.copyOf(originalRoomData[i], originalRoomData[i].length);
+            for (int j = 0; j < originalRoomData[i].length; j++) {
+                if (originalRoomData[i][j] != null) {
+                    char displayChar = originalRoomData[i][j].getDisplayChar();
+                    Item item = (originalRoomData[i][j] instanceof ItemTile)
+                            ? ((ItemTile) originalRoomData[i][j]).getItem()
+                            : null;
+                    myRoomData[i][j] = new Tile(displayChar, item);
+                } else {
+                    myRoomData[i][j] = null;
+                }
+            }
+        }
     }
 }

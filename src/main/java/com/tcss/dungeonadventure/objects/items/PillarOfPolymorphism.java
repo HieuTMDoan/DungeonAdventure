@@ -16,4 +16,9 @@ public class PillarOfPolymorphism extends Item {
     public void useItem(final DungeonCharacter theTarget) {
         // Do nothing
     }
+    @Override
+    public Item copy() {
+        // Create a new instance of PillarOfPolymorphism with the same display character and item type
+        return new PillarOfPolymorphism();
+    }
 }

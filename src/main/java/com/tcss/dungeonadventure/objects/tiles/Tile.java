@@ -3,6 +3,7 @@ package com.tcss.dungeonadventure.objects.tiles;
 
 import com.tcss.dungeonadventure.objects.VisualComponent;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
+import com.tcss.dungeonadventure.objects.items.Item;
 
 /**
  * Parent class of all Tiles, which represents one square in
@@ -13,7 +14,7 @@ import com.tcss.dungeonadventure.objects.DungeonCharacter;
  * @author Hieu Doan
  * @author Sunny Ali
  */
-public abstract class Tile implements VisualComponent {
+public class Tile implements VisualComponent {
 
     /**
      * The character of the tile.
@@ -25,7 +26,7 @@ public abstract class Tile implements VisualComponent {
      */
     private final boolean myDefaultTraversable;
 
-    public Tile(final char theTileChar, final boolean theDefaultTraversable) {
+    public Tile(final char theTileChar, final Item theDefaultTraversable) {
         this.myTileChar = theTileChar;
         this.myDefaultTraversable = theDefaultTraversable;
     }

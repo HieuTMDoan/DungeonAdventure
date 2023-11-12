@@ -415,52 +415,6 @@ public class Room {
         return this.myRoomData;
     }
 
-    public void placeDoors() {
-        final Dimension size = new Dimension(myRoomData[0].length, myRoomData.length);
-
-        final int numDoors;
-
-        // Adjust the probability for a trap door
-        final double trapDoorProbability = 0.2; // Adjust as needed
-
-        if (Helper.getRandomDoubleBetween(0, 1) < trapDoorProbability) {
-            numDoors = 1; // Only place a trap door
-        } else {
-            numDoors = 1; // Adjust as needed for the distribution between regular doors and trap doors
-        }
-
-        final int maxAttempts = numDoors * MAX_ATTEMPTS_PER_DOOR;
-
-        for (int i = 0; i < numDoors; i++) {
-            int attempts = 0;
-
-            while (true) {
-                if (attempts >= maxAttempts) {
-                    // Break the loop if maximum attempts reached
-                    break;
-                }
-
-                final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
-                final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
-
-                if (myRoomData[y][x] == null || myRoomData[y][x].getClass() == EmptyTile.class) {
-                    final Directions.Axis doorAxis = Helper.getRandomDoorAxis();
-                    if (myRoomData[y][x] instanceof WallTile) {
-                        // Check if the tile is a WallTile
-                        if (Helper.getRandomDoubleBetween(0, 1) < 0.8) {
-                            myRoomData[y][x] = new DoorTile(doorAxis);
-                        } else {
-                            myRoomData[y][x] = new TrapDoorTile(doorAxis);
-                        }
-                        break;
-                    }
-                }
-
-                attempts++;
-            }
-        }
-    }
-
 
     @Override
     public String toString() {

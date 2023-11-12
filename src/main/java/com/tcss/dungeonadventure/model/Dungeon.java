@@ -71,6 +71,7 @@ public class Dungeon {
                 new Room(true, false, null),
                 new Room(false, true, null),
                 generatePillarRooms()
+
         );
     }
 
@@ -89,6 +90,7 @@ public class Dungeon {
         placeEntranceAndExit();
         placePillarRooms();
         placeFillerRooms();
+        placeDoors();
 
         if (!isTraversable()) {
             generateDungeon();
@@ -141,18 +143,19 @@ public class Dungeon {
             }
         }
 
-
-
-
-        // Place doors in each room
+    }
+    /**
+     * Places doors in each room of the dungeon.
+     */
+    public void placeDoors() {
         for (int i = 0; i < myMaze.length; i++) {
             for (int j = 0; j < myMaze[i].length; j++) {
                 if (myMaze[i][j] != null) {
-                    placeDoors(myMaze[i][j].getRoomTiles());
+                    Room.placeDoors(myMaze[i][j].getRoomTiles());
                 }
             }
-        }}
-
+        }
+    }
         //TODO: implement the algorithm to check
         // if the maze is traversable, otherwise regenerate a new maze
 
@@ -174,6 +177,7 @@ public class Dungeon {
             }
         }
     }
+
 
     private boolean isTraversable() {
         // TODO: implement the algorithm to check if the maze is traversable, otherwise regenerate a new maze

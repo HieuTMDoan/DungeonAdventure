@@ -47,6 +47,7 @@ public class DungeonAdventure implements PropertyChangeListener {
                 this.myPlayerName = (String) data[0];
                 this.myHero = (Hero) data[1];
                 this.myDungeon = new Dungeon();
+                //this.myDungeon.placeDoors();
                 this.myDungeon.loadHeroIntoStartingRoom();
 
             }

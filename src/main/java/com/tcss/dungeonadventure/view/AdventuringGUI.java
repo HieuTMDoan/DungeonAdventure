@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
@@ -62,6 +63,7 @@ public class AdventuringGUI implements PropertyChangeListener {
     private Label myTileInfoLabel;
 
     public AdventuringGUI(final Scene theScene) throws IOException {
+        PCS.addPropertyListener(this);
         final FXMLLoader fxmlLoader = new FXMLLoader(new File(ADVENTURE_FXML_PATH).toURI().toURL());
         this.myScene = theScene;
 
@@ -74,6 +76,7 @@ public class AdventuringGUI implements PropertyChangeListener {
         myScene.setOnKeyPressed(this::handleKeyPress);
 
         final Room room = new Room(false, false, null);
+        System.out.println("Room");
         System.out.println(room);
 
         loadRoom(room);
@@ -91,15 +94,11 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     private void handleKeyPress(final KeyEvent theEvent) {
         switch (theEvent.getCode()) {
-            case UP, W -> movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S -> movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A -> movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D -> movePlayer(Directions.Cardinal.EAST);
-            case PERIOD -> {
-                final Room room = new Room(false, false, null);
-                System.out.println(room);
-                loadRoom(room);
-            }
+            case UP, W -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.NORTH);
+            case DOWN, S -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.SOUTH);
+            case LEFT, A -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.WEST);
+            case RIGHT, D -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.EAST);
+            case PERIOD -> PCS.firePropertyChanged(PCS.LOAD_ROOM, new Room(false, false, null));
             default -> {
             }
         }
@@ -156,7 +155,8 @@ public class AdventuringGUI implements PropertyChangeListener {
             return;
         }
 
-        // Ideally, this will fire some sort of property change event.
+
+
     }
 
     /**
@@ -219,6 +219,18 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
+        switch (PCS.valueOf(theEvent.getPropertyName())) {
+            case MOVE_PLAYER -> movePlayer((Directions.Cardinal) theEvent.getNewValue());
+            case LOAD_ROOM -> {
+                final Room room = (Room) theEvent.getNewValue();
+                loadRoom(room);
+                System.out.println(room);
+            }
+            default -> {
+            }
+
+
+        }
 
     }
 }

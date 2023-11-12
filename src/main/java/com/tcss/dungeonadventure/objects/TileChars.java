@@ -10,18 +10,6 @@ package com.tcss.dungeonadventure.objects;
  * @version Fall 2023
  */
 public final class TileChars {
-
-    public static class Player {
-        public static final char PLAYER = '+';
-
-    }
-
-    public static class Monsters {
-        public static final char OGRE = '7';
-        public static final char SKELETON = '8';
-        public static final char GREMLIN = '9';
-    }
-
     public static class Room {
         public static final char EMPTY = ' ';
         public static final char WALL = '#';

@@ -163,6 +163,8 @@ public class Room {
     }
 
 
+
+
     /**
      * Generates the tile data of a random room based on a set of parameters.
      *
@@ -341,7 +343,7 @@ public class Room {
 
     public void movePlayer(final Directions.Cardinal theDirection) {
         if (this.myPlayerPosition == null) {
-            this.myPlayerPosition = new Point(0, 0); // TODO: Change this to where the player enters the room
+            this.myPlayerPosition = new Point(1, 1); // TODO: Change this to where the player enters the room
         }
 
 
@@ -353,6 +355,30 @@ public class Room {
             default -> throw new IllegalArgumentException(
                     "Illegal enum passed: " + theDirection);
         }
+
+        PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, new Point(myPlayerPosition));
+    }
+
+    public void loadPlayerToEntrance() {
+        if (!this.myIsEntranceRoom) {
+            throw new IllegalArgumentException("Cannot load player to non-entrance room.");
+        }
+
+        for (int y = 0; y < myRoomData.length; y++) {
+            final Tile[] row = myRoomData[y];
+            for (int x = 0; x < row.length; x++) {
+                if (row[x].getClass() == EntranceTile.class) {
+                    myPlayerPosition = new Point(x, y);
+                    System.out.println("Player is at: " + myPlayerPosition);
+                    PCS.firePropertyChanged(PCS.LOAD_ROOM, this);
+                    return;
+                }
+
+            }
+        }
+        throw new IllegalArgumentException("Player was not loaded into entrance.");
+
+
     }
 
 
@@ -401,10 +427,16 @@ public class Room {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        for (final Tile[] row : this.myRoomData) {
+        for (int i = 0; i < myRoomData.length; i++) {
+            final Tile[] row = myRoomData[i];
             String prefix = "";
-            for (final Tile tile : row) {
-                stringBuilder.append(prefix).append(tile.getDisplayChar());
+            for (int j = 0; j < row.length; j++) {
+                if (new Point(i, j).equals(myPlayerPosition)) {
+                    stringBuilder.append(prefix).append("/");// TODO CHANGE TO PLAYER CHARACTER
+                } else {
+                    final Tile tile = row[j];
+                    stringBuilder.append(prefix).append(tile.getDisplayChar());
+                }
                 prefix = " ";
             }
             stringBuilder.append("\n");

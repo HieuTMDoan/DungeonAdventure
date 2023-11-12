@@ -1,6 +1,5 @@
 package com.tcss.dungeonadventure.objects.monsters;
 
-
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
 public abstract class Monster extends DungeonCharacter {

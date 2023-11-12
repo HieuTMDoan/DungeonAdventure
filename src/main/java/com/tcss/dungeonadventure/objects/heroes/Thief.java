@@ -1,47 +1,49 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
-
 import com.tcss.dungeonadventure.objects.skills.Skill;
 import com.tcss.dungeonadventure.objects.skills.SurpriseAttack;
 
+/**
+ * Represents a Thief character.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class Thief extends Hero {
-    private static final int DEFAULT_HIT_POINTS = 75;
+    /**
+     * Innate skill of Thief characters.
+     */
+    private static final Skill MY_SKILL = new SurpriseAttack();
 
-    private static final int DEFAULT_ATTACK_SPEED = 6;
-
-    private static final double DEFAULT_ACCURACY = 0.8;
-
-    private static final int DEFAULT_MIN_DAMAGE = 20;
-
-    private static final int DEFAULT_MAX_DAMAGE = 40;
-
-    private static final double DEFAULT_BLOCK_CHANCE = 0.4;
-
-    private static final Skill THIEF_SKILL = new SurpriseAttack();
-
-
-
-    public Thief(final String theName) {
-
+    /**
+     * Constructor for Thief characters.
+     *
+     * @param theName class name of Thief characters
+     * @param theDisplayChar display character of Thief characters
+     * @param theDefaultHealth starting health of Thief characters
+     * @param theMinDamage minimum damage dealt by Thief characters
+     * @param theMaxDamage maximum damage dealt by Thief characters
+     * @param theAttackSpeed attack speed of Thief characters
+     * @param theAccuracy attack accuracy of Thief characters
+     * @param theBlockChance chance to block of Thief characters
+     */
+    public Thief(final String theName,
+                 final char theDisplayChar,
+                 final int theDefaultHealth,
+                 final int theMinDamage,
+                 final int theMaxDamage,
+                 final int theAttackSpeed,
+                 final double theAccuracy,
+                 final double theBlockChance) {
         super(theName,
-                DEFAULT_HIT_POINTS,
-                DEFAULT_MIN_DAMAGE,
-                DEFAULT_MAX_DAMAGE,
-                DEFAULT_ATTACK_SPEED,
-                DEFAULT_ACCURACY,
-                DEFAULT_BLOCK_CHANCE,
-                THIEF_SKILL);
-
-
+                theDisplayChar,
+                theDefaultHealth,
+                theMinDamage,
+                theMaxDamage,
+                theAttackSpeed,
+                theAccuracy,
+                theBlockChance,
+                MY_SKILL);
     }
-
-
-
-
-
-
-
-
-
 
 }

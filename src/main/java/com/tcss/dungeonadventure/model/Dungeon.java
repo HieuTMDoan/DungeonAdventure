@@ -5,6 +5,8 @@ import com.tcss.dungeonadventure.Helper;
 import java.awt.Dimension;
 import java.util.*;
 
+import static com.tcss.dungeonadventure.model.Room.placeDoors;
+
 /**
  * Represents a randomly generated maze of type {@link Room}.
  *
@@ -138,7 +140,25 @@ public class Dungeon {
                 pillarRoomsIndex++;
             }
         }
-    }
+
+
+
+
+        // Place doors in each room
+        for (int i = 0; i < myMaze.length; i++) {
+            for (int j = 0; j < myMaze[i].length; j++) {
+                if (myMaze[i][j] != null) {
+                    placeDoors(myMaze[i][j].getRoomTiles());
+                }
+            }
+        }}
+
+        //TODO: implement the algorithm to check
+        // if the maze is traversable, otherwise regenerate a new maze
+
+    /**
+     * Fully fills the dungeon with random dead-end or other non-essential rooms.
+     */
 
     private void placeFillerRooms() {
         final int totalSpotsLeft = MAZE_SIZE.height * MAZE_SIZE.width - 6;

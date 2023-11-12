@@ -1,10 +1,9 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+
 import java.awt.Dimension;
 import java.util.*;
-
-import static com.tcss.dungeonadventure.model.Room.placeDoors;
 
 /**
  * Represents a randomly generated maze of type {@link Room}.
@@ -14,56 +13,24 @@ import static com.tcss.dungeonadventure.model.Room.placeDoors;
  */
 public class Dungeon {
 
-    /**
-     * The default dungeon size.
-     */
     private static final Dimension MAZE_SIZE = new Dimension(6, 6);
-
-    /**
-     * The 2D representation of the {@link Dungeon}.
-     */
     private Room[][] myMaze;
-
-    /**
-     * The entrance of the {@link Dungeon}.
-     */
     private Room myStartingRoom;
-
-    /**
-     * The exit of the {@link Dungeon}.
-     */
     private Room myExitRoom;
+    private List<Room> myPillarRooms;
 
     /**
-     * The room that contains a pillar of Object-Oriented.
-     */
-
-    private Room[] myPillarRooms;
-
-    /**
-     * The current player's location.
-     */
-    private Room myCharacterLocation;
-
-    private final List<Room> myPillarRooms;
-
-
-
-    /**
-     *  Initializes a 6x6 traversable {@link Dungeon}.
+     * Initializes a 6x6 traversable {@link Dungeon}.
      *
-     *  @param theStartingRoom the entrance of the {@link Dungeon}
-     *  @param theExitRoom     the exit of the {@link Dungeon}
-     *  @param thePillarRooms  the room that contains a pillar of Object-Oriented
+     * @param theStartingRoom the entrance of the {@link Dungeon}
+     * @param theExitRoom     the exit of the {@link Dungeon}
+     * @param thePillarRooms  the room that contains a pillar of Object-Oriented
      */
-    private Dungeon(final Room theStartingRoom,
-                   final Room theExitRoom,
-                   final List<Room> thePillarRooms) {
-
+    private Dungeon(Room theStartingRoom, Room theExitRoom, List<Room> thePillarRooms) {
         myMaze = new Room[MAZE_SIZE.height][MAZE_SIZE.width];
         myExitRoom = theExitRoom;
         myStartingRoom = theStartingRoom;
-        myPillarRooms = thePillarRooms.toArray(new Room[0]);
+        myPillarRooms = new ArrayList<>(thePillarRooms);
 
         generateDungeon();
     }
@@ -75,34 +42,18 @@ public class Dungeon {
         private final Room[][] myMaze;
         private final Room myStartingRoom;
         private final Room myExitRoom;
-        private final Room[] myPillarRooms;
-
+        private final List<Room> myPillarRooms;
         private final Room myCharacterLocation;
 
-        /**
-         * Constructs a new DungeonMemento.
-         *
-         * @param maze              The maze.
-         * @param startingRoom      The starting room.
-         * @param exitRoom          The exit room.
-         * @param pillarRooms       The array of pillar rooms.
-         * @param characterLocation The character's location.
-         */
         public DungeonMemento(Room[][] maze, Room startingRoom, Room exitRoom,
-                              Room[] pillarRooms, Room characterLocation) {
+                              List<Room> pillarRooms, Room characterLocation) {
             this.myMaze = deepCopyRooms(maze);
             this.myStartingRoom = startingRoom;
             this.myExitRoom = exitRoom;
-            this.myPillarRooms = Arrays.copyOf(pillarRooms, pillarRooms.length);
+            this.myPillarRooms = new ArrayList<>(pillarRooms);
             this.myCharacterLocation = characterLocation;
         }
 
-        /**
-         * Deep copy of the rooms array.
-         *
-         * @param originalRooms The original rooms array.
-         * @return The deep copy of the rooms array.
-         */
         private Room[][] deepCopyRooms(Room[][] originalRooms) {
             Room[][] copy = new Room[originalRooms.length][];
             for (int i = 0; i < originalRooms.length; i++) {
@@ -110,35 +61,9 @@ public class Dungeon {
             }
             return copy;
         }
-
-
     }
 
-    /**
-     * Saves the current state of the Dungeon and returns a Memento object.
-     *
-     * @return Memento object representing the current state of the Dungeon.
-     */
-    public DungeonMemento save() {
-        return new DungeonMemento(myMaze, myStartingRoom, myExitRoom, myPillarRooms, myCharacterLocation);
-    }
 
-    /**
-     * Restores the state of the Dungeon using the provided Memento.
-     *
-     * @param memento Memento object representing the state to restore.
-     */
-    public void restore(DungeonMemento memento) {
-        myMaze = memento.myMaze;
-        myStartingRoom = memento.myStartingRoom;
-        myExitRoom = memento.myExitRoom;
-        myPillarRooms = Arrays.copyOf(memento.myPillarRooms, memento.myPillarRooms.length);
-        myCharacterLocation = memento.myCharacterLocation;
-    }
-
-/**
- * Default constructor of {@link Dungeon} class.
- */
     public Dungeon() {
         this(
                 new Room(true, false, null),
@@ -147,11 +72,6 @@ public class Dungeon {
         );
     }
 
-    /**
-     * Generates and returns an array of all Pillar rooms.
-     *
-     * @return a list of Pillar rooms.
-     */
     public static List<Room> generatePillarRooms() {
         final List<Room> pillarRooms = new ArrayList<>();
         final Class<?>[] pillars = Helper.getPillarList();
@@ -163,42 +83,25 @@ public class Dungeon {
         return pillarRooms;
     }
 
-
-    /**
-     * Constructs a random-generated maze of type {@link Room}
-     * with a traversable path from the entrance to the exit
-     * and 4 pillars of Object-Oriented randomly placed in the maze.
-     */
     private void generateDungeon() {
         placeEntranceAndExit();
         placePillarRooms();
         placeFillerRooms();
 
-        if (!isTraverable()) {
+        if (!isTraversable()) {
             generateDungeon();
         }
     }
 
-    /**
-     * Places the starting {@link Room} and the exit {@link Room} in random positions
-     * on the edges of the dungeon such that they won't be
-     * on the same row or column.
-     */
     private void placeEntranceAndExit() {
-        //separate maps of key-value index pairs (row : column) for starting and exit rooms
         final Map<Integer, Integer> randomEdgesStarting = new HashMap<>();
         final Map<Integer, Integer> randomEdgesExit = new HashMap<>();
 
-        // random upper edge index pair for starting room
         randomEdgesStarting.put(0, Helper.getRandomIntBetween(0, MAZE_SIZE.width));
-        // random lower edge index pair for exit room
         randomEdgesExit.put(MAZE_SIZE.height - 1, Helper.getRandomIntBetween(0, MAZE_SIZE.width));
-        // random left edge index pair for starting room
         randomEdgesStarting.put(Helper.getRandomIntBetween(0, MAZE_SIZE.height), 0);
-        // random right edge index pair for exit room
         randomEdgesExit.put(Helper.getRandomIntBetween(0, MAZE_SIZE.height), MAZE_SIZE.width - 1);
 
-        //Uses separate random index pairs for starting and exit rooms
         final Map.Entry<Integer, Integer> randomStartingEntry = getRandomIndexPair(randomEdgesStarting);
         final Map.Entry<Integer, Integer> randomExitEntry = getRandomIndexPair(randomEdgesExit);
 
@@ -207,17 +110,7 @@ public class Dungeon {
         final int exitRow = randomExitEntry.getKey();
         final int exitCol = randomExitEntry.getValue();
 
-        /*
-        Recursively invokes this method if the extreme cases are satisfied
-        (entrance and exit are on the same horizontal or vertical side)
-         */
-        if (startingRow == 0 && exitRow == 0) {
-            placeEntranceAndExit();
-        } else if (startingRow == MAZE_SIZE.width - 1 && exitRow == MAZE_SIZE.width - 1) {
-            placeEntranceAndExit();
-        } else if (startingCol == 0 && exitCol == 0) {
-            placeEntranceAndExit();
-        } else if (startingCol == MAZE_SIZE.height - 1 && exitCol == MAZE_SIZE.height - 1) {
+        if (startingRow == exitRow || startingCol == exitCol) {
             placeEntranceAndExit();
         } else {
             myMaze[startingRow][startingCol] = myStartingRoom;
@@ -225,37 +118,21 @@ public class Dungeon {
         }
     }
 
-    /**
-     * Returns a random entry from the map of index pairs.
-     * Utility method for {@link #placeEntranceAndExit()}.
-     *
-     * @param theRandomEdges the map of index pairs
-     * @return A random entry from the map of index pairs.
-     */
     private Map.Entry<Integer, Integer> getRandomIndexPair(final Map<Integer, Integer> theRandomEdges) {
-        //Converts the set of the map to a list
         final List<Map.Entry<Integer, Integer>> entryList = new ArrayList<>(theRandomEdges.entrySet());
-
-        // Get a random index pair from the entry list
         final int randomIndexPair = Helper.getRandomIntBetween(0, entryList.size());
 
         return entryList.get(randomIndexPair);
     }
 
-    /**
-     * Randomly places the pillar {@link Room} throughout the dungeon.
-     */
     private void placePillarRooms() {
-        // Shuffles the list of rooms randomly
         Collections.shuffle(myPillarRooms, Helper.getRandom());
         int pillarRoomsIndex = 0;
 
-        // Fills the maze until no empty spots are left
         while (pillarRoomsIndex < myPillarRooms.size()) {
             final int randomRow = Helper.getRandomIntBetween(0, MAZE_SIZE.height);
             final int randomCol = Helper.getRandomIntBetween(0, MAZE_SIZE.width);
 
-            //Fills an unoccupied spot in the maze with a pillar room
             if (myMaze[randomRow][randomCol] == null) {
                 myMaze[randomRow][randomCol] = myPillarRooms.get(pillarRoomsIndex);
                 pillarRoomsIndex++;
@@ -263,22 +140,6 @@ public class Dungeon {
         }
     }
 
-
-        // Place doors in each room
-        for (int i = 0; i < myMaze.length; i++) {
-            for (int j = 0; j < myMaze[i].length; j++) {
-                if (myMaze[i][j] != null) {
-                    placeDoors(myMaze[i][j].getRoomTiles());
-                }
-            }
-        }
-
-        //TODO: implement the algorithm to check
-        // if the maze is traversable, otherwise regenerate a new maze
-
-    /**
-     * Fully fills the dungeon with random dead-end or other non-essential rooms.
-     */
     private void placeFillerRooms() {
         final int totalSpotsLeft = MAZE_SIZE.height * MAZE_SIZE.width - 6;
         int filledSpots = 0;
@@ -287,7 +148,6 @@ public class Dungeon {
             final int randomRow = Helper.getRandomIntBetween(0, MAZE_SIZE.height);
             final int randomCol = Helper.getRandomIntBetween(0, MAZE_SIZE.width);
 
-            //Fills an unoccupied spot in the maze with a room
             if (myMaze[randomRow][randomCol] == null) {
                 myMaze[randomRow][randomCol] = new Room(false, false, null);
                 filledSpots++;
@@ -295,43 +155,19 @@ public class Dungeon {
         }
     }
 
-    /**
-     * Checks if the newly constructed dungeon is traversable.
-     *
-     * @return True if the dungeon is traversable
-     */
-    private boolean isTraverable() {
-        boolean isTraverable = false;
-
-
-
-        return isTraverable;
+    private boolean isTraversable() {
+        // TODO: implement the algorithm to check if the maze is traversable, otherwise regenerate a new maze
+        return false;
     }
 
-    /**
-     * Returns the dungeon as a maze of type {@link Room}.
-     *
-     * @return A maze of type {@link Room}
-     */
     public Room[][] getRooms() {
         return myMaze;
     }
 
-    /**
-     * Loads the Hero character into the starting room
-     * once the dungeon is created.
-     */
     public void loadHeroIntoStartingRoom() {
         myStartingRoom.loadPlayerToEntrance();
     }
 
-    /**
-     * Returns the {@link Room} in the maze at the specified coordinates.
-     *
-     * @param theX the x-coordinate of the {@link Room}
-     * @param theY the y-coordinate of the {@link Room}
-     * @return The {@link Room} in the maze at the specified coordinates
-     */
     public Room getRoomAt(final int theX, final int theY) {
         return myMaze[theX][theY];
     }
@@ -343,7 +179,7 @@ public class Dungeon {
         for (Room[] rooms : myMaze) {
             for (Room room : rooms) {
                 if (room == null) {
-                    stringBuilder.append("null"); // IDEALLY nothing should be null.
+                    stringBuilder.append("null");
                 } else if (room.isEntranceRoom()) {
                     stringBuilder.append("ENTR");
                 } else if (room.isExitRoom()) {

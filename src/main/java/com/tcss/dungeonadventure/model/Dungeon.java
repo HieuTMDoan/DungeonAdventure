@@ -232,7 +232,7 @@ public class Dungeon {
     /**
      * Places doors in each room of the dungeon.
      */
-    private void placeDoors() {
+    public void placeDoors() {
         for (int i = 0; i < myMaze.length; i++) {
             for (int j = 0; j < myMaze[i].length; j++) {
                 if (myMaze[i][j] != null) {

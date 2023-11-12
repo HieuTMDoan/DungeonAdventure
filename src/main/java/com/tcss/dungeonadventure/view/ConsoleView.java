@@ -9,110 +9,39 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
-import java.util.List;
-
-public class ConsoleView implements PropertyChangeListener {
-
-    // Create a list to keep track of the console history
-    private List<String> consoleHistory;
-
-    public ConsoleView() {
-        consoleHistory = new ArrayList<>();
-    }
-
-    // Nested Memento class
-    public class Memento {
-        private List<String> historySnapshot;
-
-        private Memento(List<String> historySnapshot) {
-            this.historySnapshot = new ArrayList<>(historySnapshot);
-        }
-
-        public List<String> getHistorySnapshot() {
-            return historySnapshot;
-        }
-    }
-
-    // Method to capture the current state of the ConsoleView
-    public Memento createMemento() {
-        return new Memento(consoleHistory);
-    }
-
-    // Method to restore the state of the ConsoleView from a Memento
-    public void setMemento(Memento memento) {
-        consoleHistory = new ArrayList<>(memento.getHistorySnapshot());
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent theEvent) {
-        // Handle property changes and update the console history
-        if ("message".equals(theEvent.getPropertyName())) {
-            String message = (String) theEvent.getNewValue();
-            consoleHistory.add(message);
-            // Perform any other actions based on the property change
-        }
-    }
-
-    // Additional methods for interacting with the console
-    public List<String> getConsoleHistory() {
-        return consoleHistory;
-    }
-
-    public void clearConsoleHistory() {
-        consoleHistory.clear();
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleView implements PropertyChangeListener {
 
-    /**
-     * The scanner to take input.
-     */
     private final Scanner myScanner = new Scanner(System.in);
-
-    /**
-     * The current room.
-     */
     private Room myCurrentRoom;
-
 
     public ConsoleView() {
         PCS.addPropertyListener(this);
         startup();
     }
 
-    public void startup() {
+    private void startup() {
         System.out.println("---- Dungeon Adventure ----");
 
-        switch (
-                validInputChecker(
-                        "Start a new game (N), or load an existing one (L)?: ",
-                        "N", "L"
-                )) {
+        switch (validInputChecker("Start a new game (N), or load an existing one (L)?: ", "N", "L")) {
             case "N" -> newGameStartup();
             case "L" -> System.out.println("Not yet implemented");
             default -> {
             }
         }
-
-
     }
-
 
     private void newGameStartup() {
         final String playerName = validInputChecker("Enter player name: ");
-
-
         final Hero playerClass = switch (validInputChecker(
-                "Warrior (W), Priestess (P), Thief (T)"
-                        + "\nChoose your class: ", "W", "P", "T")) {
-
+                "Warrior (W), Priestess (P), Thief (T)\nChoose your class: ", "W", "P", "T")) {
             case "W" -> (Warrior) SQLiteDB.getCharacterByName(Helper.Characters.WARRIOR);
             case "P" -> (Priestess) SQLiteDB.getCharacterByName(Helper.Characters.PRIESTESS);
             case "T" -> (Thief) SQLiteDB.getCharacterByName(Helper.Characters.THIEF);
@@ -120,24 +49,10 @@ public class ConsoleView implements PropertyChangeListener {
         };
 
         PCS.firePropertyChanged(PCS.START_NEW_GAME, new Object[]{playerName, playerClass});
-
         System.out.println("Name: " + playerName + " | Class: " + playerClass.getClass().getSimpleName());
-
     }
 
-
-    /**
-     * This prompts the user for input based on a question.
-     * If the user enters an invalid choice, it will continue to prompt
-     * until a valid input is received.
-     * If no valid choices are provided, it will return the first input received.
-     *
-     * @param thePrompt       The prompt to display.
-     * @param theValidChoices The possible valid choices.
-     * @return The valid choice.
-     */
-    private String validInputChecker(final String thePrompt,
-                                     final String... theValidChoices) {
+    private String validInputChecker(final String thePrompt, final String... theValidChoices) {
         System.out.print(thePrompt);
 
         if (theValidChoices.length == 0) {
@@ -162,17 +77,12 @@ public class ConsoleView implements PropertyChangeListener {
                 }
                 System.out.print(sb.toString().trim() + ": ");
             }
-
         }
-
     }
 
     private void loadRoom(final Room theRoom) {
         this.myCurrentRoom = theRoom;
-
         printRoomWithPlayer();
-
-
     }
 
     private void printRoomWithPlayer() {
@@ -183,22 +93,16 @@ public class ConsoleView implements PropertyChangeListener {
             case "S" -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.SOUTH);
             case "A" -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.WEST);
             case "D" -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.EAST);
-
             default -> {
             }
         }
-
-
     }
 
     private void movePlayer(final Directions.Cardinal theDirection) {
         if (theDirection == null) {
             return;
         }
-
-
     }
-
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
@@ -208,10 +112,7 @@ public class ConsoleView implements PropertyChangeListener {
             case UPDATED_PLAYER_LOCATION -> {
                 System.out.println("Player is at: " + theEvent.getNewValue());
                 printRoomWithPlayer();
-
-
             }
         }
-
     }
 }

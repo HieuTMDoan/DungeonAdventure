@@ -270,49 +270,7 @@ public class Room {
 
         return tiles;
     }
-    /**
-     * Places doors in the specified tile array representing a room.
-     *
-     * @param theTiles The array of tiles representing the room.
-     */
-    public static void placeDoors(final Tile[][] theTiles) {
-        final Dimension size = new Dimension(theTiles[0].length, theTiles.length);
 
-        final int numDoors;
-
-        // Adjust the probability for a 2-door scenario
-        final double twoDoorProbability = 0.4; // Adjust as needed
-
-        if (Helper.getRandomDoubleBetween(0, 1) < twoDoorProbability) {
-            numDoors = 2;
-        } else {
-            numDoors = 1;
-        }
-
-        final int maxAttempts = numDoors * MAX_ATTEMPTS_PER_DOOR;
-
-        for (int i = 0; i < numDoors; i++) {
-            int attempts = 0;
-
-            while (true) {
-                if (attempts >= maxAttempts) {
-                    // Break the loop if maximum attempts reached
-                    break;
-                }
-
-                final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
-                final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
-
-                if (theTiles[y][x] == null || theTiles[y][x].getClass() == EmptyTile.class) {
-                    final Directions.Axis doorAxis = Helper.getRandomDoorAxis();
-                    theTiles[y][x] = new DoorTile(doorAxis);
-                    break;
-                }
-
-                attempts++;
-            }
-        }
-    }
 
 
     /**
@@ -422,6 +380,43 @@ public class Room {
         return this.myRoomData;
     }
 
+    public void placeDoors() {
+        final int numDoors;
+
+        // Adjust the probability for a 2-door scenario
+        final double twoDoorProbability = 0.4; // Adjust as needed
+
+        if (Helper.getRandomDoubleBetween(0, 1) < twoDoorProbability) {
+            numDoors = 2;
+        } else {
+            numDoors = 1;
+        }
+
+        final int maxAttempts = numDoors * MAX_ATTEMPTS_PER_DOOR;
+
+        for (int i = 0; i < numDoors; i++) {
+            int attempts = 0;
+
+            while (true) {
+                if (attempts >= maxAttempts) {
+                    // Break the loop if maximum attempts reached
+                    break;
+                }
+
+                final int x = Helper.getRandomIntBetween(1, getRoomWidth() - 1);
+                final int y = Helper.getRandomIntBetween(1, getRoomHeight() - 1);
+
+                if (myRoomData[y][x] == null || myRoomData[y][x] instanceof EmptyTile) {
+                    // Assuming EmptyTile is a subclass of Tile
+                    final Directions.Axis doorAxis = Helper.getRandomDoorAxis();
+                    myRoomData[y][x] = new DoorTile(doorAxis);
+                    break;
+                }
+
+                attempts++;
+            }
+        }
+    }
 
     @Override
     public String toString() {

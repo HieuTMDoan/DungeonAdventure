@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.tcss.dungeonadventure.model.Room.placeDoors;
+
 /**
  * Represents a randomly generated maze of type {@link Room}.
  *
@@ -202,6 +204,15 @@ public class Dungeon {
                 myMaze[randomRow][randomCol] = randomRooms.get(randomRoomsIndex);
                 filledCount++;
                 essentialRoomsIndex++;
+            }
+        }
+
+        // Place doors in each room
+        for (int i = 0; i < myMaze.length; i++) {
+            for (int j = 0; j < myMaze[i].length; j++) {
+                if (myMaze[i][j] != null) {
+                    placeDoors(myMaze[i][j].getRoomTiles());
+                }
             }
         }
 

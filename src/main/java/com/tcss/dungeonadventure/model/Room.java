@@ -15,6 +15,7 @@ import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.ItemTile;
+import com.tcss.dungeonadventure.objects.tiles.DoorTile;
 
 
 import java.awt.Dimension;
@@ -58,6 +59,13 @@ public class Room {
      * The chance for a room to contain one monster.
      */
     private static final double ONE_MONSTER_CHANCE = 0.35;
+
+
+    /**
+     * The maximum number of attempts to place a door in a maze.
+     * If placing a door fails this many times, the algorithm gives up for that door.
+     */
+    private static final int MAX_ATTEMPTS_PER_DOOR = 10;
 
     /**
      * Boolean if the room is the entrance room.
@@ -134,6 +142,8 @@ public class Room {
         this(generateRandomTileSet(theIsEntrance, theIsExit, thePillar));
 
     }
+
+
 
     /**
      * Checks if a specific character exists in the tile set.
@@ -258,6 +268,50 @@ public class Room {
 
         return tiles;
     }
+    /**
+     * Places doors in the specified tile array representing a room.
+     *
+     * @param theTiles The array of tiles representing the room.
+     */
+    public static void placeDoors(final Tile[][] theTiles) {
+        final Dimension size = new Dimension(theTiles[0].length, theTiles.length);
+
+        final int numDoors;
+
+        // Adjust the probability for a 2-door scenario
+        final double twoDoorProbability = 0.4; // Adjust as needed
+
+        if (Helper.getRandomDoubleBetween(0, 1) < twoDoorProbability) {
+            numDoors = 2;
+        } else {
+            numDoors = 1;
+        }
+
+        final int maxAttempts = numDoors * MAX_ATTEMPTS_PER_DOOR;
+
+        for (int i = 0; i < numDoors; i++) {
+            int attempts = 0;
+
+            while (true) {
+                if (attempts >= maxAttempts) {
+                    // Break the loop if maximum attempts reached
+                    break;
+                }
+
+                final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
+                final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
+
+                if (theTiles[y][x] == null || theTiles[y][x].getClass() == EmptyTile.class) {
+                    final Directions.Axis doorAxis = Helper.getRandomDoorAxis();
+                    theTiles[y][x] = new DoorTile(doorAxis);
+                    break;
+                }
+
+                attempts++;
+            }
+        }
+    }
+
 
     /**
      * Helper method to use while generating a new Room.
@@ -382,21 +436,27 @@ public class Room {
         return new Room(this);
     }
 
-    private void deepCopyRoomData(Tile[][] originalRoomData) {
+    public void deepCopyRoomData(Tile[][] originalRoomData) {
         myRoomData = new Tile[originalRoomData.length][];
         for (int i = 0; i < originalRoomData.length; i++) {
             myRoomData[i] = Arrays.copyOf(originalRoomData[i], originalRoomData[i].length);
             for (int j = 0; j < originalRoomData[i].length; j++) {
                 if (originalRoomData[i][j] != null) {
                     char displayChar = originalRoomData[i][j].getDisplayChar();
-                    Item item = (originalRoomData[i][j] instanceof ItemTile)
-                            ? ((ItemTile) originalRoomData[i][j]).getItem()
-                            : null;
-                    myRoomData[i][j] = new Tile(displayChar, item);
+                    Tile newTile;
+                    if (originalRoomData[i][j] instanceof ItemTile) {
+                        Item item = ((ItemTile) originalRoomData[i][j]).getItem();
+                        newTile = new ItemTile(item);
+                    } else {
+                        boolean isTraversable = originalRoomData[i][j].isTraversable();
+                        newTile = new Tile(displayChar, isTraversable);
+                    }
+                    myRoomData[i][j] = newTile;
                 } else {
                     myRoomData[i][j] = null;
                 }
             }
         }
     }
+
 }

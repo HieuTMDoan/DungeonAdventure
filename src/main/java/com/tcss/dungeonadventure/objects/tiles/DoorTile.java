@@ -7,15 +7,22 @@ import com.tcss.dungeonadventure.objects.TileChars;
 
 public class DoorTile extends Tile {
 
+    private final Directions.Axis myDoorAxis;
+
+
     public DoorTile(final Directions.Axis theAxis) {
-        super(theAxis == (Directions.Axis.VERTICAL)
+        super(theAxis == Directions.Axis.VERTICAL
                         ? TileChars.Room.VERTICAL_DOOR
                         : TileChars.Room.HORIZONTAL_DOOR,
                 true);
+        this.myDoorAxis = theAxis;
     }
 
     @Override
     public void onInteract(final DungeonCharacter theTarget) {
         // move player to new room
+    }
+    public Directions.Axis getDoorAxis() {
+        return myDoorAxis;
     }
 }

@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure;
 
+import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.items.*;
 import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
@@ -89,6 +90,25 @@ public class Helper {
             throw new RuntimeException("Randomly generated item threw an exception.");
         }
     }
+
+    /**
+     * Returns a random door axis (horizontal or vertical).
+     *
+     * @return The random door axis.
+     */
+    public static Directions.Axis getRandomDoorAxis() {
+        return getRandomBoolean() ? Directions.Axis.HORIZONTAL : Directions.Axis.VERTICAL;
+    }
+
+    /**
+     * Returns a random boolean.
+     *
+     * @return The random boolean.
+     */
+    public static boolean getRandomBoolean() {
+        return RANDOM.nextBoolean();
+    }
+
 
     public static Monster getRandomMonster() {
         try {

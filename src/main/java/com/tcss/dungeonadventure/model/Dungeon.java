@@ -99,9 +99,9 @@ public class Dungeon {
         placePillarRooms();
         placeFillerRooms();
 
-        if (!isTraverable()) {
-            generateDungeon();
-        }
+//        if (!isTraversable()) {
+//            generateDungeon();
+//        }
     }
 
     /**
@@ -212,12 +212,12 @@ public class Dungeon {
      *
      * @return True if the dungeon is traversable
      */
-    private boolean isTraverable() {
-        boolean isTraverable = false;
+    private boolean isTraversable() {
+        boolean isTraversable = false;
 
 
 
-        return isTraverable;
+        return isTraversable;
     }
 
     /**

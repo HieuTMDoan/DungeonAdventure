@@ -6,7 +6,6 @@ import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,7 +16,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
-import javafx.stage.Stage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

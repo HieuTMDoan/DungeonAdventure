@@ -37,9 +37,8 @@ public class DungeonAdventure {
 
 
     private DungeonAdventure() {
-
-
     }
+
     /**
      * Lazy singleton accessor.
      *
@@ -59,6 +58,12 @@ public class DungeonAdventure {
      * @param theGUIActive If the GUI is active. If not, will print to console.
      */
     public void initialize(final boolean theGUIActive) {
+        if (theGUIActive) {
+            new ConsoleView();
+        } else {
+            Application.launch(DungeonGUI.class);
+        }
+    }
 
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         this.myPlayerName = thePlayerName;
@@ -97,5 +102,5 @@ public class DungeonAdventure {
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
     }
 
-}
+
 }

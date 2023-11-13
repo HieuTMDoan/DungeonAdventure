@@ -296,7 +296,7 @@ public class Room {
                 final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
                 final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
 
-                if (theTiles[y][x] == null || theTiles[y][x].getClass() == EmptyTile.class) {
+                if (theTiles[y][x] != null && theTiles[y][x] instanceof WallTile) {
                     final Directions.Axis doorAxis = Helper.getRandomDoorAxis();
                     theTiles[y][x] = new DoorTile(doorAxis);
                     break;
@@ -306,6 +306,7 @@ public class Room {
             }
         }
     }
+
 
 
     /**

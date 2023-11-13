@@ -65,6 +65,12 @@ public class DungeonAdventure {
         }
     }
 
+    /**
+     * Starts a NEW game with the specified hero name and hero class.
+     *
+     * @param thePlayerName The name of the player.
+     * @param theHero       The hero class.
+     */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         this.myPlayerName = thePlayerName;
         this.myHero = theHero;

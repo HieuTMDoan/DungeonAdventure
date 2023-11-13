@@ -151,6 +151,19 @@ public class Room {
     }
 
 
+    /**
+     * Copy constructor for creating a deep copy of the Room.
+     *
+     * @param theOriginalRoom The Room to copy.
+     */
+    public Room(final Room theOriginalRoom) {
+        myIsEntranceRoom = theOriginalRoom.myIsEntranceRoom;
+        myIsExitRoom = theOriginalRoom.myIsExitRoom;
+        myRoomDimensions = new Dimension(theOriginalRoom.myRoomDimensions);
+        myPillar = (theOriginalRoom.myPillar != null) ? theOriginalRoom.myPillar.copy() : null;
+        myPlayerPosition = (theOriginalRoom.myPlayerPosition != null) ? new Point(theOriginalRoom.myPlayerPosition) : null;
+        deepCopyRoomData(theOriginalRoom.myRoomData);
+    }
 
     /**
      * Generates the tile data of a random room based on a set of parameters.
@@ -258,8 +271,6 @@ public class Room {
         return tiles;
     }
 
-
-
     /**
      * Helper method to use while generating a new Room.
      * Will ensure no overlap between tiles.
@@ -329,54 +340,101 @@ public class Room {
 
     }
 
+    /**
+     * Moves player to a specified location in the room. This may be useful
+     * for loading a player in from a specific direction when coming through a door.
+     *
+     * @param theXY The player location.
+     */
     public void movePlayerTo(final Point theXY) {
+        // TODO: Needs bound checks
+
         myPlayerPosition = new Point(theXY);
     }
 
+    /**
+     * Returns the location of the room within the dungeon.
+     *
+     * @return A Point representing the rooms location in the dungeon.
+     */
     public Point getDungeonLocation() {
         return this.myDungeonLocation;
     }
 
+    /**
+     * Sets the location of the room within the dungeon.
+     *
+     * @param theXY The location of the room within the dungeon.
+     */
     public void setDungeonLocation(final Point theXY) {
         this.myDungeonLocation = new Point(theXY);
     }
 
+    /**
+     * @return True if the room contains an Entrance tile (i),
+     * false otherwise.
+     */
     public boolean isEntranceRoom() {
         return this.myIsEntranceRoom;
     }
 
+    /**
+     * @return True if the room contains an Exit tile (O),
+     * false otherwise.
+     */
     public boolean isExitRoom() {
         return this.myIsExitRoom;
     }
 
+    /**
+     * @return The width of the room.
+     */
     public int getRoomWidth() {
         return (int) this.myRoomDimensions.getWidth();
     }
 
+    /**
+     * @return The height of the room.
+     */
     public int getRoomHeight() {
         return (int) this.myRoomDimensions.getHeight();
     }
 
+    /**
+     * Returns the players current X position in the room. If the player
+     * isn't present, returns null;
+     *
+     * @return The players current X position in the room, or null.
+     */
     public Integer getPlayerXPosition() {
         return this.myPlayerPosition == null
                 ? null
                 : Double.valueOf(this.myPlayerPosition.getX()).intValue();
     }
 
+    /**
+     * Returns the players current Y position in the room. If the player
+     * isn't present, returns null;
+     *
+     * @return The players current Y position in the room, or null.
+     */
     public Integer getPlayerYPosition() {
         return this.myPlayerPosition == null
                 ? null
                 : Double.valueOf(this.myPlayerPosition.getY()).intValue();
     }
 
-    public Room[][] getSurroundingRooms() {
-        return null;
-    }
 
+    /**
+     * @return The pillar contained in the room, or null.
+     */
     public Item getPillar() {
         return this.myPillar;
     }
 
+    /**
+     * @return The tiles in the room.
+     */
     public Tile[][] getRoomTiles() {
         return this.myRoomData;
     }
@@ -440,20 +498,6 @@ public class Room {
     }
 
     /**
-     * Copy constructor for creating a deep copy of the Room.
-     *
-     * @param originalRoom The Room to copy.
-     */
-    public Room(Room originalRoom) {
-        myIsEntranceRoom = originalRoom.myIsEntranceRoom;
-        myIsExitRoom = originalRoom.myIsExitRoom;
-        myRoomDimensions = new Dimension(originalRoom.myRoomDimensions);
-        myPillar = (originalRoom.myPillar != null) ? originalRoom.myPillar.copy() : null;
-        myPlayerPosition = (originalRoom.myPlayerPosition != null) ? new Point(originalRoom.myPlayerPosition) : null;
-        deepCopyRoomData(originalRoom.myRoomData);
-    }
-
-    /**
      * Copy method to create a deep copy of the Room.
      *
      * @return A deep copy of the Room.
@@ -462,19 +506,22 @@ public class Room {
         return new Room(this);
     }
 
-    public void deepCopyRoomData(Tile[][] originalRoomData) {
-        myRoomData = new Tile[originalRoomData.length][];
-        for (int i = 0; i < originalRoomData.length; i++) {
-            myRoomData[i] = Arrays.copyOf(originalRoomData[i], originalRoomData[i].length);
-            for (int j = 0; j < originalRoomData[i].length; j++) {
-                if (originalRoomData[i][j] != null) {
-                    char displayChar = originalRoomData[i][j].getDisplayChar();
-                    Tile newTile;
-                    if (originalRoomData[i][j] instanceof ItemTile) {
-                        Item item = ((ItemTile) originalRoomData[i][j]).getItem();
+    public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
+        myRoomData = new Tile[theOriginalRoomData.length][];
+        for (int i = 0; i < theOriginalRoomData.length; i++) {
+            myRoomData[i] = Arrays.copyOf(theOriginalRoomData[i],
+                    theOriginalRoomData[i].length);
+
+            for (int j = 0; j < theOriginalRoomData[i].length; j++) {
+                if (theOriginalRoomData[i][j] != null) {
+                    final char displayChar = theOriginalRoomData[i][j].getDisplayChar();
+                    final Tile newTile;
+                    if (theOriginalRoomData[i][j] instanceof ItemTile) {
+                        final Item item = ((ItemTile) theOriginalRoomData[i][j]).getItem();
                         newTile = new ItemTile(item);
                     } else {
-                        boolean isTraversable = originalRoomData[i][j].isTraversable();
+                        final boolean isTraversable =
+                                theOriginalRoomData[i][j].isTraversable();
                         newTile = new Tile(displayChar, isTraversable);
                     }
                     myRoomData[i][j] = newTile;

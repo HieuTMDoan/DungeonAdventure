@@ -105,6 +105,7 @@ public class Dungeon {
         placeEntranceAndExit();
         placePillarRooms();
         placeFillerRooms();
+        placeDoors();
 
 //        if (!isTraversable()) {
 //            generateDungeon();
@@ -261,17 +262,27 @@ public class Dungeon {
         }
     }
 
+    /**
+     * Accessor for the room that the player is currently in.
+     *
+     * @return The players' current room.
+     */
     public Room getCurrentRoom() {
         return this.myCurrentRoom;
     }
 
+    /**
+     * Accessor for the starting room.
+     *
+     * @return The starting room.
+     */
     public Room getStartingRoom() {
         return this.myStartingRoom;
     }
 
     /**
-     * Loads the Hero character into the starting room
-     * once the dungeon is created.
+     * Loads the player into the dungeon at a specific XY,
+     * and in a specific XY in the room.
      */
     public void loadPlayerTo(final Point theDungeonXY,
                              final Point theRoomXY) {

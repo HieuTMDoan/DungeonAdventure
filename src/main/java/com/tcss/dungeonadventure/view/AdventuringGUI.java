@@ -1,35 +1,25 @@
 package com.tcss.dungeonadventure.view;
 
-import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
-import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
 
 public class AdventuringGUI implements PropertyChangeListener {
 
     /**
-     * The path for the FXML file for the adventuring screen.
+     * The GUI handler.
      */
-    private static final String ADVENTURE_FXML_PATH =
-            "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-adventure.fxml";
-
+    private final GUIHandler myGUI;
 
     /**
      * A 2D array of Text nodes, representing each character of the room grid.
@@ -41,10 +31,6 @@ public class AdventuringGUI implements PropertyChangeListener {
      */
     private Room myCurrentRoom;
 
-    /**
-     * The current scene.
-     */
-    private Scene myScene;
 
     /**
      * The room grid. 10x10.
@@ -56,18 +42,12 @@ public class AdventuringGUI implements PropertyChangeListener {
      */
     private Label myTileInfoLabel;
 
-    public AdventuringGUI(final Scene theScene) throws IOException {
+    public AdventuringGUI(final GUIHandler theGUI) {
+        this.myGUI = theGUI;
         PCS.addPropertyListener(this);
-        final FXMLLoader fxmlLoader = new FXMLLoader(new File(ADVENTURE_FXML_PATH).toURI().toURL());
-        this.myScene = theScene;
-        theScene.setRoot(fxmlLoader.load());
 
         locateNodes();
         createGUI();
-
-        // This is the key event system
-        myScene.setOnKeyPressed(this::handleKeyPress);
-
     }
 
     /**
@@ -77,18 +57,7 @@ public class AdventuringGUI implements PropertyChangeListener {
      * @return The looked-up node, or null if it isn't found.
      */
     Node lookup(final String theNodeID) {
-        return this.myScene.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
-    }
-
-    private void handleKeyPress(final KeyEvent theEvent) {
-        switch (theEvent.getCode()) {
-            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
-            default -> {
-            }
-        }
+        return this.myGUI.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
     }
 
     /**

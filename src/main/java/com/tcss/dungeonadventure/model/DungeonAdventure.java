@@ -5,7 +5,7 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-import com.tcss.dungeonadventure.view.DungeonGUI;
+import com.tcss.dungeonadventure.view.GUIHandler;
 import javafx.application.Application;
 
 import java.awt.Point;
@@ -55,7 +55,7 @@ public class DungeonAdventure {
         * I have absolutely no clue why I couldn't throw this in the
         * constructor.
         * */
-        Application.launch(DungeonGUI.class);
+        Application.launch(GUIHandler.class);
     }
 
 
@@ -69,13 +69,6 @@ public class DungeonAdventure {
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         this.myPlayerName = thePlayerName;
         this.myHero = theHero;
-
-                this.myPlayerName = (String) data[0];
-                this.myHero = (Hero) data[1];
-                this.myDungeon = new Dungeon();
-                //this.myDungeon.placeDoors();
-                //this.myDungeon.loadPlayerTo();
-
         this.myDungeon = new Dungeon();
 
         final Room startingRoom = myDungeon.getStartingRoom();

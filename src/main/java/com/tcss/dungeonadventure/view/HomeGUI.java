@@ -1,57 +1,24 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
-import com.tcss.dungeonadventure.model.Dungeon;
-import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-import com.tcss.dungeonadventure.objects.heroes.Priestess;
-import com.tcss.dungeonadventure.objects.heroes.Thief;
-import com.tcss.dungeonadventure.objects.heroes.Warrior;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.stage.Stage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
-public class DungeonGUI extends Application implements PropertyChangeListener {
+public class HomeGUI implements PropertyChangeListener {
 
     /**
-     * The width of the window.
+     * The GUI handler.
      */
-    private static final double WINDOW_WIDTH = 900;
-
-    /**
-     * The height of the window.
-     */
-    private static final double WINDOW_HEIGHT = 600;
-
-    /**
-     * The path for the FXML file for the home screen.
-     */
-    private static final String HOME_FXML_PATH =
-            "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-home-screen.fxml";
-
-    /**
-     * The title of the window.
-     */
-    private static final String WINDOW_TITLE = "Dungeon Adventure";
-
-    /**
-     * The current scene.
-     */
-    private Scene myScene;
+    private final GUIHandler myGUI;
 
     /**
      * The currently selected class. Set to warrior by default.
@@ -79,17 +46,9 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      */
     private TextField myHeroNameTextField;
 
-    @Override
-    public void start(final Stage theStage) throws IOException {
+    public HomeGUI(final GUIHandler theGUI) {
+        this.myGUI = theGUI;
         PCS.addPropertyListener(this);
-
-        final FXMLLoader fxmlLoader = new FXMLLoader(
-                new File(HOME_FXML_PATH).toURI().toURL());
-
-        myScene = new Scene(fxmlLoader.load(), WINDOW_WIDTH, WINDOW_HEIGHT);
-        theStage.setTitle(WINDOW_TITLE);
-        theStage.setScene(myScene);
-        theStage.show();
 
         locateNodes();
         attachEvents();
@@ -103,7 +62,7 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      * @return The looked-up node, or null if it isn't found.
      */
     Node lookup(final String theNodeID) {
-        return this.myScene.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
+        return this.myGUI.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
     }
 
     /**
@@ -120,18 +79,10 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
      * Helper method to attach mouse events to certain nodes.
      */
     private void attachEvents() {
-        this.myNewGameButton.setOnAction(e -> {
-            try {
-                new AdventuringGUI(myScene);
-                DungeonAdventure.getInstance().startNewGame(myHeroNameTextField.getText(),
-                        (Hero) SQLiteDB.getCharacterByName(mySelectedClass));
-
-            } catch (final IOException exception) {
-                System.err.println("Error loading the adventuring GUI: ");
-                exception.printStackTrace();
-            }
-
-        });
+        this.myNewGameButton.setOnAction(e -> myGUI.startNewGame(
+                myHeroNameTextField.getText(),
+                (Hero) SQLiteDB.getCharacterByName(mySelectedClass))
+        );
 
 
         this.myLoadGameButton.setOnAction(e -> {
@@ -169,8 +120,6 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
-
-
 
 
         }

@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.Dungeon;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
@@ -122,15 +123,15 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         this.myNewGameButton.setOnAction(e -> {
             try {
                 new AdventuringGUI(myScene);
+                DungeonAdventure.getInstance().startNewGame(myHeroNameTextField.getText(),
+                        (Hero) SQLiteDB.getCharacterByName(mySelectedClass));
+
             } catch (final IOException exception) {
                 System.err.println("Error loading the adventuring GUI: ");
                 exception.printStackTrace();
             }
 
-            PCS.firePropertyChanged(PCS.START_NEW_GAME,
-                    new Object[] {myHeroNameTextField.getText(), SQLiteDB.getCharacterByName(mySelectedClass)});
         });
-
 
 
         this.myLoadGameButton.setOnAction(e -> {
@@ -168,10 +169,8 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
-            case START_NEW_GAME -> {
 
 
-            }
 
 
         }

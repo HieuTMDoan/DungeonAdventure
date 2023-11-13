@@ -3,6 +3,7 @@ package com.tcss.dungeonadventure.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
 import com.tcss.dungeonadventure.objects.Directions;
 
 /**
@@ -24,9 +25,9 @@ public enum PCS {
     /**
      * The property of player location change.
      * Not to be confused with MOVE_PLAYER.
-     * Should be paired with a {@link java.awt.Point} representing
-     * the players current position in the room.
-     *
+     * <p>
+     * Should be paired with nothing, as player location is
+     * stored within the room.
      */
     UPDATED_PLAYER_LOCATION,
 
@@ -36,22 +37,12 @@ public enum PCS {
      */
     LOAD_ROOM,
 
-    /**
-     * The property of starting a BRAND-NEW game.
-     * Should be paired with an Object[] with:
-     *  0: The players name
-     *  1: A Hero object, as the players class.
-     */
-    START_NEW_GAME,
 
     /**
      * The property of loading an EXISTING game.
      * Should be paired with //TODO something. idk what that is. game data or sum
      */
-    LOAD_EXISTING_GAME,
-
-    ;
-
+    LOAD_EXISTING_GAME;
 
 
     /**

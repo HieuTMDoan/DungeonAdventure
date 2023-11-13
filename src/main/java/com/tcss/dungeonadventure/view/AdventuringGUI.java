@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
@@ -83,10 +84,10 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     private void handleKeyPress(final KeyEvent theEvent) {
         switch (theEvent.getCode()) {
-            case UP, W -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.NORTH);
-            case DOWN, S -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.SOUTH);
-            case LEFT, A -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.WEST);
-            case RIGHT, D -> PCS.firePropertyChanged(PCS.MOVE_PLAYER, Directions.Cardinal.EAST);
+            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
+            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
+            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
+            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
             default -> {
             }
         }
@@ -212,10 +213,7 @@ public class AdventuringGUI implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
-            case LOAD_ROOM -> {
-                System.out.println("called");
-                loadRoom((Room) theEvent.getNewValue());
-            }
+            case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
             case UPDATED_PLAYER_LOCATION -> renderRoomWithPlayer();
             default -> {
             }

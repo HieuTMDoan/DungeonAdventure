@@ -1,7 +1,9 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,13 +43,18 @@ public class Dungeon {
      */
     private final List<Room> myPillarRooms;
 
+    /**
+     * The room that the player is currently in.
+     */
+    private Room myCurrentRoom;
+
 
     /**
-     *  Initializes a 6x6 traversable {@link Dungeon}.
+     * Initializes a 6x6 traversable {@link Dungeon}.
      *
-     *  @param theStartingRoom the entrance of the {@link Dungeon}
-     *  @param theExitRoom     the exit of the {@link Dungeon}
-     *  @param thePillarRooms  the room that contains a pillar of Object-Oriented
+     * @param theStartingRoom the entrance of the {@link Dungeon}
+     * @param theExitRoom     the exit of the {@link Dungeon}
+     * @param thePillarRooms  the room that contains a pillar of Object-Oriented
      */
     private Dungeon(final Room theStartingRoom,
                     final Room theExitRoom,
@@ -117,15 +124,19 @@ public class Dungeon {
         // random upper edge index pair for starting room
         randomEdgesStarting.put(0, Helper.getRandomIntBetween(0, MAZE_SIZE.width));
         // random lower edge index pair for exit room
-        randomEdgesExit.put(MAZE_SIZE.height - 1, Helper.getRandomIntBetween(0, MAZE_SIZE.width));
+        randomEdgesExit.put(MAZE_SIZE.height - 1,
+                Helper.getRandomIntBetween(0, MAZE_SIZE.width));
         // random left edge index pair for starting room
         randomEdgesStarting.put(Helper.getRandomIntBetween(0, MAZE_SIZE.height), 0);
         // random right edge index pair for exit room
-        randomEdgesExit.put(Helper.getRandomIntBetween(0, MAZE_SIZE.height), MAZE_SIZE.width - 1);
+        randomEdgesExit.put(Helper.getRandomIntBetween(0, MAZE_SIZE.height),
+                MAZE_SIZE.width - 1);
 
         //Uses separate random index pairs for starting and exit rooms
-        final Map.Entry<Integer, Integer> randomStartingEntry = getRandomIndexPair(randomEdgesStarting);
-        final Map.Entry<Integer, Integer> randomExitEntry = getRandomIndexPair(randomEdgesExit);
+        final Map.Entry<Integer, Integer> randomStartingEntry =
+                getRandomIndexPair(randomEdgesStarting);
+        final Map.Entry<Integer, Integer> randomExitEntry =
+                getRandomIndexPair(randomEdgesExit);
 
         final int startingRow = randomStartingEntry.getKey();
         final int startingCol = randomStartingEntry.getValue();
@@ -146,7 +157,10 @@ public class Dungeon {
             placeEntranceAndExit();
         } else {
             myMaze[startingRow][startingCol] = myStartingRoom;
+            myStartingRoom.setDungeonLocation(new Point(startingRow, startingCol));
             myMaze[exitRow][exitCol] = myExitRoom;
+            myExitRoom.setDungeonLocation(new Point(exitRow, exitCol));
+
         }
     }
 
@@ -157,9 +171,11 @@ public class Dungeon {
      * @param theRandomEdges the map of index pairs
      * @return A random entry from the map of index pairs.
      */
-    private Map.Entry<Integer, Integer> getRandomIndexPair(final Map<Integer, Integer> theRandomEdges) {
+    private Map.Entry<Integer, Integer> getRandomIndexPair(
+            final Map<Integer, Integer> theRandomEdges) {
         //Converts the set of the map to a list
-        final List<Map.Entry<Integer, Integer>> entryList = new ArrayList<>(theRandomEdges.entrySet());
+        final List<Map.Entry<Integer, Integer>> entryList =
+                new ArrayList<>(theRandomEdges.entrySet());
 
         // Get a random index pair from the entry list
         final int randomIndexPair = Helper.getRandomIntBetween(0, entryList.size());
@@ -182,7 +198,9 @@ public class Dungeon {
 
             //Fills an unoccupied spot in the maze with a pillar room
             if (myMaze[randomRow][randomCol] == null) {
-                myMaze[randomRow][randomCol] = myPillarRooms.get(pillarRoomsIndex);
+                final Room pillarRoom = myPillarRooms.get(pillarRoomsIndex);
+                pillarRoom.setDungeonLocation(new Point(randomRow, randomCol));
+                myMaze[randomRow][randomCol] = pillarRoom;
                 pillarRoomsIndex++;
             }
         }
@@ -201,7 +219,9 @@ public class Dungeon {
 
             //Fills an unoccupied spot in the maze with a room
             if (myMaze[randomRow][randomCol] == null) {
-                myMaze[randomRow][randomCol] = new Room(false, false, null);
+                final Room room = new Room(false, false, null);
+                room.setDungeonLocation(new Point(randomRow, randomCol));
+                myMaze[randomRow][randomCol] = room;
                 filledSpots++;
             }
         }
@@ -214,7 +234,6 @@ public class Dungeon {
      */
     private boolean isTraversable() {
         boolean isTraversable = false;
-
 
 
         return isTraversable;
@@ -242,13 +261,25 @@ public class Dungeon {
         }
     }
 
+    public Room getCurrentRoom() {
+        return this.myCurrentRoom;
+    }
 
-        /**
-         * Loads the Hero character into the starting room
-         * once the dungeon is created.
-         */
-    public void loadHeroIntoStartingRoom() {
-        myStartingRoom.loadPlayerToEntrance();
+    public Room getStartingRoom() {
+        return this.myStartingRoom;
+    }
+
+    /**
+     * Loads the Hero character into the starting room
+     * once the dungeon is created.
+     */
+    public void loadPlayerTo(final Point theDungeonXY,
+                             final Point theRoomXY) {
+        // TODO: Needs bound checks
+
+        final Room room = this.myMaze[(int) theDungeonXY.getX()][(int) theDungeonXY.getY()];
+        room.movePlayerTo(theRoomXY);
+        this.myCurrentRoom = room;
     }
 
     /**
@@ -275,7 +306,9 @@ public class Dungeon {
                 } else if (room.isExitRoom()) {
                     stringBuilder.append("EXIT");
                 } else if (room.getPillar() != null) {
-                    stringBuilder.append(" ").append(room.getPillar().getDisplayChar()).append("  ");
+                    stringBuilder.append(" ").
+                            append(room.getPillar().getDisplayChar()).
+                            append("  ");
                 } else {
                     stringBuilder.append("ROOM");
                 }

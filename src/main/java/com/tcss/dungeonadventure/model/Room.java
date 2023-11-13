@@ -1,4 +1,5 @@
 package com.tcss.dungeonadventure.model;
+
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -87,6 +88,12 @@ public class Room {
      */
     private Tile[][] myRoomData;
 
+    /**
+     * The location that the room is located at within
+     * the dungeon.
+     */
+    private Point myDungeonLocation;
+
 
     /**
      * The pillar that this room contains. May be null.
@@ -142,26 +149,6 @@ public class Room {
         this(generateRandomTileSet(theIsEntrance, theIsExit, thePillar));
 
     }
-
-
-
-    /**
-     * Checks if a specific character exists in the tile set.
-     *
-     * @param theChar The character to look for. Pull this from {@link TileChars}
-     * @return True if the character is in the room, false otherwise.
-     */
-    public boolean contains(final char theChar) {
-        for (final Tile[] row : myRoomData) {
-            for (final Tile tile : row) {
-                if (tile.getDisplayChar() == theChar) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 
 
 
@@ -298,47 +285,61 @@ public class Room {
 
     }
 
+    /**
+     * Checks if a specific character exists in the tile set.
+     *
+     * @param theChar The character to look for. Pull this from {@link TileChars}
+     * @return True if the character is in the room, false otherwise.
+     */
+    public boolean contains(final char theChar) {
+        for (final Tile[] row : myRoomData) {
+            for (final Tile tile : row) {
+                if (tile.getDisplayChar() == theChar) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
+    /**
+     * Moves the player in a specific direction.
+     *
+     * @param theDirection The direction to move the player in.
+     */
     public void movePlayer(final Directions.Cardinal theDirection) {
         if (this.myPlayerPosition == null) {
             this.myPlayerPosition = new Point(1, 1); // TODO: Change this to where the player enters the room
         }
 
 
+        final Point tempPoint = new Point(myPlayerPosition);
         switch (theDirection) {
-            case NORTH -> myPlayerPosition.translate(0, 1); // TODO: Check for proper bounds before moving
-            case EAST -> myPlayerPosition.translate(1, 0);
-            case SOUTH -> myPlayerPosition.translate(0, -1);
-            case WEST -> myPlayerPosition.translate(-1, 0);
+            case NORTH -> tempPoint.translate(-1, 0);
+            case EAST -> tempPoint.translate(0, 1);
+            case SOUTH -> tempPoint.translate(1, 0);
+            case WEST -> tempPoint.translate(0, -1);
             default -> throw new IllegalArgumentException(
                     "Illegal enum passed: " + theDirection);
         }
 
-        PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, new Point(myPlayerPosition));
-    }
-
-    public void loadPlayerToEntrance() {
-        if (!this.myIsEntranceRoom) {
-            throw new IllegalArgumentException("Cannot load player to non-entrance room.");
+        if (myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()].isTraversable()) {
+            myPlayerPosition = tempPoint;
         }
-
-        for (int y = 0; y < myRoomData.length; y++) {
-            final Tile[] row = myRoomData[y];
-            for (int x = 0; x < row.length; x++) {
-                if (row[x].getClass() == EntranceTile.class) {
-                    myPlayerPosition = new Point(x, y);
-                    System.out.println("Player is at: " + myPlayerPosition);
-                    PCS.firePropertyChanged(PCS.LOAD_ROOM, this);
-                    return;
-                }
-
-            }
-        }
-        throw new IllegalArgumentException("Player was not loaded into entrance.");
-
 
     }
 
+    public void movePlayerTo(final Point theXY) {
+        myPlayerPosition = new Point(theXY);
+    }
+
+    public Point getDungeonLocation() {
+        return this.myDungeonLocation;
+    }
+
+    public void setDungeonLocation(final Point theXY) {
+        this.myDungeonLocation = new Point(theXY);
+    }
 
     public boolean isEntranceRoom() {
         return this.myIsEntranceRoom;
@@ -423,14 +424,12 @@ public class Room {
         final StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < myRoomData.length; i++) {
-            final Tile[] row = myRoomData[i];
             String prefix = "";
-            for (int j = 0; j < row.length; j++) {
+            for (int j = 0; j < myRoomData[i].length; j++) {
                 if (new Point(i, j).equals(myPlayerPosition)) {
-                    stringBuilder.append(prefix).append("/");// TODO CHANGE TO PLAYER CHARACTER
+                    stringBuilder.append(prefix).append("/"); // TODO CHANGE TO PLAYER CHARACTER
                 } else {
-                    final Tile tile = row[j];
-                    stringBuilder.append(prefix).append(tile.getDisplayChar());
+                    stringBuilder.append(prefix).append(myRoomData[i][j].getDisplayChar());
                 }
                 prefix = " ";
             }

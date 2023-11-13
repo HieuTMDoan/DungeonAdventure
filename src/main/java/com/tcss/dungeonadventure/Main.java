@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure;
-import com.tcss.dungeonadventure.model.DungeonAdventure;
 
+
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 
 
 public final class Main {
@@ -11,18 +12,11 @@ public final class Main {
 
     public static void main(final String[] theArgs) {
 
-        final boolean noGUI = true; // This should be specified via command line
-        new DungeonAdventure(noGUI);
-
+        final boolean noGUI = false; // This should be specified via command line
+        DungeonAdventure.getInstance().initialize(noGUI);
 
 //        SQLiteDB.getCharacters();
 //        System.out.println(new Dungeon());
-
-
-
-
-
-//       System.out.println(new Dungeon());
 
 
     }

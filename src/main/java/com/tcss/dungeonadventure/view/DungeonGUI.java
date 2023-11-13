@@ -1,14 +1,14 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.Dungeon;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.model.SQLiteDB;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -18,6 +18,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class DungeonGUI extends Application implements PropertyChangeListener {
 
@@ -50,7 +56,7 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     /**
      * The currently selected class. Set to warrior by default.
      */
-    private Class<?> mySelectedClass = Warrior.class;
+    private Helper.Characters mySelectedClass = Helper.Characters.WARRIOR;
 
 
     /**
@@ -116,21 +122,25 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     private void attachEvents() {
         this.myNewGameButton.setOnAction(e -> {
             try {
-                PCS.firePropertyChanged(PCS.START_NEW_GAME, mySelectedClass.
-                        getDeclaredConstructor(String.class).
-                        newInstance(myHeroNameTextField.getText()));
+                new AdventuringGUI(myScene);
+                DungeonAdventure.getInstance().startNewGame(myHeroNameTextField.getText(),
+                        (Hero) SQLiteDB.getCharacterByName(mySelectedClass));
 
-            } catch (final InstantiationException
-                           | NoSuchMethodException
-                           | IllegalAccessException
-                           | InvocationTargetException exception) {
+            } catch (final IOException exception) {
+                System.err.println("Error loading the adventuring GUI: ");
                 exception.printStackTrace();
             }
+
         });
 
-        this.myLoadGameButton.setOnAction(e -> System.out.println("Load button pressed"));
 
-        this.myHelpButton.setOnAction(e -> System.out.println("Help button pressed"));
+        this.myLoadGameButton.setOnAction(e -> {
+            System.out.println("Load button pressed");
+        });
+
+        this.myHelpButton.setOnAction(e -> {
+            System.out.println("Help button pressed");
+        });
 
 
         // Toggle groups make it so class selection is mutually exclusive
@@ -138,20 +148,20 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
         final ToggleButton warriorRadioButton =
                 (ToggleButton) lookup("warriorRadioButton");
         warriorRadioButton.setToggleGroup(classGroup);
-        warriorRadioButton.setOnAction(e -> mySelectedClass = Warrior.class);
+        warriorRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.WARRIOR);
         warriorRadioButton.setSelected(true);
 
 
         final ToggleButton priestessRadioButton =
                 (ToggleButton) lookup("priestessRadioButton");
         priestessRadioButton.setToggleGroup(classGroup);
-        priestessRadioButton.setOnAction(e -> mySelectedClass = Priestess.class);
+        priestessRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.PRIESTESS);
 
 
         final ToggleButton thiefRadioButton =
                 (ToggleButton) lookup("thiefRadioButton");
         thiefRadioButton.setToggleGroup(classGroup);
-        thiefRadioButton.setOnAction(e -> mySelectedClass = Thief.class);
+        thiefRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.THIEF);
 
     }
 
@@ -159,15 +169,9 @@ public class DungeonGUI extends Application implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
-            case START_NEW_GAME -> {
-                try {
-                    new AdventuringGUI(myScene);
-                } catch (final IOException e) {
-                    System.err.println("Error loading the adventuring GUI: ");
-                    e.printStackTrace();
-                }
 
-            }
+
+
 
         }
 

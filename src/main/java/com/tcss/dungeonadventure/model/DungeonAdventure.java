@@ -70,6 +70,12 @@ public class DungeonAdventure {
         this.myPlayerName = thePlayerName;
         this.myHero = theHero;
 
+                this.myPlayerName = (String) data[0];
+                this.myHero = (Hero) data[1];
+                this.myDungeon = new Dungeon();
+                //this.myDungeon.placeDoors();
+                //this.myDungeon.loadPlayerTo();
+
         this.myDungeon = new Dungeon();
 
         final Room startingRoom = myDungeon.getStartingRoom();

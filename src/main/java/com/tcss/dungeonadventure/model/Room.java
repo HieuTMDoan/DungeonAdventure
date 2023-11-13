@@ -9,14 +9,7 @@ import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
 import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
 import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
-import com.tcss.dungeonadventure.objects.tiles.WallTile;
-import com.tcss.dungeonadventure.objects.tiles.ExitTile;
-import com.tcss.dungeonadventure.objects.tiles.NPCTile;
-import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
-import com.tcss.dungeonadventure.objects.tiles.Tile;
-import com.tcss.dungeonadventure.objects.tiles.ItemTile;
-import com.tcss.dungeonadventure.objects.tiles.DoorTile;
+import com.tcss.dungeonadventure.objects.tiles.*;
 
 
 import java.awt.Dimension;
@@ -270,6 +263,52 @@ public class Room {
 
         return tiles;
     }
+
+    /**
+     * Places doors in the specified tile array representing a room.
+     *
+     * @param theTiles The array of tiles representing the room.
+     */
+    public static void placeDoors(final Tile[][] theTiles) {
+        final Dimension size = new Dimension(theTiles[0].length, theTiles.length);
+
+        final int numDoors;
+
+        // Adjust the probability for a 2-door scenario
+        final double twoDoorProbability = 0.4; // Adjust as needed
+
+        if (Helper.getRandomDoubleBetween(0, 1) < twoDoorProbability) {
+            numDoors = 2;
+        } else {
+            numDoors = 1;
+        }
+
+        final int maxAttempts = numDoors * MAX_ATTEMPTS_PER_DOOR;
+
+        for (int i = 0; i < numDoors; i++) {
+            int attempts = 0;
+
+            while (true) {
+                if (attempts >= maxAttempts) {
+                    // Break the loop if maximum attempts reached
+                    break;
+                }
+
+                final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
+                final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
+
+                if (theTiles[y][x] != null && theTiles[y][x] instanceof WallTile) {
+                    final Directions.Axis doorAxis = Helper.getRandomDoorAxis();
+                    theTiles[y][x] = new DoorTile(doorAxis);
+                    break;
+                }
+
+                attempts++;
+            }
+        }
+    }
+
+
 
     /**
      * Helper method to use while generating a new Room.

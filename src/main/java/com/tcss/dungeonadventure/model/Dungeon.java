@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tcss.dungeonadventure.model.Room.placeDoors;
+
 /**
  * Represents a randomly generated maze of type {@link Room}.
  *
@@ -76,6 +78,7 @@ public class Dungeon {
                 new Room(true, false, null),
                 new Room(false, true, null),
                 generatePillarRooms()
+
         );
     }
 
@@ -205,7 +208,26 @@ public class Dungeon {
                 pillarRoomsIndex++;
             }
         }
+
     }
+    /**
+     * Places doors in each room of the dungeon.
+     */
+    public void placeDoors() {
+        for (int i = 0; i < myMaze.length; i++) {
+            for (int j = 0; j < myMaze[i].length; j++) {
+                if (myMaze[i][j] != null) {
+                    Room.placeDoors(myMaze[i][j].getRoomTiles());
+                }
+            }
+        }
+    }
+        //TODO: implement the algorithm to check
+        // if the maze is traversable, otherwise regenerate a new maze
+
+    /**
+     * Fully fills the dungeon with random dead-end or other non-essential rooms.
+     */
 
     /**
      * Fully fills the dungeon with random dead-end or other non-essential rooms.
@@ -228,11 +250,13 @@ public class Dungeon {
         }
     }
 
+
     /**
      * Checks if the newly constructed dungeon is traversable.
      *
      * @return True if the dungeon is traversable
      */
+
     private boolean isTraversable() {
         boolean isTraversable = false;
 
@@ -249,18 +273,7 @@ public class Dungeon {
         return myMaze;
     }
 
-    /**
-     * Places doors in each room of the dungeon.
-     */
-    public void placeDoors() {
-        for (int i = 0; i < myMaze.length; i++) {
-            for (int j = 0; j < myMaze[i].length; j++) {
-                if (myMaze[i][j] != null) {
-                    myMaze[i][j].placeDoors();
-                }
-            }
-        }
-    }
+
 
     /**
      * Accessor for the room that the player is currently in.

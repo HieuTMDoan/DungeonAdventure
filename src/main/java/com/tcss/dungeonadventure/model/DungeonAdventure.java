@@ -5,7 +5,6 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-import com.tcss.dungeonadventure.view.ConsoleView;
 import com.tcss.dungeonadventure.view.DungeonGUI;
 import javafx.application.Application;
 
@@ -51,19 +50,15 @@ public class DungeonAdventure {
         return INSTANCE;
     }
 
-    /**
-     * Starts the view depending on if using GUI or not.
-     * Should be called directly after constructor.
-     *
-     * @param theGUIActive If the GUI is active. If not, will print to console.
-     */
-    public void initialize(final boolean theGUIActive) {
-        if (theGUIActive) {
-            new ConsoleView();
-        } else {
-            Application.launch(DungeonGUI.class);
-        }
+    public void initialize() {
+        /*
+        * I have absolutely no clue why I couldn't throw this in the
+        * constructor.
+        * */
+        Application.launch(DungeonGUI.class);
     }
+
+
 
     /**
      * Starts a NEW game with the specified hero name and hero class.
@@ -106,6 +101,10 @@ public class DungeonAdventure {
     public void movePlayer(final Directions.Cardinal theDirection) {
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
+    }
+
+    public Room getCurrentRoom() {
+        return this.myDungeon.getCurrentRoom();
     }
 
 

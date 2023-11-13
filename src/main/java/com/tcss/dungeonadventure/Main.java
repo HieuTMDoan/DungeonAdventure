@@ -12,8 +12,7 @@ public final class Main {
 
     public static void main(final String[] theArgs) {
 
-        final boolean noGUI = true; // This should be specified via command line
-        DungeonAdventure.getInstance().initialize(noGUI);
+        DungeonAdventure.getInstance().initialize();
 
 //        SQLiteDB.getCharacters();
 //        System.out.println(new Dungeon());

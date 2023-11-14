@@ -281,23 +281,25 @@ public class Room {
         int doorsPlaced = 0;
 
         for (Point wallLocation : wallLocations) {
-            int x = (int) wallLocation.getX();
-            int y = (int) wallLocation.getY();
+            final int x = (int) wallLocation.getX();
+            final int y = (int) wallLocation.getY();
 
             // Check if the location is in the corners, skip if true
-            if (!((x == 0 && y == 0) || (x == 0 && y == theTiles.length - 1) ||
-                    (x == theTiles[0].length - 1 && y == 0) || (x == theTiles[0].length - 1 && y == theTiles.length - 1))) {
-
+            if (!(x == 0 && y == 0) || y == theTiles.length - 1 || x == theTiles[0].length - 1) {
                 // Check if the location is right next to a wall, skip if true
-                if (!((x > 0 && theTiles[y][x - 1] instanceof DoorTile) ||
-                        (x < theTiles[0].length - 1 && theTiles[y][x + 1] instanceof DoorTile) ||
-                        (y > 0 && theTiles[y - 1][x] instanceof DoorTile) ||
-                        (y < theTiles.length - 1 && theTiles[y + 1][x] instanceof DoorTile))) {
-
+                if (!((x > 0 && theTiles[y][x - 1] instanceof DoorTile)
+                        || (x < theTiles[0].length - 1 && theTiles[y][x + 1] instanceof DoorTile)
+                        || (y > 0 && theTiles[y - 1][x] instanceof DoorTile)
+                        || (y < theTiles.length - 1 && theTiles[y + 1][x] instanceof DoorTile))) {
                     // Check if the room should have two doors (40% chance)
                     boolean addSecondDoor = Helper.getRandomDoubleBetween(0, 1) < 0.4 && doorsPlaced < maxDoors - 1;
 
-                    Directions.Axis doorAxis = (x == 0 || x == theTiles[0].length - 1) ? Directions.Axis.HORIZONTAL : Directions.Axis.VERTICAL;
+                    Directions.Axis doorAxis;
+                    if (x == 0 || x == theTiles[0].length - 1) {
+                        doorAxis = Directions.Axis.HORIZONTAL;
+                    } else {
+                        doorAxis = Directions.Axis.VERTICAL;
+                    }
 
                     // Place the first door
                     theTiles[y][x] = new DoorTile(doorAxis);

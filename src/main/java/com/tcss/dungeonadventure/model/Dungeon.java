@@ -1,6 +1,8 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
+import com.tcss.dungeonadventure.objects.tiles.WallTile;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -10,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tcss.dungeonadventure.model.Room.placeDoors;
 
 /**
  * Represents a randomly generated maze of type {@link Room}.
@@ -210,6 +211,8 @@ public class Dungeon {
         }
 
     }
+
+
     /**
      * Places doors in each room of the dungeon.
      */
@@ -217,10 +220,34 @@ public class Dungeon {
         for (int i = 0; i < myMaze.length; i++) {
             for (int j = 0; j < myMaze[i].length; j++) {
                 if (myMaze[i][j] != null) {
-                    Room.placeDoors(myMaze[i][j].getRoomTiles());
+                    // Get the wall locations in the current room
+                    List<Point> wallLocations = getWallLocations(myMaze[i][j]);
+                    // Place doors at wall locations with a limit of 4 doors
+                    Room.placeDoors(myMaze[i][j].getRoomTiles(), wallLocations, 4);
                 }
             }
         }
+    }
+
+    /**
+     * Returns a list of wall locations in the specified room.
+     *
+     * @param room The room to get wall locations from.
+     * @return A list of wall locations in the room.
+     */
+    private List<Point> getWallLocations(Room room) {
+        List<Point> wallLocations = new ArrayList<>();
+        Tile[][] roomTiles = room.getRoomTiles();
+
+        for (int i = 0; i < roomTiles.length; i++) {
+            for (int j = 0; j < roomTiles[i].length; j++) {
+                if (roomTiles[i][j] instanceof WallTile) {
+                    wallLocations.add(new Point(j, i));
+                }
+            }
+        }
+
+        return wallLocations;
     }
         //TODO: implement the algorithm to check
         // if the maze is traversable, otherwise regenerate a new maze

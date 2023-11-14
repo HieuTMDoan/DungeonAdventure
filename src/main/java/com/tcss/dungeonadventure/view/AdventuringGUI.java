@@ -89,14 +89,12 @@ public class AdventuringGUI implements PropertyChangeListener {
                 hbox.setOnMouseEntered(e -> onMouseOver(finalRow, finalCol));
                 hbox.getChildren().add(text);
 
-
                 this.myGridPane.add(hbox, col, row);
             }
-
         }
-
-
     }
+
+
 
 
     /**

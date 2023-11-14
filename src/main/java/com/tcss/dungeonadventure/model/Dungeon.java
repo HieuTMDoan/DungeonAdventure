@@ -109,7 +109,6 @@ public class Dungeon {
         placeEntranceAndExit();
         placePillarRooms();
         placeFillerRooms();
-        placeDoors();
 
 //        if (!isTraversable()) {
 //            generateDungeon();
@@ -221,9 +220,9 @@ public class Dungeon {
             for (int j = 0; j < myMaze[i].length; j++) {
                 if (myMaze[i][j] != null) {
                     // Get the wall locations in the current room
-                    List<Point> wallLocations = getWallLocations(myMaze[i][j]);
+                    final List<Point> wallLocations = getWallLocations(myMaze[i][j]);
                     // Place doors at wall locations with a limit of 4 doors
-                    Room.placeDoors(myMaze[i][j].getRoomTiles(), wallLocations, 4);
+                    Room.placeDoors(myMaze[i][j], wallLocations, 4);
                 }
             }
         }
@@ -232,12 +231,12 @@ public class Dungeon {
     /**
      * Returns a list of wall locations in the specified room.
      *
-     * @param room The room to get wall locations from.
+     * @param theRoom The room to get wall locations from.
      * @return A list of wall locations in the room.
      */
-    private List<Point> getWallLocations(Room room) {
-        List<Point> wallLocations = new ArrayList<>();
-        Tile[][] roomTiles = room.getRoomTiles();
+    private List<Point> getWallLocations(final Room theRoom) {
+        final List<Point> wallLocations = new ArrayList<>();
+        final Tile[][] roomTiles = theRoom.getRoomTiles();
 
         for (int i = 0; i < roomTiles.length; i++) {
             for (int j = 0; j < roomTiles[i].length; j++) {
@@ -249,12 +248,6 @@ public class Dungeon {
 
         return wallLocations;
     }
-        //TODO: implement the algorithm to check
-        // if the maze is traversable, otherwise regenerate a new maze
-
-    /**
-     * Fully fills the dungeon with random dead-end or other non-essential rooms.
-     */
 
     /**
      * Fully fills the dungeon with random dead-end or other non-essential rooms.
@@ -341,7 +334,11 @@ public class Dungeon {
      * @return The {@link Room} in the maze at the specified coordinates
      */
     public Room getRoomAt(final int theX, final int theY) {
-        return myMaze[theX][theY];
+        try {
+            return myMaze[theX][theY];
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     @Override

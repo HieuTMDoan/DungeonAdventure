@@ -70,6 +70,7 @@ public class DungeonAdventure {
         this.myPlayerName = thePlayerName;
         this.myHero = theHero;
         this.myDungeon = new Dungeon();
+        this.myDungeon.placeDoors();
 
         final Room startingRoom = myDungeon.getStartingRoom();
         final Tile[][] roomTiles = startingRoom.getRoomTiles();
@@ -104,6 +105,10 @@ public class DungeonAdventure {
 
     public Room getCurrentRoom() {
         return this.myDungeon.getCurrentRoom();
+    }
+
+    public Dungeon getDungeon() {
+        return this.myDungeon;
     }
 
 

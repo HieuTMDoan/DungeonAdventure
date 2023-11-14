@@ -9,7 +9,14 @@ import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
 import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
 import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import com.tcss.dungeonadventure.objects.tiles.*;
+import com.tcss.dungeonadventure.objects.tiles.DoorTile;
+import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
+import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
+import com.tcss.dungeonadventure.objects.tiles.ExitTile;
+import com.tcss.dungeonadventure.objects.tiles.ItemTile;
+import com.tcss.dungeonadventure.objects.tiles.NPCTile;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
+import com.tcss.dungeonadventure.objects.tiles.WallTile;
 
 
 import java.awt.Dimension;
@@ -58,12 +65,6 @@ public class Room {
 
 
     /**
-     * The maximum number of attempts to place a door in a maze.
-     * If placing a door fails this many times, the algorithm gives up for that door.
-     */
-    private static final int MAX_ATTEMPTS_PER_DOOR = 10;
-
-    /**
      * Boolean if the room is the entrance room.
      */
     private final boolean myIsEntranceRoom;
@@ -77,25 +78,19 @@ public class Room {
      * The dimensions of the room.
      */
     private final Dimension myRoomDimensions;
-
+    /**
+     * The pillar that this room contains. May be null.
+     */
+    private final Item myPillar;
     /**
      * The tiles in the room.
      */
     private Tile[][] myRoomData;
-
     /**
      * The location that the room is located at within
      * the dungeon.
      */
     private Point myDungeonLocation;
-
-
-    /**
-     * The pillar that this room contains. May be null.
-     */
-    private Item myPillar;
-
-
     /**
      * The current position of the player, or null if the player is not in the room.
      */
@@ -114,20 +109,13 @@ public class Room {
         this.myIsExitRoom = contains(TileChars.Room.EXIT);
         this.myRoomDimensions = new Dimension(theTiles[0].length, theTiles.length);
 
-        loop:
-        for (final Tile[] row : myRoomData) {
-            for (final Tile tile : row) {
-                if (tile.getClass() != ItemTile.class) {
-                    continue;
-                }
-                final Item item = ((ItemTile) tile).getItem();
-                if (item.getItemType() == Item.ItemTypes.PILLAR) {
-                    myPillar = item;
-                    break loop;
-                }
-            }
-        }
-
+        myPillar = Arrays.stream(myRoomData).
+                flatMap(Arrays::stream).
+                filter(tile -> tile.getClass() == ItemTile.class).
+                map(tile -> ((ItemTile) tile).getItem()).
+                filter(item -> item.getItemType() == Item.ItemTypes.PILLAR).
+                findFirst().
+                orElse(null);
     }
 
     /**
@@ -156,7 +144,10 @@ public class Room {
         myIsExitRoom = theOriginalRoom.myIsExitRoom;
         myRoomDimensions = new Dimension(theOriginalRoom.myRoomDimensions);
         myPillar = (theOriginalRoom.myPillar != null) ? theOriginalRoom.myPillar.copy() : null;
-        myPlayerPosition = (theOriginalRoom.myPlayerPosition != null) ? new Point(theOriginalRoom.myPlayerPosition) : null;
+        myPlayerPosition =
+                (theOriginalRoom.myPlayerPosition != null)
+                        ? new Point(theOriginalRoom.myPlayerPosition)
+                        : null;
         deepCopyRoomData(theOriginalRoom.myRoomData);
     }
 
@@ -270,51 +261,71 @@ public class Room {
      * Randomly places doors in the specified room. Doors are placed at random wall locations
      * making sure to avoid corners and that no two doors are placed right next to each other.
      *
-     * @param theTiles      The 2D array representing the room tiles.
+     * @param theTiles         The 2D array representing the room tiles.
      * @param theWallLocations A list of wall locations where doors can potentially be placed.
      * @param theMaxDoors      The maximum number of doors to place in the room.
      */
-    public static void placeDoors(final Tile[][] theTiles,
+    @SuppressWarnings("checkstyle:UnnecessaryParentheses")
+    public static void placeDoors(final Room theRoom,
                                   final List<Point> theWallLocations, final int theMaxDoors) {
         // Shuffle the wall locations to randomize door placement
         Collections.shuffle(theWallLocations, Helper.getRandom());
 
-        int doorsPlaced = 0;
+        if (theRoom.myIsEntranceRoom) {
+            System.out.println(theWallLocations);
+        }
 
-        for (Point wallLocation : theWallLocations) {
+        int doorsPlaced = 0;
+        final Tile[][] tiles = theRoom.getRoomTiles();
+
+
+        for (final Point wallLocation : theWallLocations) {
             final int x = (int) wallLocation.getX();
             final int y = (int) wallLocation.getY();
 
             // Check if the location is in the corners, skip if true
-            if (!(x == 0 && y == 0) || y == theTiles.length - 1
-                        || x == theTiles[0].length - 1) {
-                // Check if the location is right next to a wall, skip if true
-                if (!(x > 0 && theTiles[y][x - 1] instanceof DoorTile
-                        || x < (theTiles[0].length - 1)
-                        && theTiles[y][x + 1] instanceof DoorTile
-                        || y > 0 && theTiles[y - 1][x] instanceof DoorTile
-                        || y < theTiles.length - 1
-                        && theTiles[y + 1][x] instanceof DoorTile)) {
-                    // Check if the room should have two doors (40% chance)
-                    final boolean addSecondDoor = Helper.getRandomDoubleBetween(0, 1) < 0.4
-                            && doorsPlaced < theMaxDoors - 1;
+            if (wallLocation.equals(new Point(0, 0))
+                    || wallLocation.equals(new Point(theRoom.getRoomWidth(), 0))
+                    || wallLocation.equals(new Point(0, theRoom.getRoomHeight()))
+                    || wallLocation.equals(new Point(theRoom.getRoomWidth(), theRoom.getRoomHeight()))) {
+                continue;
+            }
 
-                    final Directions.Axis doorAxis;
-                    if (x == 0 || x == theTiles[0].length - 1) {
-                        doorAxis = Directions.Axis.HORIZONTAL;
-                    } else {
-                        doorAxis = Directions.Axis.VERTICAL;
-                    }
 
-                    // Place the first door
-                    theTiles[y][x] = new DoorTile(doorAxis);
+            // Check if the location is right next to a wall, skip if true
+            if (!(x > 0 && tiles[y][x - 1] instanceof DoorTile
+                    || x < (tiles[0].length - 1)
+                    && tiles[y][x + 1] instanceof DoorTile
+                    || y > 0 && tiles[y - 1][x] instanceof DoorTile
+                    || y < tiles.length - 1
+                    && tiles[y + 1][x] instanceof DoorTile)) {
+
+                // Check if the room should have two doors (40% chance)
+                final boolean addSecondDoor =
+                        Helper.getRandomDoubleBetween(0, 1) < 0.4
+                                && doorsPlaced < theMaxDoors - 1;
+
+                final Directions.Axis doorAxis;
+                if (x == 0 || x == tiles[0].length - 1) {
+                    doorAxis = Directions.Axis.HORIZONTAL;
+                } else {
+                    doorAxis = Directions.Axis.VERTICAL;
+                }
+
+
+                if (theRoom.isEntranceRoom()) {
+                    System.out.println("placing doors at " + x + " " + y + " at " + theRoom.getDungeonLocation().getY());
+                }
+
+
+                // Place the first door
+                tiles[y][x] = new DoorTile(doorAxis);
+                doorsPlaced++;
+
+                // Place the second door if applicable
+                if (addSecondDoor && doorsPlaced < theMaxDoors) {
+                    tiles[y][x] = new DoorTile(doorAxis);
                     doorsPlaced++;
-
-                    // Place the second door if applicable
-                    if (addSecondDoor && doorsPlaced < theMaxDoors) {
-                        theTiles[y][x] = new DoorTile(doorAxis);
-                        doorsPlaced++;
-                    }
                 }
             }
 
@@ -323,7 +334,6 @@ public class Room {
             }
         }
     }
-
 
 
     /**
@@ -389,9 +399,13 @@ public class Room {
                     "Illegal enum passed: " + theDirection);
         }
 
-        if (myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()].isTraversable()) {
+
+        final Tile tile = myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        if (tile.isTraversable()) {
             myPlayerPosition = tempPoint;
         }
+        tile.onInteract();
+
 
     }
 
@@ -423,6 +437,20 @@ public class Room {
      */
     public void setDungeonLocation(final Point theXY) {
         this.myDungeonLocation = new Point(theXY);
+    }
+
+    public Room getAdjacentRoomByDirection(final Directions.Cardinal theDirection) {
+        final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
+        final int x = (int) this.getDungeonLocation().getX();
+        final int y = (int) this.getDungeonLocation().getY();
+
+
+        return switch (theDirection) {
+            case NORTH -> dungeon.getRoomAt(x - 1, y);
+            case EAST -> dungeon.getRoomAt(x, y + 1);
+            case SOUTH -> dungeon.getRoomAt(x + 1, y);
+            case WEST -> dungeon.getRoomAt(x, y - 1);
+        };
     }
 
     /**
@@ -493,7 +521,6 @@ public class Room {
     public Tile[][] getRoomTiles() {
         return this.myRoomData;
     }
-
 
 
     @Override

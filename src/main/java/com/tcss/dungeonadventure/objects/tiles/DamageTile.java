@@ -12,7 +12,7 @@ public class DamageTile extends Tile {
     }
 
     @Override
-    public void onInteract(final DungeonCharacter theTarget) {
+    public void onInteract() {
 
 
     }

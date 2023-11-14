@@ -57,10 +57,8 @@ public class Tile implements VisualComponent {
 
     /**
      * This method should be fired when the user steps on a tile.
-     *
-     * @param theTarget
      */
-    public void onInteract(final DungeonCharacter theTarget) {
+    public void onInteract() {
         if (!isTraversable()) {
             throw new RuntimeException(
                     "Target has entered a tile that should not be traversable");

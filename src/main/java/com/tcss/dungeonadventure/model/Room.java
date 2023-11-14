@@ -274,7 +274,8 @@ public class Room {
      * @param theWallLocations A list of wall locations where doors can potentially be placed.
      * @param theMaxDoors      The maximum number of doors to place in the room.
      */
-    public static void placeDoors(final Tile[][] theTiles, final List<Point> theWallLocations, final int theMaxDoors) {
+    public static void placeDoors(final Tile[][] theTiles,
+                                  final List<Point> theWallLocations, final int theMaxDoors) {
         // Shuffle the wall locations to randomize door placement
         Collections.shuffle(theWallLocations, Helper.getRandom());
 
@@ -285,14 +286,18 @@ public class Room {
             final int y = (int) wallLocation.getY();
 
             // Check if the location is in the corners, skip if true
-            if (!(x == 0 && y == 0) || y == theTiles.length - 1 || x == theTiles[0].length - 1) {
+            if (!(x == 0 && y == 0) || y == theTiles.length - 1
+                        || x == theTiles[0].length - 1) {
                 // Check if the location is right next to a wall, skip if true
-                if (!(x > 0 && (theTiles[y][x - 1] instanceof DoorTile)
-                        || x < (theTiles[0].length - 1) && (theTiles[y][x + 1] instanceof DoorTile)
+                if (!(x > 0 && theTiles[y][x - 1] instanceof DoorTile
+                        || x < (theTiles[0].length - 1)
+                        && theTiles[y][x + 1] instanceof DoorTile
                         || y > 0 && theTiles[y - 1][x] instanceof DoorTile
-                        || y < theTiles.length - 1 && theTiles[y + 1][x] instanceof DoorTile)) {
+                        || y < theTiles.length - 1
+                        && theTiles[y + 1][x] instanceof DoorTile)) {
                     // Check if the room should have two doors (40% chance)
-                    final boolean addSecondDoor = Helper.getRandomDoubleBetween(0, 1) < 0.4 && doorsPlaced < theMaxDoors - 1;
+                    final boolean addSecondDoor = Helper.getRandomDoubleBetween(0, 1) < 0.4
+                            && doorsPlaced < theMaxDoors - 1;
 
                     final Directions.Axis doorAxis;
                     if (x == 0 || x == theTiles[0].length - 1) {

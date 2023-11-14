@@ -271,30 +271,30 @@ public class Room {
      * making sure to avoid corners and that no two doors are placed right next to each other.
      *
      * @param theTiles      The 2D array representing the room tiles.
-     * @param wallLocations A list of wall locations where doors can potentially be placed.
-     * @param maxDoors      The maximum number of doors to place in the room.
+     * @param theWallLocations A list of wall locations where doors can potentially be placed.
+     * @param theMaxDoors      The maximum number of doors to place in the room.
      */
-    public static void placeDoors(final Tile[][] theTiles, final List<Point> wallLocations, int maxDoors) {
+    public static void placeDoors(final Tile[][] theTiles, final List<Point> theWallLocations, final int theMaxDoors) {
         // Shuffle the wall locations to randomize door placement
-        Collections.shuffle(wallLocations, Helper.getRandom());
+        Collections.shuffle(theWallLocations, Helper.getRandom());
 
         int doorsPlaced = 0;
 
-        for (Point wallLocation : wallLocations) {
+        for (Point wallLocation : theWallLocations) {
             final int x = (int) wallLocation.getX();
             final int y = (int) wallLocation.getY();
 
             // Check if the location is in the corners, skip if true
             if (!(x == 0 && y == 0) || y == theTiles.length - 1 || x == theTiles[0].length - 1) {
                 // Check if the location is right next to a wall, skip if true
-                if (!((x > 0 && theTiles[y][x - 1] instanceof DoorTile)
-                        || (x < theTiles[0].length - 1 && theTiles[y][x + 1] instanceof DoorTile)
-                        || (y > 0 && theTiles[y - 1][x] instanceof DoorTile)
-                        || (y < theTiles.length - 1 && theTiles[y + 1][x] instanceof DoorTile))) {
+                if (!(x > 0 && (theTiles[y][x - 1] instanceof DoorTile)
+                        || x < (theTiles[0].length - 1) && (theTiles[y][x + 1] instanceof DoorTile)
+                        || y > 0 && theTiles[y - 1][x] instanceof DoorTile
+                        || y < theTiles.length - 1 && theTiles[y + 1][x] instanceof DoorTile)) {
                     // Check if the room should have two doors (40% chance)
-                    boolean addSecondDoor = Helper.getRandomDoubleBetween(0, 1) < 0.4 && doorsPlaced < maxDoors - 1;
+                    final boolean addSecondDoor = Helper.getRandomDoubleBetween(0, 1) < 0.4 && doorsPlaced < theMaxDoors - 1;
 
-                    Directions.Axis doorAxis;
+                    final Directions.Axis doorAxis;
                     if (x == 0 || x == theTiles[0].length - 1) {
                         doorAxis = Directions.Axis.HORIZONTAL;
                     } else {
@@ -306,14 +306,14 @@ public class Room {
                     doorsPlaced++;
 
                     // Place the second door if applicable
-                    if (addSecondDoor && doorsPlaced < maxDoors) {
+                    if (addSecondDoor && doorsPlaced < theMaxDoors) {
                         theTiles[y][x] = new DoorTile(doorAxis);
                         doorsPlaced++;
                     }
                 }
             }
 
-            if (doorsPlaced >= maxDoors) {
+            if (doorsPlaced >= theMaxDoors) {
                 return;  // Limit reached, exit the method
             }
         }

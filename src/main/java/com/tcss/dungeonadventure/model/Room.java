@@ -19,7 +19,12 @@ import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 
 
@@ -283,6 +288,113 @@ public class Room {
 
     }
 
+
+    /**
+     * Checks if a specific character exists in the tile set.
+     *
+     * @param theChar The character to look for. Pull this from {@link TileChars}
+     * @return True if the character is in the room, false otherwise.
+     */
+    public boolean contains(final char theChar) {
+        for (final Tile[] row : myRoomData) {
+            for (final Tile tile : row) {
+                if (tile.getDisplayChar() == theChar) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Moves the player in a specific direction.
+     *
+     * @param theDirection The direction to move the player in.
+     */
+    public void movePlayer(final Directions.Cardinal theDirection) {
+        if (this.myPlayerPosition == null) {
+            this.myPlayerPosition = new Point(1, 1);
+            // TODO: Change this to where the player enters the room
+        }
+
+
+        final Point tempPoint = new Point(myPlayerPosition);
+        switch (theDirection) {
+            case NORTH -> tempPoint.translate(-1, 0);
+            case EAST -> tempPoint.translate(0, 1);
+            case SOUTH -> tempPoint.translate(1, 0);
+            case WEST -> tempPoint.translate(0, -1);
+            default -> throw new IllegalArgumentException(
+                    "Illegal enum passed: " + theDirection);
+        }
+
+
+        final Tile tile = myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        if (tile.isTraversable()) {
+            myPlayerPosition = tempPoint;
+            tile.onInteract();
+        }
+
+
+    }
+
+
+    /**
+     * Moves player to a specified location in the room. This may be useful
+     * for loading a player in from a specific direction when coming through a door.
+     *
+     * @param theXY The player location.
+     */
+    public void setPlayerLocation(final Point theXY) {
+
+        // TODO: Needs bound checks
+        myPlayerPosition = theXY == null ? null : new Point(theXY);
+    }
+
+    public void setPlayerLocation(final Directions.Cardinal theOriginalDirection) {
+        if (theOriginalDirection == null) {
+            setPlayerLocation((Point) null);
+            return;
+        }
+        final Tile[][] tiles = this.getRoomTiles();
+
+        switch (theOriginalDirection) {
+            case NORTH -> { // come from door from south
+                for (int i = 0; i < myRoomData[this.getRoomHeight() - 1].length; i++) {
+                    if (myRoomData[this.getRoomHeight() - 1][i].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(this.getRoomHeight() - 1, i);
+                        break;
+                    }
+                }
+            }
+            case SOUTH -> { // come from door from north
+                for (int i = 0; i < myRoomData[0].length; i++) {
+                    if (myRoomData[0][i].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(0, i);
+                        break;
+                    }
+                }
+            }
+            case EAST -> { // come from door from west
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(i, this.getRoomWidth() - 1);
+                        break;
+                    }
+                }
+            }
+
+            case WEST -> { // come from door from east
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][0].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(i, 0);
+                        break;
+                    }
+                }
+
+            }
+        }
+    }
     /**
      * Randomly places doors in the specified room. Doors are placed at random wall locations
      * making sure to avoid corners and that no two doors are placed right next to each other.
@@ -389,112 +501,6 @@ public class Room {
     }
 
     /**
-     * Checks if a specific character exists in the tile set.
-     *
-     * @param theChar The character to look for. Pull this from {@link TileChars}
-     * @return True if the character is in the room, false otherwise.
-     */
-    public boolean contains(final char theChar) {
-        for (final Tile[] row : myRoomData) {
-            for (final Tile tile : row) {
-                if (tile.getDisplayChar() == theChar) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Moves the player in a specific direction.
-     *
-     * @param theDirection The direction to move the player in.
-     */
-    public void movePlayer(final Directions.Cardinal theDirection) {
-        if (this.myPlayerPosition == null) {
-            this.myPlayerPosition = new Point(1, 1);
-            // TODO: Change this to where the player enters the room
-        }
-
-
-        final Point tempPoint = new Point(myPlayerPosition);
-        switch (theDirection) {
-            case NORTH -> tempPoint.translate(-1, 0);
-            case EAST -> tempPoint.translate(0, 1);
-            case SOUTH -> tempPoint.translate(1, 0);
-            case WEST -> tempPoint.translate(0, -1);
-            default -> throw new IllegalArgumentException(
-                    "Illegal enum passed: " + theDirection);
-        }
-
-
-        final Tile tile = myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()];
-        if (tile.isTraversable()) {
-            myPlayerPosition = tempPoint;
-            tile.onInteract();
-        }
-
-
-    }
-
-    /**
-     * Moves player to a specified location in the room. This may be useful
-     * for loading a player in from a specific direction when coming through a door.
-     *
-     * @param theXY The player location.
-     */
-    public void setPlayerLocation(final Point theXY) {
-
-        // TODO: Needs bound checks
-        myPlayerPosition = theXY == null ? null : new Point(theXY);
-    }
-
-    public void setPlayerLocation(final Directions.Cardinal theOriginalDirection) {
-        if (theOriginalDirection == null) {
-            setPlayerLocation((Point) null);
-            return;
-        }
-        final Tile[][] tiles = this.getRoomTiles();
-
-        switch (theOriginalDirection) {
-            case NORTH -> { // come from door from south
-                for (int i = 0; i < myRoomData[this.getRoomHeight() - 1].length; i++) {
-                    if (myRoomData[this.getRoomHeight() - 1][i].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(this.getRoomHeight() - 1, i);
-                        break;
-                    }
-                }
-            }
-            case SOUTH -> { // come from door from north
-                for (int i = 0; i < myRoomData[0].length; i++) {
-                    if (myRoomData[0][i].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(0, i);
-                        break;
-                    }
-                }
-            }
-            case EAST -> { // come from door from west
-                for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, this.getRoomWidth() - 1);
-                        break;
-                    }
-                }
-            }
-
-            case WEST -> { // come from door from east
-                for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][0].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, 0);
-                        break;
-                    }
-                }
-
-            }
-        }
-    }
-
-    /**
      * Returns the location of the room within the dungeon.
      *
      * @return A Point representing the rooms location in the dungeon.
@@ -518,15 +524,12 @@ public class Room {
         final int y = (int) this.getDungeonLocation().getY();
 
 
-        final Room room = switch (theDirection) {
+        return switch (theDirection) {
             case NORTH -> dungeon.getRoomAt(x - 1, y);
             case SOUTH -> dungeon.getRoomAt(x + 1, y);
             case EAST -> dungeon.getRoomAt(x, y - 1);
             case WEST -> dungeon.getRoomAt(x, y + 1);
         };
-
-
-        return room;
 
     }
 

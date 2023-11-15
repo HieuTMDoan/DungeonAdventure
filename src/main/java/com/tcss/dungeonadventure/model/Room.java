@@ -455,6 +455,46 @@ public class Room {
         return (int) this.myRoomDimensions.getHeight();
     }
 
+    public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
+        myRoomData = new Tile[theOriginalRoomData.length][];
+        for (int i = 0; i < theOriginalRoomData.length; i++) {
+            myRoomData[i] = Arrays.copyOf(theOriginalRoomData[i],
+                    theOriginalRoomData[i].length);
+
+            for (int j = 0; j < theOriginalRoomData[i].length; j++) {
+                if (theOriginalRoomData[i][j] != null) {
+                    final char displayChar = theOriginalRoomData[i][j].getDisplayChar();
+                    final Tile newTile;
+                    if (theOriginalRoomData[i][j] instanceof ItemTile) {
+                        final Item item = ((ItemTile) theOriginalRoomData[i][j]).getItem();
+                        newTile = new ItemTile(item);
+                    } else {
+                        final boolean isTraversable =
+                                theOriginalRoomData[i][j].isTraversable();
+                        newTile = new Tile(displayChar, isTraversable);
+                    }
+                    myRoomData[i][j] = newTile;
+                } else {
+                    myRoomData[i][j] = null;
+                }
+            }
+        }
+    }
+    public RoomMemento createMemento() {
+        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+    }
+
+    public RoomMemento saveToMemento() {
+        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+    }
+
+    public void restoreFromMemento(final RoomMemento theMemento) {
+        myRoomData = theMemento.getSavedRoomData();
+        myPlayerPosition = theMemento.getSavedPlayerPosition();
+        myPillar = theMemento.getSavedPillar();
+    }
+
+
     /**
      * Returns the players current X position in the room. If the player
      * isn't present, returns null;
@@ -516,39 +556,5 @@ public class Room {
         return stringBuilder.toString();
     }
 
-    /**
-     * Copy method to create a deep copy of the Room.
-     *
-     * @return A deep copy of the Room.
-     */
-    public Room copy() {
-        return new Room(this);
-    }
-
-    public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
-        myRoomData = new Tile[theOriginalRoomData.length][];
-        for (int i = 0; i < theOriginalRoomData.length; i++) {
-            myRoomData[i] = Arrays.copyOf(theOriginalRoomData[i],
-                    theOriginalRoomData[i].length);
-
-            for (int j = 0; j < theOriginalRoomData[i].length; j++) {
-                if (theOriginalRoomData[i][j] != null) {
-                    final char displayChar = theOriginalRoomData[i][j].getDisplayChar();
-                    final Tile newTile;
-                    if (theOriginalRoomData[i][j] instanceof ItemTile) {
-                        final Item item = ((ItemTile) theOriginalRoomData[i][j]).getItem();
-                        newTile = new ItemTile(item);
-                    } else {
-                        final boolean isTraversable =
-                                theOriginalRoomData[i][j].isTraversable();
-                        newTile = new Tile(displayChar, isTraversable);
-                    }
-                    myRoomData[i][j] = newTile;
-                } else {
-                    myRoomData[i][j] = null;
-                }
-            }
-        }
-    }
 
 }

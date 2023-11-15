@@ -106,5 +106,43 @@ public class DungeonAdventure {
         return this.myDungeon.getCurrentRoom();
     }
 
+    public DungeonAdventureMemento createMemento() {
+        final String playerName = this.myPlayerName;
+        final Hero hero = this.myHero;
+        final Dungeon dungeon = this.myDungeon;
 
+        final DungeonAdventureMemento memento;
+        memento = new DungeonAdventureMemento(playerName, hero, dungeon);
+        memento.addRoomMemento(myDungeon.getCurrentRoom().saveToMemento());
+
+        return memento;
+    }
+    public void saveGameState() {
+        // Create and save a memento
+        final DungeonAdventureMemento memento = createMemento();
+        GameStateManager.getInstance().setMemento(memento);
+    }
+
+    public void loadGameState() {
+        // Load and restore the saved memento
+        final DungeonAdventureMemento memento = GameStateManager.getInstance().getMemento();
+        if (memento != null) {
+            restoreFromMemento(memento);
+        }
+    }
+    // Restore the state from a Memento
+    public void restoreFromMemento(final DungeonAdventureMemento theMemento) {
+        this.myPlayerName = theMemento.getSavedPlayerName();
+        this.myHero = theMemento.getSavedHero();
+        this.myDungeon = theMemento.getSavedDungeon();
+
+        // Restore the current room
+        RoomMemento roomMemento = theMemento.getRoomMementos().get(0);
+        myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
+
+        PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
+    }
 }
+
+
+

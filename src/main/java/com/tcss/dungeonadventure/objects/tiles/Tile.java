@@ -1,8 +1,7 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
-
-import com.tcss.dungeonadventure.objects.VisualComponent;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
+import com.tcss.dungeonadventure.objects.VisualComponent;
 
 /**
  * Parent class of all Tiles, which represents one square in
@@ -29,7 +28,6 @@ public class Tile implements VisualComponent {
         this.myTileChar = theTileChar;
         this.myDefaultTraversable = theDefaultTraversable;
     }
-
 
     /**
      * @return The display character of the tile.
@@ -67,10 +65,18 @@ public class Tile implements VisualComponent {
         }
     }
 
+    /**
+     * Create a new instance of the Tile with the same state.
+     *
+     * @return A new instance of the Tile with the same state.
+     */
+    public Tile copy() {
+        // logic to create a new instance with the same state
+        return new Tile(this.myTileChar, this.myDefaultTraversable);
+    }
+
     @Override
     public String toString() {
         return String.valueOf(this.myTileChar);
     }
-
-
 }

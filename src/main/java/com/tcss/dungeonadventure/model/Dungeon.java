@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
 
@@ -109,7 +110,6 @@ public class Dungeon {
         placeEntranceAndExit();
         placePillarRooms();
         placeFillerRooms();
-        placeDoors();
 
 //        if (!isTraversable()) {
 //            generateDungeon();
@@ -217,13 +217,11 @@ public class Dungeon {
      * Places doors in each room of the dungeon.
      */
     public void placeDoors() {
-        for (int i = 0; i < myMaze.length; i++) {
-            for (int j = 0; j < myMaze[i].length; j++) {
-                if (myMaze[i][j] != null) {
-                    // Get the wall locations in the current room
-                    List<Point> wallLocations = getWallLocations(myMaze[i][j]);
+        for (Room[] rooms : myMaze) {
+            for (Room room : rooms) {
+                if (room != null) {
                     // Place doors at wall locations with a limit of 4 doors
-                    Room.placeDoors(myMaze[i][j].getRoomTiles(), wallLocations, 4);
+                    Room.placeDoors(room, getWallLocations(room));
                 }
             }
         }
@@ -232,12 +230,12 @@ public class Dungeon {
     /**
      * Returns a list of wall locations in the specified room.
      *
-     * @param room The room to get wall locations from.
+     * @param theRoom The room to get wall locations from.
      * @return A list of wall locations in the room.
      */
-    private List<Point> getWallLocations(Room room) {
-        List<Point> wallLocations = new ArrayList<>();
-        Tile[][] roomTiles = room.getRoomTiles();
+    private List<Point> getWallLocations(final Room theRoom) {
+        final List<Point> wallLocations = new ArrayList<>();
+        final Tile[][] roomTiles = theRoom.getRoomTiles();
 
         for (int i = 0; i < roomTiles.length; i++) {
             for (int j = 0; j < roomTiles[i].length; j++) {
@@ -249,12 +247,6 @@ public class Dungeon {
 
         return wallLocations;
     }
-        //TODO: implement the algorithm to check
-        // if the maze is traversable, otherwise regenerate a new maze
-
-    /**
-     * Fully fills the dungeon with random dead-end or other non-essential rooms.
-     */
 
     /**
      * Fully fills the dungeon with random dead-end or other non-essential rooms.
@@ -324,13 +316,18 @@ public class Dungeon {
      * Loads the player into the dungeon at a specific XY,
      * and in a specific XY in the room.
      */
-    public void loadPlayerTo(final Point theDungeonXY,
+    public void loadPlayerTo(final Room theRoom,
                              final Point theRoomXY) {
         // TODO: Needs bound checks
 
-        final Room room = this.myMaze[(int) theDungeonXY.getX()][(int) theDungeonXY.getY()];
-        room.movePlayerTo(theRoomXY);
-        this.myCurrentRoom = room;
+        theRoom.setPlayerLocation(theRoomXY);
+        this.myCurrentRoom = theRoom;
+    }
+
+    public void loadPlayerTo(final Room theRoom, final Directions.Cardinal theOriginalDirection) {
+        this.myCurrentRoom.setPlayerLocation((Point) null);
+        theRoom.setPlayerLocation(theOriginalDirection);
+        this.myCurrentRoom = theRoom;
     }
 
     /**
@@ -341,7 +338,11 @@ public class Dungeon {
      * @return The {@link Room} in the maze at the specified coordinates
      */
     public Room getRoomAt(final int theX, final int theY) {
-        return myMaze[theX][theY];
+        try {
+            return myMaze[theX][theY];
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     @Override
@@ -352,6 +353,8 @@ public class Dungeon {
             for (Room room : rooms) {
                 if (room == null) {
                     stringBuilder.append("null"); // IDEALLY nothing should be null.
+                } else if (room.getPlayerXPosition() != null) {
+                    stringBuilder.append("HERE");
                 } else if (room.isEntranceRoom()) {
                     stringBuilder.append("ENTR");
                 } else if (room.isExitRoom()) {
@@ -361,7 +364,10 @@ public class Dungeon {
                             append(room.getPillar().getDisplayChar()).
                             append("  ");
                 } else {
-                    stringBuilder.append("ROOM");
+                    stringBuilder.append("|").
+                            append(room.getDungeonLocation().x).
+                            append(room.getDungeonLocation().y).
+                            append("|");
                 }
 
                 stringBuilder.append(" ");

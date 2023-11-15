@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -95,8 +96,6 @@ public class AdventuringGUI implements PropertyChangeListener {
     }
 
 
-
-
     /**
      * Changes the tile at a specified index.
      *
@@ -111,12 +110,13 @@ public class AdventuringGUI implements PropertyChangeListener {
     private void setTileAt(final int theRowIndex, final int theColIndex, final char theChar) {
         if (theRowIndex > myGridPane.getRowCount()
                 || theColIndex > myGridPane.getColumnCount()) {
-            throw new IllegalArgumentException("Row or col must be within bounds "
-                    + "row: " + myGridPane.getRowCount()
-                    + " col: " + myGridPane.getColumnCount()
-                    + "; " + theRowIndex + " " + theColIndex);
-        }
 
+            throw new IllegalArgumentException(
+                    "Row or col must be within bounds row: %d col: %d; %d %d".
+                            formatted(myGridPane.getRowCount(),
+                                    myGridPane.getColumnCount(),
+                                    theRowIndex, theColIndex));
+        }
 
         myRoomTextBoxes[theRowIndex][theColIndex].setText(String.valueOf(theChar));
     }
@@ -142,7 +142,6 @@ public class AdventuringGUI implements PropertyChangeListener {
                     if (myCurrentRoom.getPlayerXPosition() != null
                             && row == myCurrentRoom.getPlayerXPosition()
                             && col == myCurrentRoom.getPlayerYPosition()) {
-
                         setTileAt(row, col, '/');
                     } else {
                         setTileAt(row, col, myCurrentRoom.getRoomTiles()[row][col]);

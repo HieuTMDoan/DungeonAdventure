@@ -1,9 +1,8 @@
 package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.Helper;
-import java.util.*;
 import com.tcss.dungeonadventure.objects.Directions;
-import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.TileChars;
+import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
 import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
 import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
@@ -20,6 +19,7 @@ import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 
 
@@ -257,6 +257,32 @@ public class Room {
         return tiles;
     }
 
+
+    /**
+     * Helper method to use while generating a new Room.
+     * Will ensure no overlap between tiles.
+     *
+     * @param theTile  The tile to add to the tile set.
+     * @param theTiles The current tile set.
+     */
+    private static void putTileAtValidLocation(final Tile theTile,
+                                               final Tile[][] theTiles) {
+
+        final Dimension size = new Dimension(theTiles[0].length, theTiles.length);
+
+        while (true) {
+            final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
+            final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
+
+            if (theTiles[y][x] != null && theTiles[y][x].getClass() != EmptyTile.class) {
+                continue;
+            }
+            theTiles[y][x] = theTile;
+            return;
+        }
+
+    }
+
     /**
      * Randomly places doors in the specified room. Doors are placed at random wall locations
      * making sure to avoid corners and that no two doors are placed right next to each other.
@@ -360,32 +386,6 @@ public class Room {
                 return;  // Limit reached, exit the method
             }
         }
-    }
-
-
-    /**
-     * Helper method to use while generating a new Room.
-     * Will ensure no overlap between tiles.
-     *
-     * @param theTile  The tile to add to the tile set.
-     * @param theTiles The current tile set.
-     */
-    private static void putTileAtValidLocation(final Tile theTile,
-                                               final Tile[][] theTiles) {
-
-        final Dimension size = new Dimension(theTiles[0].length, theTiles.length);
-
-        while (true) {
-            final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
-            final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
-
-            if (theTiles[y][x] != null && theTiles[y][x].getClass() != EmptyTile.class) {
-                continue;
-            }
-            theTiles[y][x] = theTile;
-            return;
-        }
-
     }
 
     /**

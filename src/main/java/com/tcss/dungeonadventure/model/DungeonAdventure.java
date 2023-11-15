@@ -3,13 +3,12 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-import com.tcss.dungeonadventure.objects.tiles.DoorTile;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
+import java.awt.Point;
 import javafx.application.Application;
 
-import java.awt.Point;
 import java.util.Arrays;
 
 

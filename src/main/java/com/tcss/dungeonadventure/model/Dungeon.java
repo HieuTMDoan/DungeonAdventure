@@ -4,7 +4,6 @@ import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
-
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;

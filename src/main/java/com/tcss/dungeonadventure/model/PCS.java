@@ -1,13 +1,13 @@
 package com.tcss.dungeonadventure.model;
 
-
+import com.tcss.dungeonadventure.objects.Directions;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import com.tcss.dungeonadventure.objects.Directions;
+
 
 /**
- * This class contains constants for the Property Chance Listener
+ * This class contains constants for the Property Chance Listener.
  *
  * @author Aaron Burnham
  * @author Sunny Ali

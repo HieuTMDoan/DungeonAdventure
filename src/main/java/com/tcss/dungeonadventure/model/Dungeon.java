@@ -276,10 +276,7 @@ public class Dungeon {
      */
 
     private boolean isTraversable() {
-        boolean isTraversable = false;
-
-
-        return isTraversable;
+        return false;
     }
 
     /**
@@ -323,7 +320,8 @@ public class Dungeon {
         this.myCurrentRoom = theRoom;
     }
 
-    public void loadPlayerTo(final Room theRoom, final Directions.Cardinal theOriginalDirection) {
+    public void loadPlayerTo(final Room theRoom,
+                             final Directions.Cardinal theOriginalDirection) {
         this.myCurrentRoom.setPlayerLocation((Point) null);
         theRoom.setPlayerLocation(theOriginalDirection);
         this.myCurrentRoom = theRoom;

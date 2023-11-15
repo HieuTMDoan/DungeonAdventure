@@ -9,8 +9,6 @@ import com.tcss.dungeonadventure.view.GUIHandler;
 import java.awt.Point;
 import javafx.application.Application;
 
-import java.util.Arrays;
-
 
 public class DungeonAdventure {
 

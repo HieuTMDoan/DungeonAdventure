@@ -5,6 +5,8 @@ package com.tcss.dungeonadventure.model;
 /**
  * Manages the game state using the Memento pattern.
  * Singleton class responsible for creating and restoring game state Mementos.
+ * @author Sunny, Aaron, Hieu
+ * @version Fall 2023
  */
 public final class GameStateManager {
     /** The sole instance of the GameStateManager. */

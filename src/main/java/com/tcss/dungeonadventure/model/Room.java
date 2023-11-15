@@ -155,6 +155,10 @@ public class Room {
                 (theOriginalRoom.myPlayerPosition != null)
                         ? new Point(theOriginalRoom.myPlayerPosition)
                         : null;
+        myDungeonLocation =
+                (theOriginalRoom.myDungeonLocation != null)
+                        ? new Point(theOriginalRoom.myDungeonLocation)
+                        : null;
         deepCopyRoomData(theOriginalRoom.myRoomData);
     }
 

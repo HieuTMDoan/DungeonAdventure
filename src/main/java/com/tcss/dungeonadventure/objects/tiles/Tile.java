@@ -1,8 +1,7 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
-
-import com.tcss.dungeonadventure.objects.VisualComponent;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
+import com.tcss.dungeonadventure.objects.VisualComponent;
 
 /**
  * Parent class of all Tiles, which represents one square in
@@ -30,7 +29,6 @@ public class Tile implements VisualComponent {
         this.myDefaultTraversable = theDefaultTraversable;
     }
 
-
     /**
      * @return The display character of the tile.
      */
@@ -57,20 +55,26 @@ public class Tile implements VisualComponent {
 
     /**
      * This method should be fired when the user steps on a tile.
-     *
-     * @param theTarget
      */
-    public void onInteract(final DungeonCharacter theTarget) {
+    public void onInteract() {
         if (!isTraversable()) {
             throw new RuntimeException(
                     "Target has entered a tile that should not be traversable");
         }
     }
 
+    /**
+     * Create a new instance of the Tile with the same state.
+     *
+     * @return A new instance of the Tile with the same state.
+     */
+    public Tile copy() {
+        // logic to create a new instance with the same state
+        return new Tile(this.myTileChar, this.myDefaultTraversable);
+    }
+
     @Override
     public String toString() {
         return String.valueOf(this.myTileChar);
     }
-
-
 }

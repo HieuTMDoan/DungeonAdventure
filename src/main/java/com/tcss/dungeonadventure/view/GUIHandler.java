@@ -122,6 +122,11 @@ public class GUIHandler extends Application {
          */
         private Node myLayoutNode;
 
+        /**
+         * Swaps between layouts.
+         *
+         * @param theLayout The layout to swap to.
+         */
         private static void swapLayout(final Layouts theLayout) {
             for (final Layouts layout : Layouts.values()) {
                 layout.getNode().setVisible(false);
@@ -130,14 +135,25 @@ public class GUIHandler extends Application {
             CURRENT_LAYOUT = theLayout;
         }
 
+        /**
+         * @return The current layout.
+         */
         private static Layouts getCurrentLayout() {
             return CURRENT_LAYOUT;
         }
 
+        /**
+         * @return The node corresponding to the Layout enum.
+         */
         private Node getNode() {
             return myLayoutNode;
         }
 
+        /**
+         * Binds a node to a Layout enum.
+         *
+         * @param theNode The node to bind to.
+         */
         private void setNode(final Node theNode) {
             if (theNode == null) {
                 throw new IllegalArgumentException(

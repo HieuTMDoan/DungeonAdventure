@@ -19,7 +19,7 @@ public class TrapDoorTile extends Tile {
     }
 
     @Override
-    public void onInteract(final DungeonCharacter theTarget) {
+    public void onInteract() {
         // move player to new room
     }
     public Directions.Axis getDoorAxis() {

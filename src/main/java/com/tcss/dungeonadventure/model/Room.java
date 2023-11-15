@@ -1,6 +1,6 @@
 package com.tcss.dungeonadventure.model;
-
 import com.tcss.dungeonadventure.Helper;
+import java.util.*;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.TileChars;
@@ -9,15 +9,18 @@ import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
 import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
 import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import com.tcss.dungeonadventure.objects.tiles.*;
-
-
+import com.tcss.dungeonadventure.objects.tiles.DoorTile;
+import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
+import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
+import com.tcss.dungeonadventure.objects.tiles.ExitTile;
+import com.tcss.dungeonadventure.objects.tiles.ItemTile;
+import com.tcss.dungeonadventure.objects.tiles.NPCTile;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
+import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
 
 
 public class Room {
@@ -56,12 +59,10 @@ public class Room {
      */
     private static final double ONE_MONSTER_CHANCE = 0.35;
 
-
     /**
-     * The maximum number of attempts to place a door in a maze.
-     * If placing a door fails this many times, the algorithm gives up for that door.
+     * The max number of doors that can generate in a room.
      */
-    private static final int MAX_ATTEMPTS_PER_DOOR = 10;
+    private static final int MAX_DOORS = 4;
 
     /**
      * Boolean if the room is the entrance room.
@@ -77,25 +78,19 @@ public class Room {
      * The dimensions of the room.
      */
     private final Dimension myRoomDimensions;
-
+    /**
+     * The pillar that this room contains. May be null.
+     */
+    private Item myPillar;
     /**
      * The tiles in the room.
      */
     private Tile[][] myRoomData;
-
     /**
      * The location that the room is located at within
      * the dungeon.
      */
     private Point myDungeonLocation;
-
-
-    /**
-     * The pillar that this room contains. May be null.
-     */
-    private Item myPillar;
-
-
     /**
      * The current position of the player, or null if the player is not in the room.
      */
@@ -114,20 +109,13 @@ public class Room {
         this.myIsExitRoom = contains(TileChars.Room.EXIT);
         this.myRoomDimensions = new Dimension(theTiles[0].length, theTiles.length);
 
-        loop:
-        for (final Tile[] row : myRoomData) {
-            for (final Tile tile : row) {
-                if (tile.getClass() != ItemTile.class) {
-                    continue;
-                }
-                final Item item = ((ItemTile) tile).getItem();
-                if (item.getItemType() == Item.ItemTypes.PILLAR) {
-                    myPillar = item;
-                    break loop;
-                }
-            }
-        }
-
+        myPillar = Arrays.stream(myRoomData).
+                flatMap(Arrays::stream).
+                filter(tile -> tile.getClass() == ItemTile.class).
+                map(tile -> ((ItemTile) tile).getItem()).
+                filter(item -> item.getItemType() == Item.ItemTypes.PILLAR).
+                findFirst().
+                orElse(null);
     }
 
     /**
@@ -156,7 +144,10 @@ public class Room {
         myIsExitRoom = theOriginalRoom.myIsExitRoom;
         myRoomDimensions = new Dimension(theOriginalRoom.myRoomDimensions);
         myPillar = (theOriginalRoom.myPillar != null) ? theOriginalRoom.myPillar.copy() : null;
-        myPlayerPosition = (theOriginalRoom.myPlayerPosition != null) ? new Point(theOriginalRoom.myPlayerPosition) : null;
+        myPlayerPosition =
+                (theOriginalRoom.myPlayerPosition != null)
+                        ? new Point(theOriginalRoom.myPlayerPosition)
+                        : null;
         deepCopyRoomData(theOriginalRoom.myRoomData);
     }
 
@@ -270,60 +261,106 @@ public class Room {
      * Randomly places doors in the specified room. Doors are placed at random wall locations
      * making sure to avoid corners and that no two doors are placed right next to each other.
      *
-     * @param theTiles      The 2D array representing the room tiles.
+     * @param theRoom          The Room to add doors to.
      * @param theWallLocations A list of wall locations where doors can potentially be placed.
-     * @param theMaxDoors      The maximum number of doors to place in the room.
      */
-    public static void placeDoors(final Tile[][] theTiles,
-                                  final List<Point> theWallLocations, final int theMaxDoors) {
+    public static void placeDoors(final Room theRoom,
+                                  final List<Point> theWallLocations) {
         // Shuffle the wall locations to randomize door placement
         Collections.shuffle(theWallLocations, Helper.getRandom());
 
         int doorsPlaced = 0;
+        final Tile[][] tiles = theRoom.getRoomTiles();
+        final Set<Directions.Cardinal> usedLocations = new HashSet<>();
 
-        for (Point wallLocation : theWallLocations) {
+        for (final Point wallLocation : theWallLocations) {
             final int x = (int) wallLocation.getX();
             final int y = (int) wallLocation.getY();
 
             // Check if the location is in the corners, skip if true
-            if (!(x == 0 && y == 0) || y == theTiles.length - 1
-                        || x == theTiles[0].length - 1) {
-                // Check if the location is right next to a wall, skip if true
-                if (!(x > 0 && theTiles[y][x - 1] instanceof DoorTile
-                        || x < (theTiles[0].length - 1)
-                        && theTiles[y][x + 1] instanceof DoorTile
-                        || y > 0 && theTiles[y - 1][x] instanceof DoorTile
-                        || y < theTiles.length - 1
-                        && theTiles[y + 1][x] instanceof DoorTile)) {
-                    // Check if the room should have two doors (40% chance)
-                    final boolean addSecondDoor = Helper.getRandomDoubleBetween(0, 1) < 0.4
-                            && doorsPlaced < theMaxDoors - 1;
+            if (wallLocation.equals(new Point(0, 0))
+                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1, 0))
+                    || wallLocation.equals(new Point(0, theRoom.getRoomHeight() - 1))
+                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1,
+                    theRoom.getRoomHeight() - 1))) {
+                continue;
+            }
 
-                    final Directions.Axis doorAxis;
-                    if (x == 0 || x == theTiles[0].length - 1) {
-                        doorAxis = Directions.Axis.HORIZONTAL;
-                    } else {
-                        doorAxis = Directions.Axis.VERTICAL;
+            // Check to ensure only ONE door is placed along a wall.
+            boolean foundDoor = false;
+            if (x == 0 || x == theRoom.getRoomWidth() - 1) { // door is on left/right wall
+                for (final Tile[] tile : tiles) {
+                    if (tile[x].getClass() == DoorTile.class) {
+                        foundDoor = true;
+                        break;
                     }
-
-                    // Place the first door
-                    theTiles[y][x] = new DoorTile(doorAxis);
-                    doorsPlaced++;
-
-                    // Place the second door if applicable
-                    if (addSecondDoor && doorsPlaced < theMaxDoors) {
-                        theTiles[y][x] = new DoorTile(doorAxis);
-                        doorsPlaced++;
+                }
+                // door is on top/bottom wall
+            } else if (y == 0 || y == theRoom.getRoomHeight() - 1) {
+                for (final Tile tile : tiles[y]) {
+                    if (tile.getClass() == DoorTile.class) {
+                        foundDoor = true;
+                        break;
                     }
                 }
             }
+            if (foundDoor) {
+                continue;
+            }
 
-            if (doorsPlaced >= theMaxDoors) {
+
+            // Checks if there's a valid room to put a door to.
+            // Not sure if I like this, but it works
+            if (y == 0) { // top
+                final Room
+                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.NORTH);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.NORTH, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.NORTH)) {
+                    doorsPlaced++;
+                }
+            }
+            if (y == theRoom.getRoomHeight() - 1) { // bottom
+                final Room
+                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.SOUTH);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.SOUTH, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.SOUTH)) {
+                    doorsPlaced++;
+                }
+            }
+            if (x == 0) { // left
+                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.EAST);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.EAST, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.EAST)) {
+                    doorsPlaced++;
+                }
+
+            }
+            if (x == theRoom.getRoomWidth() - 1) { // right
+                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.WEST);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.WEST, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.WEST)) {
+                    doorsPlaced++;
+                }
+
+
+            }
+
+
+
+
+            if (doorsPlaced >= MAX_DOORS) {
                 return;  // Limit reached, exit the method
             }
         }
     }
-
 
 
     /**
@@ -375,7 +412,8 @@ public class Room {
      */
     public void movePlayer(final Directions.Cardinal theDirection) {
         if (this.myPlayerPosition == null) {
-            this.myPlayerPosition = new Point(1, 1); // TODO: Change this to where the player enters the room
+            this.myPlayerPosition = new Point(1, 1);
+            // TODO: Change this to where the player enters the room
         }
 
 
@@ -389,9 +427,13 @@ public class Room {
                     "Illegal enum passed: " + theDirection);
         }
 
-        if (myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()].isTraversable()) {
+
+        final Tile tile = myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        if (tile.isTraversable()) {
             myPlayerPosition = tempPoint;
+            tile.onInteract();
         }
+
 
     }
 
@@ -401,10 +443,55 @@ public class Room {
      *
      * @param theXY The player location.
      */
-    public void movePlayerTo(final Point theXY) {
-        // TODO: Needs bound checks
+    public void setPlayerLocation(final Point theXY) {
 
-        myPlayerPosition = new Point(theXY);
+        // TODO: Needs bound checks
+        myPlayerPosition = theXY == null ? null : new Point(theXY);
+    }
+
+    public void setPlayerLocation(final Directions.Cardinal theOriginalDirection) {
+        if (theOriginalDirection == null) {
+            setPlayerLocation((Point) null);
+            return;
+        }
+        final Tile[][] tiles = this.getRoomTiles();
+
+        switch (theOriginalDirection) {
+            case NORTH -> { // come from door from south
+                for (int i = 0; i < myRoomData[this.getRoomHeight() - 1].length; i++) {
+                    if (myRoomData[this.getRoomHeight() - 1][i].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(this.getRoomHeight() - 1, i);
+                        break;
+                    }
+                }
+            }
+            case SOUTH -> { // come from door from north
+                for (int i = 0; i < myRoomData[0].length; i++) {
+                    if (myRoomData[0][i].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(0, i);
+                        break;
+                    }
+                }
+            }
+            case EAST -> { // come from door from west
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(i, this.getRoomWidth() - 1);
+                        break;
+                    }
+                }
+            }
+
+            case WEST -> { // come from door from east
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][0].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(i, 0);
+                        break;
+                    }
+                }
+
+            }
+        }
     }
 
     /**
@@ -423,6 +510,24 @@ public class Room {
      */
     public void setDungeonLocation(final Point theXY) {
         this.myDungeonLocation = new Point(theXY);
+    }
+
+    public Room getAdjacentRoomByDirection(final Directions.Cardinal theDirection) {
+        final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
+        final int x = (int) this.getDungeonLocation().getX();
+        final int y = (int) this.getDungeonLocation().getY();
+
+
+        final Room room = switch (theDirection) {
+            case NORTH -> dungeon.getRoomAt(x - 1, y);
+            case SOUTH -> dungeon.getRoomAt(x + 1, y);
+            case EAST -> dungeon.getRoomAt(x, y - 1);
+            case WEST -> dungeon.getRoomAt(x, y + 1);
+        };
+
+
+        return room;
+
     }
 
     /**
@@ -454,6 +559,46 @@ public class Room {
     public int getRoomHeight() {
         return (int) this.myRoomDimensions.getHeight();
     }
+
+    public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
+        myRoomData = new Tile[theOriginalRoomData.length][];
+        for (int i = 0; i < theOriginalRoomData.length; i++) {
+            myRoomData[i] = Arrays.copyOf(theOriginalRoomData[i],
+                    theOriginalRoomData[i].length);
+
+            for (int j = 0; j < theOriginalRoomData[i].length; j++) {
+                if (theOriginalRoomData[i][j] != null) {
+                    final char displayChar = theOriginalRoomData[i][j].getDisplayChar();
+                    final Tile newTile;
+                    if (theOriginalRoomData[i][j] instanceof ItemTile) {
+                        final Item item = ((ItemTile) theOriginalRoomData[i][j]).getItem();
+                        newTile = new ItemTile(item);
+                    } else {
+                        final boolean isTraversable =
+                                theOriginalRoomData[i][j].isTraversable();
+                        newTile = new Tile(displayChar, isTraversable);
+                    }
+                    myRoomData[i][j] = newTile;
+                } else {
+                    myRoomData[i][j] = null;
+                }
+            }
+        }
+    }
+    public RoomMemento createMemento() {
+        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+    }
+
+    public RoomMemento saveToMemento() {
+        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+    }
+
+    public void restoreFromMemento(final RoomMemento theMemento) {
+        myRoomData = theMemento.getSavedRoomData();
+        myPlayerPosition = theMemento.getSavedPlayerPosition();
+        myPillar = theMemento.getSavedPillar();
+    }
+
 
     /**
      * Returns the players current X position in the room. If the player
@@ -495,7 +640,6 @@ public class Room {
     }
 
 
-
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
@@ -516,39 +660,5 @@ public class Room {
         return stringBuilder.toString();
     }
 
-    /**
-     * Copy method to create a deep copy of the Room.
-     *
-     * @return A deep copy of the Room.
-     */
-    public Room copy() {
-        return new Room(this);
-    }
-
-    public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
-        myRoomData = new Tile[theOriginalRoomData.length][];
-        for (int i = 0; i < theOriginalRoomData.length; i++) {
-            myRoomData[i] = Arrays.copyOf(theOriginalRoomData[i],
-                    theOriginalRoomData[i].length);
-
-            for (int j = 0; j < theOriginalRoomData[i].length; j++) {
-                if (theOriginalRoomData[i][j] != null) {
-                    final char displayChar = theOriginalRoomData[i][j].getDisplayChar();
-                    final Tile newTile;
-                    if (theOriginalRoomData[i][j] instanceof ItemTile) {
-                        final Item item = ((ItemTile) theOriginalRoomData[i][j]).getItem();
-                        newTile = new ItemTile(item);
-                    } else {
-                        final boolean isTraversable =
-                                theOriginalRoomData[i][j].isTraversable();
-                        newTile = new Tile(displayChar, isTraversable);
-                    }
-                    myRoomData[i][j] = newTile;
-                } else {
-                    myRoomData[i][j] = null;
-                }
-            }
-        }
-    }
 
 }

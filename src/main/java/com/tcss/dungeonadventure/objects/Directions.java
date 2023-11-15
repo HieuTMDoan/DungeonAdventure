@@ -5,6 +5,11 @@ package com.tcss.dungeonadventure.objects;
  * Class to contain enum constants about possible directions
  * e.g. door orientation, which can only be horizontal or vertical, or
  * e.g. player movement, which can be North, East, South, or West.
+ *
+ * @author Aaron Burnham
+ * @author Hieu Doan
+ * @author Sunny Ali
+ * @version Fall 2023
  */
 public class Directions {
 

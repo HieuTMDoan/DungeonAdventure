@@ -76,10 +76,14 @@ public class GUIHandler extends Application {
         }
 
         switch (theEvent.getCode()) {
-            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case UP, W ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
+            case DOWN, S ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
+            case LEFT, A ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
+            case RIGHT, D ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
             default -> {
             }
         }

@@ -10,6 +10,10 @@ package com.tcss.dungeonadventure.objects;
  * @version Fall 2023
  */
 public final class TileChars {
+
+    public static class Player {
+        public static final char PLAYER = '†';
+    }
     public static class Room {
         public static final char EMPTY = ' ';
         public static final char WALL = '#';

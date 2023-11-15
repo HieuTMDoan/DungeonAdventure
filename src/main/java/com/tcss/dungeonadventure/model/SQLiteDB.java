@@ -238,27 +238,33 @@ public final class SQLiteDB {
     @SuppressWarnings("checkstyle:LineLength")
     private static void insertCharacters() {
         final String insertPriestess = "INSERT INTO dungeonCharacters "
-                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, BLOCK_CHANCE) "
+                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, "
+                + "DAMAGE_MAX, ATTACK_SPEED, ACCURACY, BLOCK_CHANCE) "
                 + "VALUES (\"Priestess\", \"+\", 75, 25, 45, 5, 0.7, 0.3)";
 
         final String insertThief = "INSERT INTO dungeonCharacters "
-                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, BLOCK_CHANCE) "
+                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, "
+                + "DAMAGE_MAX, ATTACK_SPEED, ACCURACY, BLOCK_CHANCE) "
                 + "VALUES (\"Thief\", \"+\", 75, 20, 40, 6, 0.8, 0.4)";
 
         final String insertWarrior = "INSERT INTO dungeonCharacters "
-                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, BLOCK_CHANCE) "
+                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, "
+                + "DAMAGE_MAX, ATTACK_SPEED, ACCURACY, BLOCK_CHANCE) "
                 + "VALUES (\"Warrior\", \"+\", 125, 35, 60, 4, 0.8, 0.2)";
 
         final String insertGremlin = "INSERT INTO dungeonCharacters "
-                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, HEAL_CHANCE, HEAL_MIN, HEAL_MAX) "
+                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, "
+                + "DAMAGE_MAX, ATTACK_SPEED, ACCURACY, HEAL_CHANCE, HEAL_MIN, HEAL_MAX) "
                 + "VALUES (\"Gremlin\", \"9\", 70, 15, 30, 5, 0.8, 0.4, 20, 40)";
 
         final String insertOgre = "INSERT INTO dungeonCharacters "
-                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, HEAL_CHANCE, HEAL_MIN, HEAL_MAX) "
+                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, "
+                + "DAMAGE_MAX, ATTACK_SPEED, ACCURACY, HEAL_CHANCE, HEAL_MIN, HEAL_MAX) "
                 + "VALUES (\"Ogre\", \"7\", 200, 30, 60, 2, 0.6, 0.1, 30, 60)";
 
         final String insertSkeleton = "INSERT INTO dungeonCharacters "
-                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, HEAL_CHANCE, HEAL_MIN, HEAL_MAX) "
+                + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, "
+                + "DAMAGE_MAX, ATTACK_SPEED, ACCURACY, HEAL_CHANCE, HEAL_MIN, HEAL_MAX) "
                 + "VALUES (\"Skeleton\", \"8\", 100, 30, 50, 3, 0.8, 0.3, 30, 50)";
 
         try (Statement stmt = myConn.createStatement()) {

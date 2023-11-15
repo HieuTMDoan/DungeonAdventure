@@ -157,7 +157,8 @@ public class AdventuringGUI implements PropertyChangeListener {
     private void onMouseOver(final int theRowIndex, final int theColIndex) {
         try {
             final Tile t = myCurrentRoom.getRoomTiles()[theRowIndex][theColIndex];
-            myTileInfoLabel.setText(String.format("(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
+            myTileInfoLabel.setText(String.format(
+                    "(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
 
         } catch (final ArrayIndexOutOfBoundsException e) {
             myTileInfoLabel.setText(" ");

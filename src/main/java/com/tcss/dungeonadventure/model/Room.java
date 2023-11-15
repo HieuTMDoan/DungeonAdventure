@@ -1,6 +1,6 @@
 package com.tcss.dungeonadventure.model;
-
 import com.tcss.dungeonadventure.Helper;
+import java.util.*;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.TileChars;
@@ -17,12 +17,10 @@ import com.tcss.dungeonadventure.objects.tiles.ItemTile;
 import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
-
-
 import java.awt.Dimension;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+
 
 
 public class Room {
@@ -83,7 +81,7 @@ public class Room {
     /**
      * The pillar that this room contains. May be null.
      */
-    private final Item myPillar;
+    private Item myPillar;
     /**
      * The tiles in the room.
      */
@@ -275,7 +273,6 @@ public class Room {
         final Tile[][] tiles = theRoom.getRoomTiles();
         final Set<Directions.Cardinal> usedLocations = new HashSet<>();
 
-
         for (final Point wallLocation : theWallLocations) {
             final int x = (int) wallLocation.getX();
             final int y = (int) wallLocation.getY();
@@ -284,7 +281,8 @@ public class Room {
             if (wallLocation.equals(new Point(0, 0))
                     || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1, 0))
                     || wallLocation.equals(new Point(0, theRoom.getRoomHeight() - 1))
-                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1, theRoom.getRoomHeight() - 1))) {
+                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1,
+                    theRoom.getRoomHeight() - 1))) {
                 continue;
             }
 
@@ -297,7 +295,8 @@ public class Room {
                         break;
                     }
                 }
-            } else if (y == 0 || y == theRoom.getRoomHeight() - 1) { // door is on top/bottom wall
+                // door is on top/bottom wall
+            } else if (y == 0 || y == theRoom.getRoomHeight() - 1) {
                 for (final Tile tile : tiles[y]) {
                     if (tile.getClass() == DoorTile.class) {
                         foundDoor = true;
@@ -313,7 +312,8 @@ public class Room {
             // Checks if there's a valid room to put a door to.
             // Not sure if I like this, but it works
             if (y == 0) { // top
-                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.NORTH);
+                final Room
+                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.NORTH);
                 if (room != null) {
                     tiles[y][x] = new DoorTile(Directions.Cardinal.NORTH, room);
                 }
@@ -322,7 +322,8 @@ public class Room {
                 }
             }
             if (y == theRoom.getRoomHeight() - 1) { // bottom
-                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.SOUTH);
+                final Room
+                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.SOUTH);
                 if (room != null) {
                     tiles[y][x] = new DoorTile(Directions.Cardinal.SOUTH, room);
                 }
@@ -411,7 +412,8 @@ public class Room {
      */
     public void movePlayer(final Directions.Cardinal theDirection) {
         if (this.myPlayerPosition == null) {
-            this.myPlayerPosition = new Point(1, 1); // TODO: Change this to where the player enters the room
+            this.myPlayerPosition = new Point(1, 1);
+            // TODO: Change this to where the player enters the room
         }
 
 

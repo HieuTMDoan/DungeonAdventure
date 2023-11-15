@@ -10,7 +10,7 @@ import java.awt.Point;
 import javafx.application.Application;
 
 
-public class DungeonAdventure {
+public final class DungeonAdventure {
 
     /**
      * Singleton instance for DungeonAdventure.
@@ -151,7 +151,7 @@ public class DungeonAdventure {
         this.myDungeon = theMemento.getSavedDungeon();
 
         // Restore the current room
-        RoomMemento roomMemento = theMemento.getRoomMementos().get(0);
+        final RoomMemento roomMemento = theMemento.getRoomMementos().get(0);
         myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
 
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());

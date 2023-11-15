@@ -2,7 +2,6 @@ package com.tcss.dungeonadventure.objects.tiles;
 
 
 import com.tcss.dungeonadventure.objects.Directions;
-import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
 public class TrapDoorTile extends Tile {

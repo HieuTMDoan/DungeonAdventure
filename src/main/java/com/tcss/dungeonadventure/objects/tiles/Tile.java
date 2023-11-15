@@ -1,6 +1,5 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
-import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.VisualComponent;
 
 /**
@@ -11,6 +10,7 @@ import com.tcss.dungeonadventure.objects.VisualComponent;
  * @author Aaron Burnham
  * @author Hieu Doan
  * @author Sunny Ali
+ * @version Fall 2023
  */
 public class Tile implements VisualComponent {
 
@@ -42,7 +42,8 @@ public class Tile implements VisualComponent {
      */
     @Override
     public String getDescription() {
-        return "Tile: " + getClass().getSimpleName() + "\nTraversable: " + myDefaultTraversable;
+        return "Tile: " + getClass().getSimpleName()
+                + "\nTraversable: " + myDefaultTraversable;
     }
 
     /**

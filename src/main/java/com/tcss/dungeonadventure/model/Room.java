@@ -397,6 +397,8 @@ public class Room {
                 }
 
             }
+            default -> {
+            }
         }
     }
     /**
@@ -655,7 +657,7 @@ public class Room {
             String prefix = "";
             for (int j = 0; j < myRoomData[i].length; j++) {
                 if (new Point(i, j).equals(myPlayerPosition)) {
-                    stringBuilder.append(prefix).append("/"); // TODO CHANGE TO PLAYER CHARACTER
+                    stringBuilder.append(prefix).append(TileChars.Player.PLAYER);
                 } else {
                     stringBuilder.append(prefix).append(myRoomData[i][j].getDisplayChar());
                 }

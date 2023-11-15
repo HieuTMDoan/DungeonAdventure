@@ -18,7 +18,8 @@ public class PillarOfAbstraction extends Item {
         // Do nothing
     }
     public Item copy() {
-        // Create a new instance of PillarOfAbstraction with the same display character and item type
+        // Create a new instance of PillarOfAbstraction
+        // with the same display character and item type
         return new PillarOfAbstraction();
     }
 

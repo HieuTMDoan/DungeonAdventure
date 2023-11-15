@@ -20,7 +20,9 @@ public class HealingPotion extends Item {
             theTarget.changeHealth(HEAL_AMOUNT);
 
             // Print a message to inform the player about the healing action
-            System.out.println(theTarget.getName() + " used a Healing Potion and healed for " + HEAL_AMOUNT + " hit points.");
+            System.out.println(theTarget.getName()
+                    + " used a Healing Potion and healed for "
+                    + HEAL_AMOUNT + " hit points.");
         }
     }
     @Override

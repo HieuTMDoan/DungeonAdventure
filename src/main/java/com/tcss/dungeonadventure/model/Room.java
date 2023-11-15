@@ -22,9 +22,7 @@ import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class Room {
@@ -270,19 +268,12 @@ public class Room {
      */
     public static void placeDoors(final Room theRoom,
                                   final List<Point> theWallLocations) {
-        if (theRoom.isEntranceRoom()) {
-            System.out.println(theRoom.getDungeonLocation());
-        }
-
         // Shuffle the wall locations to randomize door placement
         Collections.shuffle(theWallLocations, Helper.getRandom());
 
-        if (theRoom.myIsEntranceRoom) {
-            System.out.println(theWallLocations);
-        }
-
         int doorsPlaced = 0;
         final Tile[][] tiles = theRoom.getRoomTiles();
+        final Set<Directions.Cardinal> usedLocations = new HashSet<>();
 
 
         for (final Point wallLocation : theWallLocations) {
@@ -326,28 +317,42 @@ public class Room {
                 if (room != null) {
                     tiles[y][x] = new DoorTile(Directions.Cardinal.NORTH, room);
                 }
+                if (usedLocations.add(Directions.Cardinal.NORTH)) {
+                    doorsPlaced++;
+                }
             }
             if (y == theRoom.getRoomHeight() - 1) { // bottom
                 final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.SOUTH);
                 if (room != null) {
                     tiles[y][x] = new DoorTile(Directions.Cardinal.SOUTH, room);
                 }
-            }
-            if (x == 0) { // left
-                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.WEST);
-                if (room != null) {
-                    tiles[y][x] = new DoorTile(Directions.Cardinal.WEST, room);
+                if (usedLocations.add(Directions.Cardinal.SOUTH)) {
+                    doorsPlaced++;
                 }
             }
-            if (x == theRoom.getRoomWidth() - 1) { // right
+            if (x == 0) { // left
                 final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.EAST);
                 if (room != null) {
                     tiles[y][x] = new DoorTile(Directions.Cardinal.EAST, room);
                 }
+                if (usedLocations.add(Directions.Cardinal.EAST)) {
+                    doorsPlaced++;
+                }
+
+            }
+            if (x == theRoom.getRoomWidth() - 1) { // right
+                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.WEST);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.WEST, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.WEST)) {
+                    doorsPlaced++;
+                }
+
+
             }
 
 
-            doorsPlaced++;
 
 
             if (doorsPlaced >= MAX_DOORS) {
@@ -424,8 +429,8 @@ public class Room {
         final Tile tile = myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()];
         if (tile.isTraversable()) {
             myPlayerPosition = tempPoint;
+            tile.onInteract();
         }
-        tile.onInteract();
 
 
     }
@@ -468,8 +473,8 @@ public class Room {
             }
             case EAST -> { // come from door from west
                 for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][0].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, 0);
+                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(i, this.getRoomWidth() - 1);
                         break;
                     }
                 }
@@ -477,11 +482,12 @@ public class Room {
 
             case WEST -> { // come from door from east
                 for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, this.getRoomWidth() - 1);
+                    if (tiles[i][0].getClass() == DoorTile.class) {
+                        myPlayerPosition = new Point(i, 0);
                         break;
                     }
                 }
+
             }
         }
     }
@@ -509,12 +515,17 @@ public class Room {
         final int x = (int) this.getDungeonLocation().getX();
         final int y = (int) this.getDungeonLocation().getY();
 
-        return switch (theDirection) {
+
+        final Room room = switch (theDirection) {
             case NORTH -> dungeon.getRoomAt(x - 1, y);
             case SOUTH -> dungeon.getRoomAt(x + 1, y);
             case EAST -> dungeon.getRoomAt(x, y - 1);
             case WEST -> dungeon.getRoomAt(x, y + 1);
         };
+
+
+        return room;
+
     }
 
     /**

@@ -142,7 +142,6 @@ public class AdventuringGUI implements PropertyChangeListener {
                     if (myCurrentRoom.getPlayerXPosition() != null
                             && row == myCurrentRoom.getPlayerXPosition()
                             && col == myCurrentRoom.getPlayerYPosition()) {
-
                         setTileAt(row, col, '/');
                     } else {
                         setTileAt(row, col, myCurrentRoom.getRoomTiles()[row][col]);

@@ -3,12 +3,14 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.tiles.DoorTile;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 import javafx.application.Application;
 
 import java.awt.Point;
+import java.util.Arrays;
 
 
 public class DungeonAdventure {
@@ -70,11 +72,11 @@ public class DungeonAdventure {
         this.myPlayerName = thePlayerName;
         this.myHero = theHero;
         this.myDungeon = new Dungeon();
+        System.out.println(myDungeon);
         this.myDungeon.placeDoors();
 
         final Room startingRoom = myDungeon.getStartingRoom();
         final Tile[][] roomTiles = startingRoom.getRoomTiles();
-
 
         // This locates the entrance tile in the entrance room.
         Point entranceTileLocation = null;
@@ -87,12 +89,13 @@ public class DungeonAdventure {
                 }
             }
         }
+
         if (entranceTileLocation == null) {
             throw new IllegalStateException("Could not find EntranceTile in starting room.");
         }
 
         this.myDungeon.loadPlayerTo(
-                startingRoom.getDungeonLocation(),
+                startingRoom,
                 entranceTileLocation);
 
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getStartingRoom());
@@ -103,12 +106,21 @@ public class DungeonAdventure {
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
     }
 
-    public Room getCurrentRoom() {
-        return this.myDungeon.getCurrentRoom();
-    }
 
     public Dungeon getDungeon() {
         return this.myDungeon;
+    }
+
+    public void changeRoom(final Directions.Cardinal theDirection) {
+        final Room room =
+                this.myDungeon.getCurrentRoom().getAdjacentRoomByDirection(theDirection);
+
+
+
+        this.myDungeon.loadPlayerTo(room, theDirection);
+        System.out.println(this.myDungeon);
+
+
     }
 
 

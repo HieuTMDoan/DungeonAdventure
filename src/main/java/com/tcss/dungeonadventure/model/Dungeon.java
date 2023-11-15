@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
 
@@ -216,13 +217,11 @@ public class Dungeon {
      * Places doors in each room of the dungeon.
      */
     public void placeDoors() {
-        for (int i = 0; i < myMaze.length; i++) {
-            for (int j = 0; j < myMaze[i].length; j++) {
-                if (myMaze[i][j] != null) {
-                    // Get the wall locations in the current room
-                    final List<Point> wallLocations = getWallLocations(myMaze[i][j]);
+        for (Room[] rooms : myMaze) {
+            for (Room room : rooms) {
+                if (room != null) {
                     // Place doors at wall locations with a limit of 4 doors
-                    Room.placeDoors(myMaze[i][j], wallLocations, 4);
+                    Room.placeDoors(room, getWallLocations(room));
                 }
             }
         }
@@ -317,13 +316,18 @@ public class Dungeon {
      * Loads the player into the dungeon at a specific XY,
      * and in a specific XY in the room.
      */
-    public void loadPlayerTo(final Point theDungeonXY,
+    public void loadPlayerTo(final Room theRoom,
                              final Point theRoomXY) {
         // TODO: Needs bound checks
 
-        final Room room = this.myMaze[(int) theDungeonXY.getX()][(int) theDungeonXY.getY()];
-        room.movePlayerTo(theRoomXY);
-        this.myCurrentRoom = room;
+        theRoom.setPlayerLocation(theRoomXY);
+        this.myCurrentRoom = theRoom;
+    }
+
+    public void loadPlayerTo(final Room theRoom, final Directions.Cardinal theOriginalDirection) {
+        this.myCurrentRoom.setPlayerLocation((Point) null);
+        theRoom.setPlayerLocation(theOriginalDirection);
+        this.myCurrentRoom = theRoom;
     }
 
     /**
@@ -349,6 +353,8 @@ public class Dungeon {
             for (Room room : rooms) {
                 if (room == null) {
                     stringBuilder.append("null"); // IDEALLY nothing should be null.
+                } else if (room.getPlayerXPosition() != null) {
+                    stringBuilder.append("HERE");
                 } else if (room.isEntranceRoom()) {
                     stringBuilder.append("ENTR");
                 } else if (room.isExitRoom()) {
@@ -358,7 +364,10 @@ public class Dungeon {
                             append(room.getPillar().getDisplayChar()).
                             append("  ");
                 } else {
-                    stringBuilder.append("ROOM");
+                    stringBuilder.append("|").
+                            append(room.getDungeonLocation().x).
+                            append(room.getDungeonLocation().y).
+                            append("|");
                 }
 
                 stringBuilder.append(" ");

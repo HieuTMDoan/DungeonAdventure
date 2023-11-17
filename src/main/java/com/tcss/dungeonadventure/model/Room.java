@@ -417,6 +417,13 @@ public class Room {
         final Tile[][] tiles = theRoom.getRoomTiles();
         final Set<Directions.Cardinal> usedLocations = new HashSet<>();
 
+        // Check if the room is an entrance or exit, and connect doors accordingly
+        if (theRoom.isEntranceRoom()) {
+            connectEntrance(theRoom, tiles);
+        } else if (theRoom.isExitRoom()) {
+            connectExit(theRoom, tiles);
+        }
+
         for (final Point wallLocation : theWallLocations) {
             final int x = (int) wallLocation.getX();
             final int y = (int) wallLocation.getY();
@@ -500,10 +507,60 @@ public class Room {
 
 
 
-            if (doorsPlaced >= MAX_DOORS) {
+            if (doorsPlaced >= MAX_DOORS || doorsPlaced >= 1 && Helper.getRandomDoubleBetween(0, 1) > 0.9) {
                 return;  // Limit reached, exit the method
             }
         }
+    }
+
+    private static void connectEntrance(final Room theRoom, final Tile[][] theTiles) {
+        final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
+        final Point entranceLocation = getDoorLocation(theRoom, Directions.Cardinal.NORTH);
+
+        if (entranceLocation != null) {
+            final Room adjacentRoom = dungeon.getRoomAt((int) theRoom.getDungeonLocation().getX() - 1,
+                    (int) theRoom.getDungeonLocation().getY());
+            if (adjacentRoom != null) {
+                theTiles[entranceLocation.y][entranceLocation.x] = new DoorTile(Directions.Cardinal.NORTH, adjacentRoom);
+            }
+        }
+    }
+
+    private static void connectExit(final Room theRoom, final Tile[][] theTiles) {
+        final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
+        final Point exitLocation = getDoorLocation(theRoom, Directions.Cardinal.SOUTH);
+
+        if (exitLocation != null) {
+            final Room adjacentRoom = dungeon.getRoomAt((int) theRoom.getDungeonLocation().getX() + 1,
+                    (int) theRoom.getDungeonLocation().getY());
+            if (adjacentRoom != null) {
+                theTiles[exitLocation.y][exitLocation.x] = new DoorTile(Directions.Cardinal.SOUTH, adjacentRoom);
+            }
+        }
+    }
+
+    private static Point getDoorLocation(final Room theRoom, final Directions.Cardinal theDirection) {
+        final int x = (int) theRoom.getDungeonLocation().getX();
+        final int y = (int) theRoom.getDungeonLocation().getY();
+
+        switch (theDirection) {
+            case NORTH -> {
+                for (int i = 0; i < theRoom.getRoomWidth(); i++) {
+                    if (theRoom.getRoomTiles()[0][i] instanceof DoorTile) {
+                        return new Point(i, 0);
+                    }
+                }
+            }
+            case SOUTH -> {
+                for (int i = 0; i < theRoom.getRoomWidth(); i++) {
+                    if (theRoom.getRoomTiles()[theRoom.getRoomHeight() - 1][i] instanceof DoorTile) {
+                        return new Point(i, theRoom.getRoomHeight() - 1);
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

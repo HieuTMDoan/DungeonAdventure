@@ -52,8 +52,6 @@ public final class SQLiteDB {
             e.printStackTrace();
             System.exit(0);
         }
-
-        System.out.println("Successfully opened database\n");
     }
 
     /**
@@ -237,6 +235,7 @@ public final class SQLiteDB {
     /**
      * Inserts all of {@link DungeonCharacter}'s stats into the database's table.
      */
+    @SuppressWarnings("checkstyle:LineLength")
     private static void insertCharacters() {
         final String insertPriestess = "INSERT INTO dungeonCharacters "
                 + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, DAMAGE_MAX, ATTACK_SPEED, ACCURACY, BLOCK_CHANCE) "

@@ -8,6 +8,8 @@ import java.awt.Point;
  * Represents a snapshot of the state of a room in the dungeon.
  * It includes a copy of the room data, player position,
  * and the state of a specific item (pillar).
+ * @author Sunny, Aaron, Hieu
+ * @version Fall 2023
  */
 
 

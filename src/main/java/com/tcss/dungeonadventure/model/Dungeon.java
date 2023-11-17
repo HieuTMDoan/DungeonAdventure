@@ -88,7 +88,7 @@ public class Dungeon {
      *
      * @return a list of Pillar rooms.
      */
-    private static List<Room> generatePillarRooms() {
+    public static List<Room> generatePillarRooms() {
         final List<Room> pillarRooms = new ArrayList<>();
         final Class<?>[] pillars = Helper.getPillarList();
 
@@ -98,6 +98,7 @@ public class Dungeon {
 
         return pillarRooms;
     }
+
 
     /**
      * Constructs a random-generated maze of type {@link Room}
@@ -109,11 +110,9 @@ public class Dungeon {
         placePillarRooms();
         placeFillerRooms();
 
-        if (!isTraversable(myMaze,
-                myStartingRoom.getDungeonLocation().x,
-                myStartingRoom.getDungeonLocation().y)) {
-            generateDungeon();
-        }
+//        if (!isTraversable()) {
+//            generateDungeon();
+//        }
     }
 
     /**
@@ -122,26 +121,22 @@ public class Dungeon {
      * on the same row or column.
      */
     private void placeEntranceAndExit() {
-        // separate maps of key-value index pairs (row : column) for starting and exit rooms
+        //separate maps of key-value index pairs (row : column) for starting and exit rooms
         final Map<Integer, Integer> randomEdgesStarting = new HashMap<>();
         final Map<Integer, Integer> randomEdgesExit = new HashMap<>();
 
-        // upper/lower limits of where random row/column indices can be
-        final int columnLimit = MAZE_SIZE.width / 2;
-        final int rowLimit = MAZE_SIZE.height / 2;
-
         // random upper edge index pair for starting room
-        randomEdgesStarting.put(0, Helper.getRandomIntBetween(0, columnLimit));
-        // random left edge index pair for starting room
-        randomEdgesStarting.put(Helper.getRandomIntBetween(0, rowLimit), 0);
+        randomEdgesStarting.put(0, Helper.getRandomIntBetween(0, MAZE_SIZE.width));
         // random lower edge index pair for exit room
         randomEdgesExit.put(MAZE_SIZE.height - 1,
-                Helper.getRandomIntBetween(columnLimit, MAZE_SIZE.width));
+                Helper.getRandomIntBetween(0, MAZE_SIZE.width));
+        // random left edge index pair for starting room
+        randomEdgesStarting.put(Helper.getRandomIntBetween(0, MAZE_SIZE.height), 0);
         // random right edge index pair for exit room
-        randomEdgesExit.put(Helper.getRandomIntBetween(rowLimit, MAZE_SIZE.height),
+        randomEdgesExit.put(Helper.getRandomIntBetween(0, MAZE_SIZE.height),
                 MAZE_SIZE.width - 1);
 
-        // uses separate random index pairs for starting and exit rooms
+        //Uses separate random index pairs for starting and exit rooms
         final Map.Entry<Integer, Integer> randomStartingEntry =
                 getRandomIndexPair(randomEdgesStarting);
         final Map.Entry<Integer, Integer> randomExitEntry =
@@ -152,10 +147,25 @@ public class Dungeon {
         final int exitRow = randomExitEntry.getKey();
         final int exitCol = randomExitEntry.getValue();
 
-        myMaze[startingRow][startingCol] = myStartingRoom;
-        myStartingRoom.setDungeonLocation(new Point(startingRow, startingCol));
-        myMaze[exitRow][exitCol] = myExitRoom;
-        myExitRoom.setDungeonLocation(new Point(exitRow, exitCol));
+        /*
+        Recursively invokes this method if the extreme cases are satisfied
+        (entrance and exit are on the same horizontal or vertical side)
+         */
+        if (startingRow == 0 && exitRow == 0) {
+            placeEntranceAndExit();
+        } else if (startingRow == MAZE_SIZE.width - 1 && exitRow == MAZE_SIZE.width - 1) {
+            placeEntranceAndExit();
+        } else if (startingCol == 0 && exitCol == 0) {
+            placeEntranceAndExit();
+        } else if (startingCol == MAZE_SIZE.height - 1 && exitCol == MAZE_SIZE.height - 1) {
+            placeEntranceAndExit();
+        } else {
+            myMaze[startingRow][startingCol] = myStartingRoom;
+            myStartingRoom.setDungeonLocation(new Point(startingRow, startingCol));
+            myMaze[exitRow][exitCol] = myExitRoom;
+            myExitRoom.setDungeonLocation(new Point(exitRow, exitCol));
+
+        }
     }
 
     /**
@@ -181,7 +191,7 @@ public class Dungeon {
      * Randomly places the pillar {@link Room} throughout the dungeon.
      */
     private void placePillarRooms() {
-        // Shuffles the list of pillar rooms randomly
+        // Shuffles the list of rooms randomly
         Collections.shuffle(myPillarRooms, Helper.getRandom());
         int pillarRoomsIndex = 0;
 
@@ -201,82 +211,6 @@ public class Dungeon {
 
     }
 
-    /**
-     * Fully fills the dungeon with random dead-end or other non-essential rooms.
-     */
-    private void placeFillerRooms() {
-        final int totalSpotsLeft = MAZE_SIZE.height * MAZE_SIZE.width - 6;
-        int filledSpots = 0;
-
-        while (filledSpots < totalSpotsLeft) {
-            final int randomRow = Helper.getRandomIntBetween(0, MAZE_SIZE.height);
-            final int randomCol = Helper.getRandomIntBetween(0, MAZE_SIZE.width);
-
-            //Fills an unoccupied spot in the maze with a room
-            if (myMaze[randomRow][randomCol] == null) {
-                final Room room = new Room(false, false, null);
-                room.setDungeonLocation(new Point(randomRow, randomCol));
-                myMaze[randomRow][randomCol] = room;
-                filledSpots++;
-            }
-        }
-    }
-
-    /**
-     * Checks if the newly constructed dungeon is traversable,
-     * meaning it has at least one available route from the entrance room to the exit room.
-     *
-     * @param theMaze   the dungeon to be checked
-     * @param theRow    the row index of the room to be checked for accessibility
-     * @param theCol    the col index of the room to be checked for accessibility
-     * @return          True if the dungeon is traversable
-     */
-    private boolean isTraversable(final Room[][] theMaze, final int theRow, final int theCol) {
-        boolean traversable = false;
-        //Dummy maze for marking visited and dead-end locations in the dungeon
-        final char[][] testMaze = new char[theMaze.length][theMaze[0].length];
-
-        if (validMove(theMaze, testMaze, theRow, theCol)) {
-            testMaze[theRow][theCol] = 'v'; //marks the room visited
-
-            if (theMaze[theRow][theCol].isExitRoom()) {
-                return true; //returns true if at exit room
-            }
-
-            //not at exit so need to try other directions
-            traversable = isTraversable(theMaze, theRow + 1, theCol); //travel down
-            if (!traversable) {
-                traversable = isTraversable(theMaze, theRow, theCol + 1); //travel right
-            }
-            if (!traversable) {
-                traversable = isTraversable(theMaze, theRow - 1, theCol + 1); //travel up
-            }
-            if (!traversable) {
-                traversable = isTraversable(theMaze, theRow, theCol - 1); //traverse left
-            }
-        }
-
-        return traversable;
-    }
-
-    /**
-     * Checks if the room at the specified position in the dungeon can be accessed.
-     *
-     * @param theMaze     the actual dungeon
-     * @param theTestMaze the dummy dungeon with markings of visited rooms
-     * @param theRow      the row index of the room in the dungeon
-     * @param theColumn   the column index of the room in the dungeon
-     * @return            True if the room can be accessed
-     */
-    private boolean validMove(final Room[][] theMaze,
-                              final char[][] theTestMaze,
-                              final int theRow,
-                              final int theColumn) {
-        return theRow >= 0 && theRow < theMaze.length
-                && theColumn >= 0 && theColumn < theMaze[0].length
-                && theMaze[theRow][theColumn].getDoorNumber() != 1
-                && theTestMaze[theRow][theColumn] != 'v';
-    }
 
     /**
      * Places doors in each room of the dungeon.
@@ -314,6 +248,38 @@ public class Dungeon {
     }
 
     /**
+     * Fully fills the dungeon with random dead-end or other non-essential rooms.
+     */
+    private void placeFillerRooms() {
+        final int totalSpotsLeft = MAZE_SIZE.height * MAZE_SIZE.width - 6;
+        int filledSpots = 0;
+
+        while (filledSpots < totalSpotsLeft) {
+            final int randomRow = Helper.getRandomIntBetween(0, MAZE_SIZE.height);
+            final int randomCol = Helper.getRandomIntBetween(0, MAZE_SIZE.width);
+
+            //Fills an unoccupied spot in the maze with a room
+            if (myMaze[randomRow][randomCol] == null) {
+                final Room room = new Room(false, false, null);
+                room.setDungeonLocation(new Point(randomRow, randomCol));
+                myMaze[randomRow][randomCol] = room;
+                filledSpots++;
+            }
+        }
+    }
+
+
+    /**
+     * Checks if the newly constructed dungeon is traversable.
+     *
+     * @return True if the dungeon is traversable
+     */
+
+    private boolean isTraversable() {
+        return false;
+    }
+
+    /**
      * Returns the dungeon as a maze of type {@link Room}.
      *
      * @return A maze of type {@link Room}
@@ -321,6 +287,8 @@ public class Dungeon {
     public Room[][] getRooms() {
         return myMaze;
     }
+
+
 
     /**
      * Accessor for the room that the player is currently in.

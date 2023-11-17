@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.objects.skills;
 
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
 public class CrushingBlow extends Skill {
@@ -17,11 +18,13 @@ public class CrushingBlow extends Skill {
     @Override
     public boolean activateSkill(final DungeonCharacter theTarget) {
         if (theTarget != null && Math.random() <= DEFAULT_SUCCESS_CHANCE) {
-            final int damage = DEFAULT_MIN_DAMAGE + (int) (Math.random() * (DEFAULT_MAX_DAMAGE - DEFAULT_MIN_DAMAGE + 1));
-            final int newHealth = Math.max(theTarget.getHealth() - damage, 0);
-            theTarget.setHealth(newHealth);
+            final int damage =
+                    Helper.getRandomIntBetween(DEFAULT_MIN_DAMAGE, DEFAULT_MAX_DAMAGE);
+            theTarget.changeHealth(-damage);
 
-            System.out.println(theTarget.getClass().getSimpleName() + " takes " + damage + " points of damage from Crushing Blow!");
+            System.out.println(
+                    theTarget.getClass().getSimpleName() + " takes " + damage
+                            + " points of damage from Crushing Blow!");
             return true;
         } else {
             System.out.println("Crushing Blow failed to hit the target.");

@@ -14,8 +14,11 @@ public class DoorTile extends Tile {
     private final Room myDestinationRoom;
 
 
-    public DoorTile(final Directions.Cardinal theDoorDirection, final Room theDestinationRoom) {
-        super(theDoorDirection == Directions.Cardinal.NORTH || theDoorDirection == Directions.Cardinal.SOUTH
+    public DoorTile(final Directions.Cardinal theDoorDirection,
+                    final Room theDestinationRoom) {
+
+        super(theDoorDirection == Directions.Cardinal.NORTH
+                        || theDoorDirection == Directions.Cardinal.SOUTH
                         ? TileChars.Room.VERTICAL_DOOR
                         : TileChars.Room.HORIZONTAL_DOOR,
                 true);

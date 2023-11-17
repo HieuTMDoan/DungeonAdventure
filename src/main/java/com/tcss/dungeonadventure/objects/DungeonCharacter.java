@@ -62,16 +62,20 @@ public abstract class DungeonCharacter implements VisualComponent {
                         Damage Range: %s - %s
                         Attack Speed: %s
                         Accuracy: %s
-                          """, myName, myHealthPoints, myMaxHealthPoints, myMinDamage, myMaxDamage, myAttackSpeed, myAccuracy
+                          """,
+                myName,
+                myHealthPoints,
+                myMaxHealthPoints,
+                myMinDamage,
+                myMaxDamage,
+                myAttackSpeed,
+                myAccuracy
 
         );
     }
 
     public int getHealth() {
         return this.myHealthPoints;
-    }
-    public int getMaxHealthPoints() {
-        return this.myMaxHealthPoints;
     }
 
     public void setHealth(final int theNewHealth) {
@@ -80,6 +84,10 @@ public abstract class DungeonCharacter implements VisualComponent {
             return;
         }
         this.myHealthPoints = Math.max(theNewHealth, 0);
+    }
+
+    public int getMaxHealthPoints() {
+        return this.myMaxHealthPoints;
     }
 
     public void changeHealth(final int theChangeInHealth) {

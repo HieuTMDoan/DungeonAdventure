@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
+import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import javafx.geometry.Pos;
@@ -142,7 +143,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                     if (myCurrentRoom.getPlayerXPosition() != null
                             && row == myCurrentRoom.getPlayerXPosition()
                             && col == myCurrentRoom.getPlayerYPosition()) {
-                        setTileAt(row, col, '/');
+                        setTileAt(row, col, TileChars.Player.PLAYER);
                     } else {
                         setTileAt(row, col, myCurrentRoom.getRoomTiles()[row][col]);
                     }
@@ -157,7 +158,8 @@ public class AdventuringGUI implements PropertyChangeListener {
     private void onMouseOver(final int theRowIndex, final int theColIndex) {
         try {
             final Tile t = myCurrentRoom.getRoomTiles()[theRowIndex][theColIndex];
-            myTileInfoLabel.setText(String.format("(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
+            myTileInfoLabel.setText(String.format(
+                    "(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
 
         } catch (final ArrayIndexOutOfBoundsException e) {
             myTileInfoLabel.setText(" ");

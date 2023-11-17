@@ -7,6 +7,8 @@ import java.util.List;
 /**
  * Represents a Memento for capturing and restoring the state of the Dungeon Adventure game.
  * This Memento includes information about the player name, hero, dungeon, and room mementos.
+ * @author Sunny, Aaron, Hieu
+ * @version Fall 2023
  */
 public class DungeonAdventureMemento {
     /**

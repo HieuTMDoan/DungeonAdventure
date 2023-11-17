@@ -2,8 +2,6 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.objects.Directions;
-import com.tcss.dungeonadventure.objects.items.*;
-import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 
 import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.items.HealingPotion;
@@ -15,6 +13,7 @@ import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.items.VisionPotion;
 
 import com.tcss.dungeonadventure.objects.monsters.Monster;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
@@ -130,11 +129,31 @@ public final class Helper {
 
     public enum Characters {
 
+        /**
+         * Enum representing the Warrior hero.
+         */
         WARRIOR,
+        /**
+         * Enum representing the Thief hero.
+         */
         THIEF,
+        /**
+         * Enum representing the Priestess hero.
+         */
         PRIESTESS,
+
+        /**
+         * Enum representing the Ogre monster.
+         */
         OGRE,
+        /**
+         * Enum representing the Skeleton monster.
+         */
         SKELETON,
+
+        /**
+         * Enum representing the Gremlin monster.
+         */
         GREMLIN;
 
         @Override

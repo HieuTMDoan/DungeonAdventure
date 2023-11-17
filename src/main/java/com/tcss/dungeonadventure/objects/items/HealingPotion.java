@@ -1,8 +1,8 @@
 package com.tcss.dungeonadventure.objects.items;
 
-
-import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
+import com.tcss.dungeonadventure.objects.TileChars;
+
 
 public class HealingPotion extends Item {
 
@@ -20,7 +20,9 @@ public class HealingPotion extends Item {
             theTarget.changeHealth(HEAL_AMOUNT);
 
             // Print a message to inform the player about the healing action
-            System.out.println(theTarget.getName() + " used a Healing Potion and healed for " + HEAL_AMOUNT + " hit points.");
+            System.out.println(theTarget.getName()
+                    + " used a Healing Potion and healed for "
+                    + HEAL_AMOUNT + " hit points.");
         }
     }
     @Override

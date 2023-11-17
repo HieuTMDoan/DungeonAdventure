@@ -1,11 +1,23 @@
 package com.tcss.dungeonadventure.objects.monsters;
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
 public abstract class Monster extends DungeonCharacter {
 
+    /**
+     * The chance to heal.
+     */
     private final double myHealChance;
+
+    /**
+     * The minimum heal amount.
+     */
     private final int myMinHeal;
+
+    /**
+     * The maximum heal amount.
+     */
     private final int myMaxHeal;
 
     public Monster(final String theName,
@@ -42,7 +54,9 @@ public abstract class Monster extends DungeonCharacter {
     }
 
     private void heal() {
-        // TODO: implement heal
+        if (Helper.getRandomDoubleBetween(0, 1) < this.myHealChance) {
+            super.changeHealth(Helper.getRandomIntBetween(myMinHeal, myMaxHeal));
+        }
     }
 
 

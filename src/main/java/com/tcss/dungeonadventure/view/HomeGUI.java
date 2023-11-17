@@ -85,13 +85,9 @@ public class HomeGUI implements PropertyChangeListener {
         );
 
 
-        this.myLoadGameButton.setOnAction(e -> {
-            System.out.println("Load button pressed");
-        });
+        this.myLoadGameButton.setOnAction(e -> System.out.println("Load button pressed"));
 
-        this.myHelpButton.setOnAction(e -> {
-            System.out.println("Help button pressed");
-        });
+        this.myHelpButton.setOnAction(e -> System.out.println("Help button pressed"));
 
 
         // Toggle groups make it so class selection is mutually exclusive
@@ -121,7 +117,9 @@ public class HomeGUI implements PropertyChangeListener {
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
 
+            default -> {
 
+            }
         }
 
 

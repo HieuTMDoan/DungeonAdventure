@@ -18,7 +18,8 @@ public class PillarOfPolymorphism extends Item {
     }
     @Override
     public Item copy() {
-        // Create a new instance of PillarOfPolymorphism with the same display character and item type
+        // Create a new instance of PillarOfPolymorphism
+        // with the same display character and item type
         return new PillarOfPolymorphism();
     }
 }

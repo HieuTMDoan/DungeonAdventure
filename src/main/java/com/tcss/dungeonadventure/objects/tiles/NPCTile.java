@@ -22,9 +22,6 @@ public class NPCTile extends Tile {
         return myDungeonCharacter.getDescription();
     }
 
-    public DungeonCharacter getDungeonCharacter() {
-        return this.myDungeonCharacter;
-    }
 }
 
 

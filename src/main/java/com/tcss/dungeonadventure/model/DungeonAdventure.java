@@ -9,7 +9,6 @@ import com.tcss.dungeonadventure.view.GUIHandler;
 import java.awt.Point;
 import javafx.application.Application;
 
-
 public final class DungeonAdventure {
 
     /**
@@ -51,9 +50,9 @@ public final class DungeonAdventure {
 
     public void initialize() {
         /*
-        * I have absolutely no clue why I couldn't throw this in the
-        * constructor.
-        * */
+         * I have absolutely no clue why I couldn't throw this in the
+         * constructor.
+         * */
         Application.launch(GUIHandler.class);
     }
 

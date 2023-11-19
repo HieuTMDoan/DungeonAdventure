@@ -28,11 +28,6 @@ import java.util.Set;
 
 public class Room {
     /**
-     * The number of doors in the room.
-     */
-    private static int myDoorNumber;
-
-    /**
      * The maximum size of a room.
      */
     private static final Dimension MAX_ROOM_DIMENSION = new Dimension(10, 10);
@@ -81,6 +76,11 @@ public class Room {
      * The dimensions of the room.
      */
     private final Dimension myRoomDimensions;
+
+    /**
+     * The number of doors in the room.
+     */
+    private int myDoorNumber;
 
     /**
      * The pillar that this room contains. May be null.
@@ -146,6 +146,7 @@ public class Room {
      * @param theOriginalRoom The Room to copy.
      */
     public Room(final Room theOriginalRoom) {
+        myDoorNumber = theOriginalRoom.myDoorNumber;
         myIsEntranceRoom = theOriginalRoom.myIsEntranceRoom;
         myIsExitRoom = theOriginalRoom.myIsExitRoom;
         myDungeonLocation = theOriginalRoom.myDungeonLocation;
@@ -275,7 +276,7 @@ public class Room {
      * @param theRoom          The Room to add doors to.
      * @param theWallLocations A list of wall locations where doors can potentially be placed.
      */
-    public static void placeDoors(final Room theRoom,
+    public void placeDoors(final Room theRoom,
                                   final List<Point> theWallLocations) {
         // Shuffle the wall locations to randomize door placement
         Collections.shuffle(theWallLocations, Helper.getRandom());

@@ -68,8 +68,8 @@ public final class DungeonAdventure {
         this.myPlayerName = thePlayerName;
         this.myHero = theHero;
         this.myDungeon = new Dungeon();
-        System.out.println(myDungeon);
         this.myDungeon.placeDoors();
+        System.out.println(myDungeon);
 
         final Room startingRoom = myDungeon.getStartingRoom();
         final Tile[][] roomTiles = startingRoom.getRoomTiles();

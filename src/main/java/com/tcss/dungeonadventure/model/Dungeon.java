@@ -108,16 +108,6 @@ public class Dungeon {
         placeEntranceAndExit();
         placePillarRooms();
         placeFillerRooms();
-
-        //Dummy maze for marking visited and dead-end locations in the dungeon
-        final char[][] testMaze = new char[MAZE_SIZE.height][MAZE_SIZE.width];
-
-        //recursively regenerates the dungeon if not traversable
-        if (!isTraversable(myMaze, testMaze,
-                myStartingRoom.getDungeonLocation().x,
-                myStartingRoom.getDungeonLocation().y)) {
-            generateDungeon();
-        }
     }
 
     /**
@@ -283,7 +273,7 @@ public class Dungeon {
                               final int theColumn) {
         return theRow >= 0 && theRow < theMaze.length
                 && theColumn >= 0 && theColumn < theMaze[0].length
-                && theMaze[theRow][theColumn].getDoorNumber() != 1
+                && theMaze[theRow][theColumn].getDoorNumber() > 1
                 && theTestMaze[theRow][theColumn] == '\u0000';
     }
 
@@ -295,9 +285,19 @@ public class Dungeon {
             for (Room room : rooms) {
                 if (room != null) {
                     // Place doors at wall locations with a limit of 4 doors
-                    Room.placeDoors(room, getWallLocations(room));
+                    room.placeDoors(room, getWallLocations(room));
                 }
             }
+        }
+
+        //Dummy maze for marking visited and dead-end locations in the dungeon
+        final char[][] testMaze = new char[MAZE_SIZE.height][MAZE_SIZE.width];
+
+        //recursively regenerates the dungeon if not traversable
+        if (!isTraversable(myMaze, testMaze,
+                myStartingRoom.getDungeonLocation().x,
+                myStartingRoom.getDungeonLocation().y)) {
+            placeDoors();
         }
     }
 

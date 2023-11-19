@@ -109,7 +109,11 @@ public class Dungeon {
         placePillarRooms();
         placeFillerRooms();
 
-        if (!isTraversable(myMaze,
+        //Dummy maze for marking visited and dead-end locations in the dungeon
+        final char[][] testMaze = new char[MAZE_SIZE.height][MAZE_SIZE.width];
+
+        //recursively regenerates the dungeon if not traversable
+        if (!isTraversable(myMaze, testMaze,
                 myStartingRoom.getDungeonLocation().x,
                 myStartingRoom.getDungeonLocation().y)) {
             generateDungeon();
@@ -231,28 +235,33 @@ public class Dungeon {
      * @param theCol    the col index of the room to be checked for accessibility
      * @return          True if the dungeon is traversable
      */
-    private boolean isTraversable(final Room[][] theMaze, final int theRow, final int theCol) {
+    private boolean isTraversable(final Room[][] theMaze,
+                                  final char[][] theTestMaze,
+                                  final int theRow,
+                                  final int theCol) {
         boolean traversable = false;
-        //Dummy maze for marking visited and dead-end locations in the dungeon
-        final char[][] testMaze = new char[theMaze.length][theMaze[0].length];
 
-        if (validMove(theMaze, testMaze, theRow, theCol)) {
-            testMaze[theRow][theCol] = 'v'; //marks the room visited
+        if (validMove(theMaze, theTestMaze, theRow, theCol)) {
+            theTestMaze[theRow][theCol] = 'v'; //marks the room visited
 
             if (theMaze[theRow][theCol].isExitRoom()) {
                 return true; //returns true if at exit room
             }
 
             //not at exit so need to try other directions
-            traversable = isTraversable(theMaze, theRow + 1, theCol); //travel down
+            traversable = isTraversable(theMaze, theTestMaze,
+                    theRow + 1, theCol); //travel down
             if (!traversable) {
-                traversable = isTraversable(theMaze, theRow, theCol + 1); //travel right
+                traversable = isTraversable(theMaze, theTestMaze,
+                        theRow, theCol + 1); //travel right
             }
             if (!traversable) {
-                traversable = isTraversable(theMaze, theRow - 1, theCol + 1); //travel up
+                traversable = isTraversable(theMaze, theTestMaze,
+                        theRow - 1, theCol); //travel up
             }
             if (!traversable) {
-                traversable = isTraversable(theMaze, theRow, theCol - 1); //traverse left
+                traversable = isTraversable(theMaze, theTestMaze,
+                        theRow, theCol - 1); //traverse left
             }
         }
 
@@ -275,7 +284,7 @@ public class Dungeon {
         return theRow >= 0 && theRow < theMaze.length
                 && theColumn >= 0 && theColumn < theMaze[0].length
                 && theMaze[theRow][theColumn].getDoorNumber() != 1
-                && theTestMaze[theRow][theColumn] != 'v';
+                && theTestMaze[theRow][theColumn] == '\u0000';
     }
 
     /**

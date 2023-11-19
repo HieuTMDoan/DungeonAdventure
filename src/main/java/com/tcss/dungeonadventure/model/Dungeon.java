@@ -101,7 +101,7 @@ public class Dungeon {
 
     /**
      * Constructs a random-generated maze of type {@link Room}
-     * with a traversable path from the entrance to the exit
+     * with an entrance, an exit
      * and 4 pillars of Object-Oriented randomly placed in the maze.
      */
     private void generateDungeon() {
@@ -278,7 +278,8 @@ public class Dungeon {
     }
 
     /**
-     * Places doors in each room of the dungeon.
+     * Randomly places doors in each room of the dungeon
+     * such that the dungeon is traversable.
      */
     public void placeDoors() {
         for (Room[] rooms : myMaze) {

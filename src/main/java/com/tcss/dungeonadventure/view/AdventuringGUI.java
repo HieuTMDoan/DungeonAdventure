@@ -3,18 +3,27 @@ package com.tcss.dungeonadventure.view;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.TileChars;
+import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Map;
 
 public class AdventuringGUI implements PropertyChangeListener {
 
@@ -44,6 +53,12 @@ public class AdventuringGUI implements PropertyChangeListener {
      */
     private Label myTileInfoLabel;
 
+    private InventoryPanelHandler myInventoryPaneHandler;
+
+
+    private ScrollPane myMessageScrollPane;
+    private VBox myMessageBox;
+
     public AdventuringGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;
         PCS.addPropertyListener(this);
@@ -68,6 +83,15 @@ public class AdventuringGUI implements PropertyChangeListener {
     private void locateNodes() {
         myGridPane = (GridPane) this.lookup("roomGrid");
         myTileInfoLabel = (Label) this.lookup("tileInfoLabel");
+
+        myInventoryPaneHandler = new InventoryPanelHandler(this);
+        myMessageBox = (VBox) lookup("messageBox");
+        myMessageScrollPane = (ScrollPane) lookup("messageScrollPane");
+        myMessageBox.heightProperty().addListener((ChangeListener) (observable, oldValue, newValue)
+                -> myMessageScrollPane.setVvalue((Double) newValue));
+
+        myMessageScrollPane.skinProperty().addListener((observableValue, skin, t1) ->
+                myMessageScrollPane.lookup("ScrollPane .viewport").setCache(false));
     }
 
     /**
@@ -155,14 +179,28 @@ public class AdventuringGUI implements PropertyChangeListener {
         }
     }
 
+    private void log(final String theMessage) {
+        final String time = new SimpleDateFormat("hh:mm:ss").
+                format(Calendar.getInstance().getTime());
+
+        final Label label = new Label(String.format("[%s] %s", time, theMessage));
+        label.setWrapText(true);
+        label.setStyle("-fx-font-fill: white; -fx-font-size: 12");
+        myMessageBox.getChildren().add(label);
+    }
+
+    void showDescription(final String theString) {
+        myTileInfoLabel.setText(theString);
+    }
+
     private void onMouseOver(final int theRowIndex, final int theColIndex) {
         try {
             final Tile t = myCurrentRoom.getRoomTiles()[theRowIndex][theColIndex];
-            myTileInfoLabel.setText(String.format(
+            showDescription(String.format(
                     "(%s, %s)%n%s", theColIndex, theRowIndex, t.getDescription()));
 
         } catch (final ArrayIndexOutOfBoundsException e) {
-            myTileInfoLabel.setText(" ");
+            showDescription(" ");
         }
 
     }
@@ -181,6 +219,10 @@ public class AdventuringGUI implements PropertyChangeListener {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
             case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
             case UPDATED_PLAYER_LOCATION -> renderRoomWithPlayer();
+            case ITEMS_CHANGED -> {
+                this.myInventoryPaneHandler.syncItems((Map<Item, Integer>) theEvent.getNewValue());
+            }
+            case LOG -> log((String) theEvent.getNewValue());
             default -> {
             }
 

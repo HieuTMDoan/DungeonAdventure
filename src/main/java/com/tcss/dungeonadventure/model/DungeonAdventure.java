@@ -3,6 +3,7 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
@@ -16,16 +17,7 @@ public final class DungeonAdventure {
      */
     private static DungeonAdventure INSTANCE;
 
-
-    /**
-     * The name of the player.
-     */
-    private String myPlayerName;
-
-    /**
-     * The class of the hero.
-     */
-    private Hero myHero;
+    private Player myPlayer;
 
     /**
      * The current Dungeon.
@@ -65,8 +57,7 @@ public final class DungeonAdventure {
      * @param theHero       The hero class.
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
-        this.myPlayerName = thePlayerName;
-        this.myHero = theHero;
+        this.myPlayer = new Player(thePlayerName, theHero);
         this.myDungeon = new Dungeon();
         this.myDungeon.placeDoors();
         System.out.println(myDungeon);
@@ -111,17 +102,24 @@ public final class DungeonAdventure {
         final Room room =
                 this.myDungeon.getCurrentRoom().getAdjacentRoomByDirection(theDirection);
 
-
-
         this.myDungeon.loadPlayerTo(room, theDirection);
         System.out.println(this.myDungeon);
+    }
 
+    public Player getPlayer() {
+        return this.myPlayer;
+    }
 
+    public void useItem(final Item theItem) {
+        myPlayer.removeItemFromInventory(theItem);
+        PCS.firePropertyChanged(PCS.LOG, "Used item: " + theItem.getClass().getSimpleName());
+
+        theItem.useItem(myPlayer.getPlayerHero());
     }
 
     public DungeonAdventureMemento createMemento() {
-        final String playerName = this.myPlayerName;
-        final Hero hero = this.myHero;
+        final String playerName = this.myPlayer.getPlayerName();
+        final Hero hero = this.myPlayer.getPlayerHero();
         final Dungeon dungeon = this.myDungeon;
 
         final DungeonAdventureMemento memento;
@@ -145,8 +143,7 @@ public final class DungeonAdventure {
     }
     // Restore the state from a Memento
     public void restoreFromMemento(final DungeonAdventureMemento theMemento) {
-        this.myPlayerName = theMemento.getSavedPlayerName();
-        this.myHero = theMemento.getSavedHero();
+        this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());
         this.myDungeon = theMemento.getSavedDungeon();
 
         // Restore the current room

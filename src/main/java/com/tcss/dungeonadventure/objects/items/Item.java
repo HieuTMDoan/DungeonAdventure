@@ -57,16 +57,18 @@ public abstract class Item implements VisualComponent {
     public abstract Item copy();
 
 
+    /**
+     * The Item equals method only compares class.
+     *
+     * @param theOther The other object to compare.
+     * @return
+     */
     @Override
     public boolean equals(final Object theOther) {
         if (this == theOther) {
             return true;
         }
-        if (theOther == null || getClass() != theOther.getClass()) {
-            return false;
-        }
-        final Item item = (Item) theOther;
-        return myDisplayChar == item.myDisplayChar;
+        return theOther != null && getClass() == theOther.getClass();
     }
 
     @Override

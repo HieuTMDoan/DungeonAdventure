@@ -316,7 +316,7 @@ public class Dungeon {
         for (int i = 0; i < roomTiles.length; i++) {
             for (int j = 0; j < roomTiles[i].length; j++) {
                 if (roomTiles[i][j] instanceof WallTile) {
-                    wallLocations.add(new Point(j, i));
+                    wallLocations.add(new Point(i, j));
                 }
             }
         }

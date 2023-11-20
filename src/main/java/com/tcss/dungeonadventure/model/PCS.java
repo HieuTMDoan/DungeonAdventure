@@ -15,6 +15,19 @@ import java.beans.PropertyChangeSupport;
  * @version Fall 2023
  */
 public enum PCS {
+    /**
+     * The property to log a message in the GUI's logger.
+     * Should be paired with a {@link String} as the message
+     * to display.
+     */
+    LOG,
+
+    /**
+     * The property when the players inventory changes.
+     * Should be paired with a Map<Item, Integer>, representing
+     * the players current inventory.
+     */
+    ITEMS_CHANGED,
 
     /**
      * The property of player movement.

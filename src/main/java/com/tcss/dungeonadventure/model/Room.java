@@ -405,7 +405,7 @@ public class Room {
      * @param theRoom          The Room to add doors to.
      * @param theWallLocations A list of wall locations where doors can potentially be placed.
      */
-    public static void placeDoors(final Room theRoom,
+    public void placeDoors(final Room theRoom,
                                   final List<Point> theWallLocations) {
         // Shuffle the wall locations to randomize door placement
         Collections.shuffle(theWallLocations, Helper.getRandom());
@@ -500,9 +500,6 @@ public class Room {
 
 
             }
-
-
-
 
             if (doorsPlaced >= MAX_DOORS || doorsPlaced >= 1 && Helper.getRandomDoubleBetween(0, 1) > 0.9) {
                 return;  // Limit reached, exit the method

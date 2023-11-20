@@ -173,14 +173,17 @@ public class Dungeon {
         final StringBuilder path = new StringBuilder();
 
 
-        final int maxAttempts = 100;
+        final int maxAttempts = 200;
         int currentAttempt = 0;
 
         while (!currentLocation.equals(endingLocation)) {
             if (currentAttempt == maxAttempts) {
-                // Breaks out of the loop of the algorithm gets stuck.
-                // TODO : This should reset myMaze to empty, add the
-                // start and exit rooms again, and try again until a maze has been made.
+                /*
+                 Breaks out of the loop of the algorithm gets stuck.
+                 TODO : This should reset myMaze to empty, add the
+                    start and exit rooms again, and try again until a maze has been made.
+                * */
+
                 System.out.println("Breaking out of dungeon generation");
                 break;
             }
@@ -245,16 +248,16 @@ public class Dungeon {
             // Checks if the 4 adjacent rooms are the exit room.
             // If it is, then a path to the exit has been made successfully.
             final Point[] adjacentPoints = new Point[]{
-                new Point(1, 0),
-                new Point(-1, 0),
-                new Point(0, 1),
-                new Point(0, -1)
+                    new Point(1, 0),
+                    new Point(-1, 0),
+                    new Point(0, 1),
+                    new Point(0, -1)
             };
 
             boolean nextToExit = false;
             for (final Point point : adjacentPoints) {
                 final Room room = getRoomAt(x + point.x, y + point.y);
-                if (room != null && room.isExitRoom())  {
+                if (room != null && room.isExitRoom()) {
                     System.out.println("found exit");
                     nextToExit = true;
                     break;
@@ -296,7 +299,6 @@ public class Dungeon {
         // connecting the room in the specified direction.
 
         // TODO Implement me!
-
 
 
         System.out.println(path.toString() + " \n");

@@ -80,7 +80,7 @@ public class Room {
     /**
      * The number of doors in the room.
      */
-    private static int myDoorNumber;
+    private int myDoorNumber;
 
     /**
      * The pillar that this room contains. May be null.
@@ -201,7 +201,10 @@ public class Room {
 
         final Tile[][] tiles = new Tile[roomHeight][roomWidth];
 
-
+        // Ensure there is always at least one door
+        final int doorX = Helper.getRandomIntBetween(1, roomWidth - 1);
+        final int doorY = Helper.getRandomIntBetween(1, roomHeight - 1);
+        tiles[doorY][doorX] = new DoorTile(Directions.Cardinal.NORTH, null);
 
         for (int col = 0; col < tiles.length; col++) {
             for (int row = 0; row < tiles[col].length; row++) {
@@ -224,6 +227,8 @@ public class Room {
 
             Other tiles can only occupy from (1, 1) to (width - 1, height - 1)
         */
+
+
 
         // if the room is an exit or entrance, it shouldn't contain anything else.
         if (theIsEntrance || theIsExit) {
@@ -406,7 +411,7 @@ public class Room {
      * @param theRoom          The Room to add doors to.
      * @param theWallLocations A list of wall locations where doors can potentially be placed.
      */
-    public static void placeDoors(final Room theRoom,
+    public void placeDoors(final Room theRoom,
                                   final List<Point> theWallLocations) {
         // Shuffle the wall locations to randomize door placement
         Collections.shuffle(theWallLocations, Helper.getRandom());
@@ -416,7 +421,7 @@ public class Room {
 
         for (final Point wallLocation : theWallLocations) {
             // Introduce a 40% chance of having rooms with just a single door
-            if (doorsPlaced > 0 && Helper.getRandomDoubleBetween(0, 1) > 0.4) {
+            if (doorsPlaced > 0 && Helper.getRandomDoubleBetween(0, 1) > 0.9) {
                 myDoorNumber = doorsPlaced;
                 break;  // Exit the loop
             }

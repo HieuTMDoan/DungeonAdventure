@@ -286,7 +286,7 @@ public class Dungeon {
             for (Room room : rooms) {
                 if (room != null) {
                     // Place doors at wall locations with a limit of 4 doors
-                    room.placeDoors(room, getWallLocations(room));
+                    Room.placeDoors(room, getWallLocations(room));
                 }
             }
         }

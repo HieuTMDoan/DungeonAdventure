@@ -101,7 +101,7 @@ public class Dungeon {
 
     /**
      * Constructs a random-generated maze of type {@link Room}
-     * with a traversable path from the entrance to the exit
+     * with an entrance, an exit
      * and 4 pillars of Object-Oriented randomly placed in the maze.
      */
     private void generateDungeon() {
@@ -280,43 +280,24 @@ public class Dungeon {
     /**
      * Places doors in each room of the dungeon.
      */
-    /**
-     * Places doors in each room of the dungeon.
-     * Limits the number of attempts to prevent infinite recursion.
-     */
     public void placeDoors() {
-        int attempts = 0;
-        final int maxAttempts = 100; // Set an appropriate maximum attempt limit
-
-        do {
-            for (Room[] rooms : myMaze) {
-                for (Room room : rooms) {
-                    if (room != null) {
-                        // Place doors at wall locations with a limit of 4 doors
-                        room.placeDoors(room, getWallLocations(room));
-                    }
+        for (Room[] rooms : myMaze) {
+            for (Room room : rooms) {
+                if (room != null) {
+                    // Place doors at wall locations with a limit of 4 doors
+                    room.placeDoors(room, getWallLocations(room));
                 }
             }
+        }
 
-            // Dummy maze for marking visited and dead-end locations in the dungeon
-            final char[][] testMaze = new char[MAZE_SIZE.height][MAZE_SIZE.width];
+        // Dummy maze for marking visited and dead-end locations in the dungeon
+        final char[][] testMaze = new char[MAZE_SIZE.height][MAZE_SIZE.width];
 
-            // Recursively regenerates the dungeon if not traversable
-            if (!isTraversable(myMaze, testMaze,
-                    myStartingRoom.getDungeonLocation().x,
-                    myStartingRoom.getDungeonLocation().y)) {
-                // Increment attempts and print a debug statement
-                attempts++;
-                System.out.println("Attempt #" + attempts + ": Dungeon regeneration failed.");
-            } else {
-                // Dungeon is traversable, break out of the loop
-                break;
-            }
-        } while (attempts < maxAttempts);
-
-        if (attempts >= maxAttempts) {
-            // Handle the case where maximum attempts are reached
-            System.out.println("Maximum attempts reached. Unable to generate a traversable dungeon.");
+        // Recursively regenerates the dungeon if not traversable
+        if (!isTraversable(myMaze, testMaze,
+                myStartingRoom.getDungeonLocation().x,
+                myStartingRoom.getDungeonLocation().y)) {
+            placeDoors();
         }
     }
 

@@ -393,9 +393,7 @@ public class Room {
                 }
 
             }
-
-            default -> {
-            }
+            default -> { }
         }
     }
     /**
@@ -443,7 +441,6 @@ public class Room {
                         break;
                     }
                 }
-                // door is on top/bottom wall
             } else if (y == 0 || y == theRoom.getRoomHeight() - 1) {
                 for (final Tile tile : tiles[y]) {
                     if (tile.getClass() == DoorTile.class) {
@@ -455,7 +452,6 @@ public class Room {
             if (foundDoor) {
                 continue;
             }
-
 
             // Checks if there's a valid room to put a door to.
             // Not sure if I like this, but it works
@@ -487,7 +483,6 @@ public class Room {
                 if (usedLocations.add(Directions.Cardinal.EAST)) {
                     doorsPlaced++;
                 }
-
             }
             if (x == theRoom.getRoomWidth() - 1) { // right
                 final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.WEST);
@@ -497,11 +492,10 @@ public class Room {
                 if (usedLocations.add(Directions.Cardinal.WEST)) {
                     doorsPlaced++;
                 }
-
-
             }
 
-            if (doorsPlaced >= MAX_DOORS || doorsPlaced >= 1 && Helper.getRandomDoubleBetween(0, 1) > 0.9) {
+            if (doorsPlaced == MAX_DOORS || doorsPlaced > 1 && Helper.getRandomDoubleBetween(0, 1) > 0.4) {
+                myDoorNumber = doorsPlaced;
                 return;  // Limit reached, exit the method
             }
         }
@@ -552,6 +546,7 @@ public class Room {
                     }
                 }
             }
+            default -> throw new IllegalStateException("Unexpected value: " + theDirection);
         }
 
         return null;

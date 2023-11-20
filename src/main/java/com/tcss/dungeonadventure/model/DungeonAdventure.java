@@ -59,7 +59,7 @@ public final class DungeonAdventure {
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         this.myPlayer = new Player(thePlayerName, theHero);
         this.myDungeon = new Dungeon();
-        this.myDungeon.placeDoors();
+//        this.myDungeon.placeDoors();
         System.out.println(myDungeon);
 
         final Room startingRoom = myDungeon.getStartingRoom();

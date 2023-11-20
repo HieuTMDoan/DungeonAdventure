@@ -99,12 +99,12 @@ public final class Helper {
     }
 
     /**
-     * Returns a random door axis (horizontal or vertical).
+     * Returns a random cardinal direction (NESW).
      *
-     * @return The random door axis.
+     * @return The random cardinal direction.
      */
-    public static Directions.Axis getRandomDoorAxis() {
-        return getRandomBoolean() ? Directions.Axis.HORIZONTAL : Directions.Axis.VERTICAL;
+    public static Directions.Cardinal getRandomCardinalDirection() {
+        return Directions.Cardinal.values()[getRandomIntBetween(0, 4)];
     }
 
     /**

@@ -291,16 +291,17 @@ public class Dungeon {
             }
         }
 
-        //Dummy maze for marking visited and dead-end locations in the dungeon
+        // Dummy maze for marking visited and dead-end locations in the dungeon
         final char[][] testMaze = new char[MAZE_SIZE.height][MAZE_SIZE.width];
 
-        //recursively regenerates the dungeon if not traversable
+        // Recursively regenerates the dungeon if not traversable
         if (!isTraversable(myMaze, testMaze,
                 myStartingRoom.getDungeonLocation().x,
                 myStartingRoom.getDungeonLocation().y)) {
             placeDoors();
         }
     }
+
 
     /**
      * Returns a list of wall locations in the specified room.

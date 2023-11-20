@@ -269,102 +269,7 @@ public class Room {
         return tiles;
     }
 
-    /**
-     * Randomly places doors in the specified room. Doors are placed at random wall locations
-     * making sure to avoid corners and that no two doors are placed right next to each other.
-     *
-     * @param theRoom          The Room to add doors to.
-     * @param theWallLocations A list of wall locations where doors can potentially be placed.
-     */
-    public void placeDoors(final Room theRoom,
-                                  final List<Point> theWallLocations) {
-        // Shuffle the wall locations to randomize door placement
-        Collections.shuffle(theWallLocations, Helper.getRandom());
 
-        final Tile[][] tiles = theRoom.getRoomTiles();
-        final Set<Directions.Cardinal> usedLocations = new HashSet<>();
-
-        for (final Point wallLocation : theWallLocations) {
-            final int x = (int) wallLocation.getX();
-            final int y = (int) wallLocation.getY();
-
-            // Check if the location is in the corners, skip if true
-            if (wallLocation.equals(new Point(0, 0))
-                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1, 0))
-                    || wallLocation.equals(new Point(0, theRoom.getRoomHeight() - 1))
-                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1,
-                    theRoom.getRoomHeight() - 1))) {
-                continue;
-            }
-
-            // Check to ensure only ONE door is placed along a wall.
-            boolean foundDoor = false;
-            if (x == 0 || x == theRoom.getRoomWidth() - 1) { // door is on left/right wall
-                for (final Tile[] tile : tiles) {
-                    if (tile[x].getClass() == DoorTile.class) {
-                        foundDoor = true;
-                        break;
-                    }
-                }
-                // door is on top/bottom wall
-            } else if (y == 0 || y == theRoom.getRoomHeight() - 1) {
-                for (final Tile tile : tiles[y]) {
-                    if (tile.getClass() == DoorTile.class) {
-                        foundDoor = true;
-                        break;
-                    }
-                }
-            }
-            if (foundDoor) {
-                continue;
-            }
-
-            // Checks if there's a valid room to put a door to.
-            // Not sure if I like this, but it works
-            if (y == 0) { // top
-                final Room
-                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.NORTH);
-                if (room != null) {
-                    tiles[y][x] = new DoorTile(Directions.Cardinal.NORTH, room);
-                }
-                if (usedLocations.add(Directions.Cardinal.NORTH)) {
-                    myDoorNumber++;
-                }
-            }
-            if (y == theRoom.getRoomHeight() - 1) { // bottom
-                final Room
-                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.SOUTH);
-                if (room != null) {
-                    tiles[y][x] = new DoorTile(Directions.Cardinal.SOUTH, room);
-                }
-                if (usedLocations.add(Directions.Cardinal.SOUTH)) {
-                    myDoorNumber++;
-                }
-            }
-            if (x == 0) { // left
-                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.EAST);
-                if (room != null) {
-                    tiles[y][x] = new DoorTile(Directions.Cardinal.EAST, room);
-                }
-                if (usedLocations.add(Directions.Cardinal.EAST)) {
-                    myDoorNumber++;
-                }
-            }
-            if (x == theRoom.getRoomWidth() - 1) { // right
-                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.WEST);
-                if (room != null) {
-                    tiles[y][x] = new DoorTile(Directions.Cardinal.WEST, room);
-                }
-                if (usedLocations.add(Directions.Cardinal.WEST)) {
-                    myDoorNumber++;
-                }
-            }
-
-            if (myDoorNumber == MAX_DOORS) {
-                return;  // Limit reached, exit the method
-            }
-        }
-    }
 
     /**
      * Helper method to use while generating a new Room.
@@ -488,9 +393,163 @@ public class Room {
                 }
 
             }
-            default ->
-                    throw new IllegalStateException("Unexpected value: " + theOriginalDirection);
+            default -> { }
         }
+    }
+    /**
+     * Randomly places doors in the specified room. Doors are placed at random wall locations
+     * making sure to avoid corners and that no two doors are placed right next to each other.
+     *
+     * @param theRoom          The Room to add doors to.
+     * @param theWallLocations A list of wall locations where doors can potentially be placed.
+     */
+    public void placeDoors(final Room theRoom,
+                                  final List<Point> theWallLocations) {
+        // Shuffle the wall locations to randomize door placement
+        Collections.shuffle(theWallLocations, Helper.getRandom());
+
+        int doorsPlaced = 0;
+        final Tile[][] tiles = theRoom.getRoomTiles();
+        final Set<Directions.Cardinal> usedLocations = new HashSet<>();
+
+        // Check if the room is an entrance or exit, and connect doors accordingly
+        if (theRoom.isEntranceRoom()) {
+            connectEntrance(theRoom, tiles);
+        } else if (theRoom.isExitRoom()) {
+            connectExit(theRoom, tiles);
+        }
+
+        for (final Point wallLocation : theWallLocations) {
+            final int x = (int) wallLocation.getX();
+            final int y = (int) wallLocation.getY();
+
+            // Check if the location is in the corners, skip if true
+            if (wallLocation.equals(new Point(0, 0))
+                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1, 0))
+                    || wallLocation.equals(new Point(0, theRoom.getRoomHeight() - 1))
+                    || wallLocation.equals(new Point(theRoom.getRoomWidth() - 1,
+                    theRoom.getRoomHeight() - 1))) {
+                continue;
+            }
+
+            // Check to ensure only ONE door is placed along a wall.
+            boolean foundDoor = false;
+            if (x == 0 || x == theRoom.getRoomWidth() - 1) { // door is on left/right wall
+                for (final Tile[] tile : tiles) {
+                    if (tile[x].getClass() == DoorTile.class) {
+                        foundDoor = true;
+                        break;
+                    }
+                }
+            } else if (y == 0 || y == theRoom.getRoomHeight() - 1) {
+                for (final Tile tile : tiles[y]) {
+                    if (tile.getClass() == DoorTile.class) {
+                        foundDoor = true;
+                        break;
+                    }
+                }
+            }
+            if (foundDoor) {
+                continue;
+            }
+
+            // Checks if there's a valid room to put a door to.
+            // Not sure if I like this, but it works
+            if (y == 0) { // top
+                final Room
+                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.NORTH);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.NORTH, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.NORTH)) {
+                    doorsPlaced++;
+                }
+            }
+            if (y == theRoom.getRoomHeight() - 1) { // bottom
+                final Room
+                        room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.SOUTH);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.SOUTH, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.SOUTH)) {
+                    doorsPlaced++;
+                }
+            }
+            if (x == 0) { // left
+                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.EAST);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.EAST, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.EAST)) {
+                    doorsPlaced++;
+                }
+            }
+            if (x == theRoom.getRoomWidth() - 1) { // right
+                final Room room = theRoom.getAdjacentRoomByDirection(Directions.Cardinal.WEST);
+                if (room != null) {
+                    tiles[y][x] = new DoorTile(Directions.Cardinal.WEST, room);
+                }
+                if (usedLocations.add(Directions.Cardinal.WEST)) {
+                    doorsPlaced++;
+                }
+            }
+
+            if (doorsPlaced == MAX_DOORS || doorsPlaced > 1 && Helper.getRandomDoubleBetween(0, 1) > 0.4) {
+                myDoorNumber = doorsPlaced;
+                return;  // Limit reached, exit the method
+            }
+        }
+    }
+
+    private static void connectEntrance(final Room theRoom, final Tile[][] theTiles) {
+        final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
+        final Point entranceLocation = getDoorLocation(theRoom, Directions.Cardinal.NORTH);
+
+        if (entranceLocation != null) {
+            final Room adjacentRoom = dungeon.getRoomAt((int) theRoom.getDungeonLocation().getX() - 1,
+                    (int) theRoom.getDungeonLocation().getY());
+            if (adjacentRoom != null) {
+                theTiles[entranceLocation.y][entranceLocation.x] = new DoorTile(Directions.Cardinal.NORTH, adjacentRoom);
+            }
+        }
+    }
+
+    private static void connectExit(final Room theRoom, final Tile[][] theTiles) {
+        final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
+        final Point exitLocation = getDoorLocation(theRoom, Directions.Cardinal.SOUTH);
+
+        if (exitLocation != null) {
+            final Room adjacentRoom = dungeon.getRoomAt((int) theRoom.getDungeonLocation().getX() + 1,
+                    (int) theRoom.getDungeonLocation().getY());
+            if (adjacentRoom != null) {
+                theTiles[exitLocation.y][exitLocation.x] = new DoorTile(Directions.Cardinal.SOUTH, adjacentRoom);
+            }
+        }
+    }
+
+    private static Point getDoorLocation(final Room theRoom, final Directions.Cardinal theDirection) {
+        final int x = (int) theRoom.getDungeonLocation().getX();
+        final int y = (int) theRoom.getDungeonLocation().getY();
+
+        switch (theDirection) {
+            case NORTH -> {
+                for (int i = 0; i < theRoom.getRoomWidth(); i++) {
+                    if (theRoom.getRoomTiles()[0][i] instanceof DoorTile) {
+                        return new Point(i, 0);
+                    }
+                }
+            }
+            case SOUTH -> {
+                for (int i = 0; i < theRoom.getRoomWidth(); i++) {
+                    if (theRoom.getRoomTiles()[theRoom.getRoomHeight() - 1][i] instanceof DoorTile) {
+                        return new Point(i, theRoom.getRoomHeight() - 1);
+                    }
+                }
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + theDirection);
+        }
+
+        return null;
     }
 
     /**

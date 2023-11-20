@@ -1,6 +1,8 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
 
+import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
 
 public class ItemTile extends Tile {
@@ -8,7 +10,7 @@ public class ItemTile extends Tile {
     /**
      * The item occupying this tile.
      */
-    private final Item myItem;
+    private Item myItem;
 
 
     /**
@@ -22,13 +24,28 @@ public class ItemTile extends Tile {
         this.myItem = theItem;
     }
 
+    @Override
+    public void onInteract() {
+        if (myItem == null) {
+            return;
+        }
+
+        DungeonAdventure.getInstance().getPlayer().addItemToInventory(myItem);
+        myItem = null;
+    }
+
+    @Override
+    public char getDisplayChar() {
+        return myItem != null ? myItem.getDisplayChar() : TileChars.Room.EMPTY;
+    }
+
     public Item getItem() {
         return this.myItem;
     }
 
     @Override
     public String getDescription() {
-        return myItem.getDescription();
+        return myItem == null ? super.getDescription() : myItem.getDescription();
     }
 
 

@@ -4,9 +4,10 @@ package com.tcss.dungeonadventure.objects.items;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.VisualComponent;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Item implements VisualComponent {
+public abstract class Item implements VisualComponent, Serializable {
 
     public enum ItemTypes {
 

@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.model;
-
+import java.io.Serial;
+import java.io.Serializable;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
@@ -19,7 +20,9 @@ import java.util.Map;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class Dungeon {
+public class Dungeon implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * The default dungeon size.

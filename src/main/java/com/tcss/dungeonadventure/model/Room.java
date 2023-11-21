@@ -18,6 +18,7 @@ import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class Room {
+public class Room implements Serializable {
     /**
      * The maximum size of a room.
      */

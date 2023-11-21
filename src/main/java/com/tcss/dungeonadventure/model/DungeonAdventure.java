@@ -8,9 +8,15 @@ import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 import java.awt.Point;
+import java.io.Serial;
+import java.io.Serializable;
+
 import javafx.application.Application;
 
-public final class DungeonAdventure {
+public final class DungeonAdventure implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * Singleton instance for DungeonAdventure.

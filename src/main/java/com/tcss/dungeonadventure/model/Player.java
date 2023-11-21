@@ -3,12 +3,16 @@ package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Player {
+public class Player implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private String myPlayerName;
 

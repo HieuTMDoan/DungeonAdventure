@@ -22,10 +22,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 public class Room {
@@ -59,10 +55,7 @@ public class Room {
      */
     private static final double ONE_MONSTER_CHANCE = 0.35;
 
-    /**
-     * The max number of doors that can generate in a room.
-     */
-    private static final int MAX_DOORS = 4;
+
 
     /**
      * Boolean if the room is the entrance room.
@@ -90,7 +83,7 @@ public class Room {
     /**
      * The tiles in the room.
      */
-    private Tile[][] myRoomData;
+    private Tile[][] myRoomTiles;
 
     /**
      * The location that the room is located at within
@@ -110,12 +103,12 @@ public class Room {
      * @param theTiles The tiles inside the room.
      */
     public Room(final Tile[][] theTiles) {
-        this.myRoomData = theTiles;
+        this.myRoomTiles = theTiles;
         this.myIsEntranceRoom = contains(TileChars.Room.ENTRANCE);
         this.myIsExitRoom = contains(TileChars.Room.EXIT);
         this.myRoomDimensions = new Dimension(theTiles[0].length, theTiles.length);
 
-        myPillar = Arrays.stream(myRoomData).
+        myPillar = Arrays.stream(myRoomTiles).
                 flatMap(Arrays::stream).
                 filter(tile -> tile.getClass() == ItemTile.class).
                 map(tile -> ((ItemTile) tile).getItem()).
@@ -166,7 +159,7 @@ public class Room {
                 (theOriginalRoom.myDungeonLocation != null)
                         ? new Point(theOriginalRoom.myDungeonLocation)
                         : null;
-        deepCopyRoomData(theOriginalRoom.myRoomData);
+        deepCopyRoomData(theOriginalRoom.myRoomTiles);
     }
 
     /**
@@ -306,6 +299,30 @@ public class Room {
         }
     }
 
+    public void addDoorToWall(final Directions.Cardinal theWallLocation, final Room theOtherRoom) {
+        final int x = Helper.getRandomIntBetween(1, getRoomWidth() - 2);
+        final int y = Helper.getRandomIntBetween(1, getRoomHeight() - 2);
+        switch (theWallLocation) {
+            case NORTH -> { // door is on top wall
+                this.myRoomTiles[0][y] = new DoorTile(Directions.Cardinal.NORTH, theOtherRoom);
+            }
+            case SOUTH -> { // door is on bottom wall
+                this.myRoomTiles[getRoomHeight() - 2][y]
+                        = new DoorTile(Directions.Cardinal.SOUTH, theOtherRoom);
+            }
+            case EAST -> { // door is on left wall
+                this.myRoomTiles[x][0]
+                        = new DoorTile(Directions.Cardinal.EAST, theOtherRoom);
+            }
+            case WEST -> { // door is on right wall
+                this.myRoomTiles[x][getRoomWidth() - 2] = new DoorTile(Directions.Cardinal.WEST, theOtherRoom);
+            }
+            default -> {
+            }
+        }
+
+    }
+
 
 
 
@@ -317,7 +334,7 @@ public class Room {
      * @return True if the character is in the room, false otherwise.
      */
     public boolean contains(final char theChar) {
-        for (final Tile[] row : myRoomData) {
+        for (final Tile[] row : myRoomTiles) {
             for (final Tile tile : row) {
                 if (tile.getDisplayChar() == theChar) {
                     return true;
@@ -348,7 +365,7 @@ public class Room {
                     "Illegal enum passed: " + theDirection);
         }
 
-        final Tile tile = myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        final Tile tile = myRoomTiles[(int) tempPoint.getX()][(int) tempPoint.getY()];
         if (tile.isTraversable()) {
             myPlayerPosition = tempPoint;
             tile.onInteract();
@@ -376,16 +393,16 @@ public class Room {
 
         switch (theOriginalDirection) {
             case NORTH -> { // come from door from south
-                for (int i = 0; i < myRoomData[this.getRoomHeight() - 1].length; i++) {
-                    if (myRoomData[this.getRoomHeight() - 1][i].getClass() == DoorTile.class) {
+                for (int i = 0; i < myRoomTiles[this.getRoomHeight() - 1].length; i++) {
+                    if (myRoomTiles[this.getRoomHeight() - 1][i].getClass() == DoorTile.class) {
                         myPlayerPosition = new Point(this.getRoomHeight() - 1, i);
                         break;
                     }
                 }
             }
             case SOUTH -> { // come from door from north
-                for (int i = 0; i < myRoomData[0].length; i++) {
-                    if (myRoomData[0][i].getClass() == DoorTile.class) {
+                for (int i = 0; i < myRoomTiles[0].length; i++) {
+                    if (myRoomTiles[0][i].getClass() == DoorTile.class) {
                         myPlayerPosition = new Point(0, i);
                         break;
                     }
@@ -436,12 +453,8 @@ public class Room {
         final int x = (int) this.getDungeonLocation().getX();
         final int y = (int) this.getDungeonLocation().getY();
 
-        return switch (theDirection) {
-            case NORTH -> dungeon.getRoomAt(x - 1, y);
-            case SOUTH -> dungeon.getRoomAt(x + 1, y);
-            case EAST -> dungeon.getRoomAt(x, y - 1);
-            case WEST -> dungeon.getRoomAt(x, y + 1);
-        };
+        return dungeon.getRoomAt(x + theDirection.getXOffset(), y + theDirection.getYOffset());
+
     }
 
     /**
@@ -475,17 +488,11 @@ public class Room {
         return this.myRoomDimensions == null ? null : (int) this.myRoomDimensions.getHeight();
     }
 
-    /**
-     * @return The number of doors in the room.
-     */
-    public int getDoorNumber() {
-        return myDoorNumber;
-    }
 
     public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
-        myRoomData = new Tile[theOriginalRoomData.length][];
+        myRoomTiles = new Tile[theOriginalRoomData.length][];
         for (int i = 0; i < theOriginalRoomData.length; i++) {
-            myRoomData[i] = Arrays.copyOf(theOriginalRoomData[i],
+            myRoomTiles[i] = Arrays.copyOf(theOriginalRoomData[i],
                     theOriginalRoomData[i].length);
 
             for (int j = 0; j < theOriginalRoomData[i].length; j++) {
@@ -500,24 +507,24 @@ public class Room {
                                 theOriginalRoomData[i][j].isTraversable();
                         newTile = new Tile(displayChar, isTraversable);
                     }
-                    myRoomData[i][j] = newTile;
+                    myRoomTiles[i][j] = newTile;
                 } else {
-                    myRoomData[i][j] = null;
+                    myRoomTiles[i][j] = null;
                 }
             }
         }
     }
 
     public RoomMemento createMemento() {
-        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);
     }
 
     public RoomMemento saveToMemento() {
-        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);
     }
 
     public void restoreFromMemento(final RoomMemento theMemento) {
-        myRoomData = theMemento.getSavedRoomData();
+        myRoomTiles = theMemento.getSavedRoomData();
         myPlayerPosition = theMemento.getSavedPlayerPosition();
         myPillar = theMemento.getSavedPillar();
     }
@@ -558,20 +565,20 @@ public class Room {
      * @return The tiles in the room.
      */
     public Tile[][] getRoomTiles() {
-        return this.myRoomData;
+        return this.myRoomTiles;
     }
 
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        for (int i = 0; i < myRoomData.length; i++) {
+        for (int i = 0; i < myRoomTiles.length; i++) {
             String prefix = "";
-            for (int j = 0; j < myRoomData[i].length; j++) {
+            for (int j = 0; j < myRoomTiles[i].length; j++) {
                 if (new Point(i, j).equals(myPlayerPosition)) {
                     stringBuilder.append(prefix).append("/"); //TODO CHANGE TO PLAYER CHARACTER
                 } else {
-                    stringBuilder.append(prefix).append(myRoomData[i][j].getDisplayChar());
+                    stringBuilder.append(prefix).append(myRoomTiles[i][j].getDisplayChar());
                 }
                 prefix = " ";
             }

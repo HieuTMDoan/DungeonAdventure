@@ -60,9 +60,16 @@ public class Directions {
          */
         private final int myYOffset;
 
+        /**
+         * The opposite direction.
+         */
+        private Cardinal myOpposite;
+
+
         Cardinal(final int theXOffset, final int theYOffset) {
             this.myXOffset = theXOffset;
             this.myYOffset = theYOffset;
+
         }
 
         public int getXOffset() {
@@ -71,6 +78,15 @@ public class Directions {
 
         public int getYOffset() {
             return this.myYOffset;
+        }
+
+        public Cardinal getOpposite() {
+            int index = ordinal() + 2;
+            if (index > 3) {
+                index -= 4;
+            }
+
+            return values()[index];
         }
     }
 

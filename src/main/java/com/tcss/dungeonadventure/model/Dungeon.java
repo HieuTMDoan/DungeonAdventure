@@ -5,6 +5,7 @@ import com.tcss.dungeonadventure.objects.Directions;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.sql.SQLOutput;
 import java.util.*;
 
 
@@ -142,6 +143,7 @@ public class Dungeon {
 
         myMaze[startingRow][startingCol] = myStartingRoom;
         myStartingRoom.setDungeonLocation(new Point(startingRow, startingCol));
+
         myMaze[exitRow][exitCol] = myExitRoom;
         myExitRoom.setDungeonLocation(new Point(exitRow, exitCol));
     }
@@ -170,7 +172,8 @@ public class Dungeon {
         final Point endingLocation = myExitRoom.getDungeonLocation();
 
         Point currentLocation = startingLocation;
-        final StringBuilder path = new StringBuilder();
+        final List<Directions.Cardinal> path = new ArrayList<>();
+        final List<Point> pathRoomLocations = new ArrayList<>();
 
 
         final int maxAttempts = 200;
@@ -185,7 +188,7 @@ public class Dungeon {
                 * */
 
                 System.out.println("Breaking out of dungeon generation");
-                break;
+                return;
             }
             currentAttempt++;
 
@@ -220,10 +223,11 @@ public class Dungeon {
             if (getRoomAt(x, y) != null) {
                 continue;
             }
-            path.append(randomDirection).append(" ");
+            path.add(randomDirection);
 
             // Update the current location to the next room of the path
             currentLocation = new Point(x, y);
+            pathRoomLocations.add(currentLocation);
             // Creates a new room without a dimension. This indicates a path room.
             myMaze[x][y] = new Room();
 
@@ -232,16 +236,16 @@ public class Dungeon {
 
             boolean nextToExit = false;
             for (final Directions.Cardinal direction : Directions.Cardinal.values()) {
-                final Room room =
-                        getRoomAt(x + direction.getXOffset(), y + direction.getYOffset());
+                final Room room = getRoomAt(x + direction.getXOffset(), y + direction.getYOffset());
 
                 if (room != null && room.isExitRoom()) {
-                    System.out.println("found exit");
+                    path.add(direction);
                     nextToExit = true;
                     break;
                 }
             }
             if (nextToExit) {
+                System.out.println("found exit");
                 break;
             }
 
@@ -249,13 +253,43 @@ public class Dungeon {
 
         // Now that the path has been created, replace path rooms with
         // pillar rooms and filler rooms
-
         // TODO Implement me!
+        Collections.shuffle(pathRoomLocations);
+        final List<Room> pillarRooms = generatePillarRooms();
+        for (int i  = 0; i < 4; i++) {
+            final Point p = pathRoomLocations.get(0);
+            final Room pillarRoom = pillarRooms.get(0);
+            myMaze[p.x][p.y] = pillarRoom;
+            pillarRoom.setDungeonLocation(p);
 
+            pathRoomLocations.remove(0);
+            pillarRooms.remove(0);
+        }
+
+        for (final Point roomPoint : pathRoomLocations) {
+            final Room room = new Room(false, false, null);
+            room.setDungeonLocation(roomPoint);
+            myMaze[roomPoint.x][roomPoint.y] = room;
+        }
 
         // Generate doors connecting the path
-
         // TODO Implement me!
+
+        Room currentRoom = myStartingRoom;
+        for (final Directions.Cardinal direction : path) {
+            System.out.println(direction);
+
+            final Room otherRoom = getRoomAt(
+                    currentRoom.getDungeonLocation().x + direction.getXOffset(),
+                    currentRoom.getDungeonLocation().y + direction.getYOffset());
+            // connect currentRoom and otherRoom
+
+            currentRoom.addDoorToWall(direction, otherRoom);
+            otherRoom.addDoorToWall(direction.getOpposite(), currentRoom);
+
+            currentRoom = otherRoom;
+        }
+        System.out.println(myStartingRoom);
 
 
         // Iterate over the dungeon row by row (horizontally), and
@@ -278,9 +312,11 @@ public class Dungeon {
         // TODO Implement me!
 
 
-        System.out.println(path.toString() + " \n");
+        System.out.println(path + " \n");
 
     }
+
+
 
 
     /**

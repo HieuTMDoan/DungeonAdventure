@@ -3,6 +3,7 @@ package com.tcss.dungeonadventure;
 
 import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.objects.Directions;
 
 
 public final class Main {
@@ -17,6 +18,7 @@ public final class Main {
 
 //        SQLiteDB.getCharacters();
         System.out.println(new Dungeon());
+
 
 
     }

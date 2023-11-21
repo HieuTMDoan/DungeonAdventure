@@ -18,16 +18,11 @@ public final class Main {
 
 //        DungeonAdventure.getInstance().initialize();
 
-//        SQLiteDB.getCharacters();
-
-//        final Room room = new Room(false, false, null);
-//        for (int i = 1; i < room.getRoomWidth() - 1; i++) {
-//            room.getRoomTiles()[0][i] = new EmptyTile();
-//        }
-//        System.out.println(room.getRoomWidth() + " " + room.getRoomHeight());
-//        System.out.println(room);
+        // NOTE: as of 11/21/2023 11:22 AM, the dungeon is traversable.
+        // you can boot up the dungeon adventure and travel from start to end,
+        // but you may be blocked by monsters.
         System.out.println(new Dungeon());
-
+//        SQLiteDB.getCharacters();
 
 
     }

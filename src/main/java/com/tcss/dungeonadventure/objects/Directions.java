@@ -33,22 +33,45 @@ public class Directions {
         /**
          * Represents North.
          */
-        NORTH,
+        NORTH(-1, 0),
 
         /**
          * Represents East.
          */
-        EAST,
+        EAST(0, 1),
 
         /**
          * Represents South.
          */
-        SOUTH,
+        SOUTH(1, 0),
 
         /**
          * Represents West.
          */
-        WEST
+        WEST(0, -1);
+
+        /**
+         * The usual X offset.
+         */
+        private final int myXOffset;
+
+        /**
+         * The usual Y offset.
+         */
+        private final int myYOffset;
+
+        Cardinal(final int theXOffset, final int theYOffset) {
+            this.myXOffset = theXOffset;
+            this.myYOffset = theYOffset;
+        }
+
+        public int getXOffset() {
+            return this.myXOffset;
+        }
+
+        public int getYOffset() {
+            return this.myYOffset;
+        }
     }
 
 

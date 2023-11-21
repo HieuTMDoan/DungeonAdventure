@@ -341,8 +341,8 @@ public class Room {
         final Point tempPoint = new Point(myPlayerPosition);
         switch (theDirection) {
             case NORTH -> tempPoint.translate(-1, 0);
-            case EAST -> tempPoint.translate(0, 1);
             case SOUTH -> tempPoint.translate(1, 0);
+            case EAST -> tempPoint.translate(0, 1);
             case WEST -> tempPoint.translate(0, -1);
             default -> throw new IllegalArgumentException(
                     "Illegal enum passed: " + theDirection);

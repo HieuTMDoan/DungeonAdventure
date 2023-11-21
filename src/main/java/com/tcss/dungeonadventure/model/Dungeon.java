@@ -212,27 +212,9 @@ public class Dungeon {
                             Helper.getRandomIntBetween(0, possibleDirections.size()));
 
             // Calculates offset
-            final int x;
-            final int y;
-            switch (randomDirection) {
-                case NORTH -> {
-                    x = currentLocation.x - 1;
-                    y = currentLocation.y;
-                }
-                case EAST -> {
-                    x = currentLocation.x;
-                    y = currentLocation.y + 1;
-                }
-                case SOUTH -> {
-                    x = currentLocation.x + 1;
-                    y = currentLocation.y;
-                }
-                case WEST -> {
-                    x = currentLocation.x;
-                    y = currentLocation.y - 1;
-                }
-                default -> throw new IllegalArgumentException("X or Y wasn't initialized");
-            }
+            final int x = currentLocation.x + randomDirection.getXOffset();
+            final int y = currentLocation.y + randomDirection.getYOffset();
+
 
             // If the room is already populated with something, try again.
             if (getRoomAt(x, y) != null) {
@@ -247,16 +229,12 @@ public class Dungeon {
 
             // Checks if the 4 adjacent rooms are the exit room.
             // If it is, then a path to the exit has been made successfully.
-            final Point[] adjacentPoints = new Point[]{
-                    new Point(1, 0),
-                    new Point(-1, 0),
-                    new Point(0, 1),
-                    new Point(0, -1)
-            };
 
             boolean nextToExit = false;
-            for (final Point point : adjacentPoints) {
-                final Room room = getRoomAt(x + point.x, y + point.y);
+            for (final Directions.Cardinal direction : Directions.Cardinal.values()) {
+                final Room room =
+                        getRoomAt(x + direction.getXOffset(), y + direction.getYOffset());
+
                 if (room != null && room.isExitRoom()) {
                     System.out.println("found exit");
                     nextToExit = true;
@@ -276,7 +254,6 @@ public class Dungeon {
 
 
         // Generate doors connecting the path
-        // Starting from the entrance, check the
 
         // TODO Implement me!
 

@@ -60,26 +60,33 @@ public class Directions {
          */
         private final int myYOffset;
 
-        /**
-         * The opposite direction.
-         */
-        private Cardinal myOpposite;
-
-
         Cardinal(final int theXOffset, final int theYOffset) {
             this.myXOffset = theXOffset;
             this.myYOffset = theYOffset;
-
         }
 
+        /**
+         * @return The X offset.
+         */
         public int getXOffset() {
             return this.myXOffset;
         }
 
+        /**
+         * @return The Y offset.
+         */
         public int getYOffset() {
             return this.myYOffset;
         }
 
+        /**
+         * Gets the direction opposite to a direction.
+         * <p>
+         * For example, if Cardinal.NORTH.getOpposite() is called,
+         * it will return Cardinal.SOUTH.
+         *
+         * @return The opposite direction.
+         */
         public Cardinal getOpposite() {
             int index = ordinal() + 2;
             if (index > 3) {

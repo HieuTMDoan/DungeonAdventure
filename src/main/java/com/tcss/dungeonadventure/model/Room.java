@@ -56,7 +56,6 @@ public class Room {
     private static final double ONE_MONSTER_CHANCE = 0.35;
 
 
-
     /**
      * Boolean if the room is the entrance room.
      */
@@ -179,11 +178,7 @@ public class Room {
                     "Room cannot be an entrance and an exit.");
         }
 
-        if (thePillar != null
-                && thePillar != PillarOfAbstraction.class
-                && thePillar != PillarOfInheritance.class
-                && thePillar != PillarOfEncapsulation.class
-                && thePillar != PillarOfPolymorphism.class) {
+        if (thePillar != null && !Arrays.asList(Helper.getPillarList()).contains(thePillar)) {
             throw new IllegalArgumentException(
                     thePillar.getSimpleName() + " is not a pillar.");
         }
@@ -199,11 +194,6 @@ public class Room {
 
 
         final Tile[][] tiles = new Tile[roomWidth][roomHeight];
-
-        // Ensure there is always at least one door
-        final int doorX = Helper.getRandomIntBetween(1, roomWidth - 1);
-        final int doorY = Helper.getRandomIntBetween(1, roomHeight - 1);
-        tiles[doorX][doorY] = new DoorTile(Directions.Cardinal.NORTH, null);
 
         for (int row = 0; row < tiles.length; row++) {
             for (int col = 0; col < tiles[row].length; col++) {
@@ -324,9 +314,6 @@ public class Room {
         }
 
     }
-
-
-
 
 
     /**

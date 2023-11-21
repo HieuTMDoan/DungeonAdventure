@@ -299,15 +299,17 @@ public class Room {
         }
     }
 
-    public void addDoorToWall(final Directions.Cardinal theWallLocation, final Room theOtherRoom) {
-        final int x = Helper.getRandomIntBetween(1, getRoomWidth() - 2);
-        final int y = Helper.getRandomIntBetween(1, getRoomHeight() - 2);
+    public void addDoorToWall(final Directions.Cardinal theWallLocation,
+                              final Room theOtherRoom) {
+
+        final int x = Helper.getRandomIntBetween(1, getRoomHeight() - 1);
+        final int y = Helper.getRandomIntBetween(1, getRoomWidth() - 1);
         switch (theWallLocation) {
             case NORTH -> { // door is on top wall
                 this.myRoomTiles[0][y] = new DoorTile(Directions.Cardinal.NORTH, theOtherRoom);
             }
             case SOUTH -> { // door is on bottom wall
-                this.myRoomTiles[getRoomHeight() - 2][y]
+                this.myRoomTiles[getRoomHeight() - 1][y]
                         = new DoorTile(Directions.Cardinal.SOUTH, theOtherRoom);
             }
             case EAST -> { // door is on left wall
@@ -315,7 +317,7 @@ public class Room {
                         = new DoorTile(Directions.Cardinal.EAST, theOtherRoom);
             }
             case WEST -> { // door is on right wall
-                this.myRoomTiles[x][getRoomWidth() - 2] = new DoorTile(Directions.Cardinal.WEST, theOtherRoom);
+                this.myRoomTiles[x][getRoomWidth() - 1] = new DoorTile(Directions.Cardinal.WEST, theOtherRoom);
             }
             default -> {
             }

@@ -25,7 +25,7 @@ public class Dungeon {
     /**
      * The 2D representation of the {@link Dungeon}.
      */
-    private final Room[][] myMaze;
+    private Room[][] myMaze;
 
     /**
      * The entrance of the {@link Dungeon}.
@@ -102,7 +102,14 @@ public class Dungeon {
      */
     private void generateDungeon() {
         placeEntranceAndExit();
-        generatePathFromStartToExit();
+
+        if (!generatePathFromStartToExit()) { // reset dungeon and try again
+            System.out.println("WARNING: Regenerating dungeon...");
+
+            myMaze = new Room[MAZE_SIZE.height][MAZE_SIZE.width];
+            generateDungeon();
+        }
+
     }
 
     /**
@@ -167,7 +174,7 @@ public class Dungeon {
         return entryList.get(randomIndexPair);
     }
 
-    private void generatePathFromStartToExit() {
+    private boolean generatePathFromStartToExit() {
         final Point startingLocation = myStartingRoom.getDungeonLocation();
         final Point endingLocation = myExitRoom.getDungeonLocation();
 
@@ -181,21 +188,14 @@ public class Dungeon {
 
         while (!currentLocation.equals(endingLocation)) {
             if (currentAttempt == maxAttempts) {
-                /*
-                 Breaks out of the loop of the algorithm gets stuck.
-                 TODO : This should reset myMaze to empty, add the
-                    start and exit rooms again, and try again until a maze has been made.
-                * */
-
-                System.out.println("Breaking out of dungeon generation");
-                return;
+                return false;
             }
             currentAttempt++;
-
 
             // Populates a list with possible valid directions
             // Ignores directions if it is on the maze boundary
             final List<Directions.Cardinal> possibleDirections = new ArrayList<>();
+
             if (currentLocation.getX() != 0) { // Not at the top
                 possibleDirections.add(Directions.Cardinal.NORTH);
             }
@@ -209,10 +209,23 @@ public class Dungeon {
                 possibleDirections.add(Directions.Cardinal.WEST);
             }
 
+            // If there are no possible directions, return false to
+            // regenerate.
+            if (possibleDirections.size() == 0) {
+                return false;
+            }
+
             // Chooses a random direction to go in
             final Directions.Cardinal randomDirection =
                     possibleDirections.get(
                             Helper.getRandomIntBetween(0, possibleDirections.size()));
+
+            // NOTE: To have a more unique path, we could make the direction
+            // to go not the same as the previous direction.
+            // For example, if the previous traveled path was NORTH,
+            // the next one CAN NOT be north UNLESS there are no valid directions
+            // to travel in.
+
 
             // Calculates offset
             final int x = currentLocation.x + randomDirection.getXOffset();
@@ -245,7 +258,7 @@ public class Dungeon {
                 }
             }
             if (nextToExit) {
-                System.out.println("found exit");
+                System.out.println("Path to exit has been found.");
                 break;
             }
 
@@ -253,7 +266,6 @@ public class Dungeon {
 
         // Now that the path has been created, replace path rooms with
         // pillar rooms and filler rooms
-        // TODO Implement me!
         Collections.shuffle(pathRoomLocations);
         final List<Room> pillarRooms = generatePillarRooms();
         for (int i  = 0; i < 4; i++) {
@@ -273,7 +285,6 @@ public class Dungeon {
         }
 
         // Generate doors connecting the path
-        // TODO Implement me!
 
         Room currentRoom = myStartingRoom;
         for (final Directions.Cardinal direction : path) {
@@ -313,7 +324,7 @@ public class Dungeon {
 
 
         System.out.println(path + " \n");
-
+        return true;
     }
 
 

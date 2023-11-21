@@ -5,8 +5,11 @@ import com.tcss.dungeonadventure.objects.Directions;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.sql.SQLOutput;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -215,16 +218,13 @@ public class Dungeon {
                 return false;
             }
 
+
+
             // Chooses a random direction to go in
             final Directions.Cardinal randomDirection =
                     possibleDirections.get(
                             Helper.getRandomIntBetween(0, possibleDirections.size()));
 
-            // NOTE: To have a more unique path, we could make the direction
-            // to go not the same as the previous direction.
-            // For example, if the previous traveled path was NORTH,
-            // the next one CAN NOT be north UNLESS there are no valid directions
-            // to travel in.
 
 
             // Calculates offset
@@ -266,18 +266,21 @@ public class Dungeon {
 
         // Now that the path has been created, replace path rooms with
         // pillar rooms and filler rooms
+        // TODO: One of the current issues with this is that all the pillars
+        //  are relatively close together.
+
+        // Shuffle the path points to add the pillar rooms to the first 4
         Collections.shuffle(pathRoomLocations);
-        final List<Room> pillarRooms = generatePillarRooms();
         for (int i  = 0; i < 4; i++) {
-            final Point p = pathRoomLocations.get(0);
-            final Room pillarRoom = pillarRooms.get(0);
-            myMaze[p.x][p.y] = pillarRoom;
-            pillarRoom.setDungeonLocation(p);
+            final Point roomPoint = pathRoomLocations.get(0);
+            final Room pillarRoom = this.myPillarRooms.get(i);
+            myMaze[roomPoint.x][roomPoint.y] = pillarRoom;
+            pillarRoom.setDungeonLocation(roomPoint);
 
             pathRoomLocations.remove(0);
-            pillarRooms.remove(0);
         }
 
+        // Fill in the rest of the path points with general rooms.
         for (final Point roomPoint : pathRoomLocations) {
             final Room room = new Room(false, false, null);
             room.setDungeonLocation(roomPoint);
@@ -285,16 +288,14 @@ public class Dungeon {
         }
 
         // Generate doors connecting the path
-
         Room currentRoom = myStartingRoom;
         for (final Directions.Cardinal direction : path) {
-            System.out.println(direction);
-
+            // find the room along the path
             final Room otherRoom = getRoomAt(
                     currentRoom.getDungeonLocation().x + direction.getXOffset(),
                     currentRoom.getDungeonLocation().y + direction.getYOffset());
-            // connect currentRoom and otherRoom
 
+            // connect currentRoom and otherRoom
             currentRoom.addDoorToWall(direction, otherRoom);
             otherRoom.addDoorToWall(direction.getOpposite(), currentRoom);
 

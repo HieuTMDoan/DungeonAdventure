@@ -4,17 +4,12 @@ import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
-import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
-import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
-import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
-import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.DoorTile;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.ExitTile;
 import com.tcss.dungeonadventure.objects.tiles.ItemTile;
-import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
 
@@ -258,7 +253,7 @@ public class Room {
                 : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
-            putTileAtValidLocation(new NPCTile(randomMonster), tiles);
+//            putTileAtValidLocation(new NPCTile(randomMonster), tiles);
         }
 
         return tiles;
@@ -292,23 +287,27 @@ public class Room {
     public void addDoorToWall(final Directions.Cardinal theWallLocation,
                               final Room theOtherRoom) {
 
+        if (findDoorOnWall(theWallLocation) != null) {
+            return; // don't add multiple doors on the same wall
+        }
+
         final int x = Helper.getRandomIntBetween(1, getRoomHeight() - 1);
         final int y = Helper.getRandomIntBetween(1, getRoomWidth() - 1);
+
+
         switch (theWallLocation) {
-            case NORTH -> { // door is on top wall
-                this.myRoomTiles[0][y] = new DoorTile(Directions.Cardinal.NORTH, theOtherRoom);
-            }
-            case SOUTH -> { // door is on bottom wall
-                this.myRoomTiles[getRoomHeight() - 1][y]
-                        = new DoorTile(Directions.Cardinal.SOUTH, theOtherRoom);
-            }
-            case EAST -> { // door is on left wall
-                this.myRoomTiles[x][0]
-                        = new DoorTile(Directions.Cardinal.EAST, theOtherRoom);
-            }
-            case WEST -> { // door is on right wall
-                this.myRoomTiles[x][getRoomWidth() - 1] = new DoorTile(Directions.Cardinal.WEST, theOtherRoom);
-            }
+            case NORTH -> // door is on top wall
+                    this.myRoomTiles[0][y]
+                            = new DoorTile(Directions.Cardinal.NORTH, theOtherRoom);
+            case SOUTH -> // door is on bottom wall
+                    this.myRoomTiles[getRoomHeight() - 1][y]
+                            = new DoorTile(Directions.Cardinal.SOUTH, theOtherRoom);
+            case EAST -> // door is on right wall
+                    this.myRoomTiles[x][getRoomWidth() - 1]
+                            = new DoorTile(Directions.Cardinal.EAST, theOtherRoom);
+            case WEST -> // door is on left wall
+                    this.myRoomTiles[x][0]
+                            = new DoorTile(Directions.Cardinal.WEST, theOtherRoom);
             default -> {
             }
         }
@@ -361,6 +360,51 @@ public class Room {
         }
     }
 
+    public Point findDoorOnWall(final Directions.Cardinal theDirection) {
+        final Tile[][] tiles = this.getRoomTiles();
+
+        Point returnPoint = null;
+
+
+        switch (theDirection) {
+            case NORTH -> { // find door on top wall
+                for (int i = 0; i < myRoomTiles[0].length; i++) {
+                    if (myRoomTiles[0][i].getClass() == DoorTile.class) {
+                        returnPoint = new Point(0, i);
+                    }
+                }
+
+            }
+            case SOUTH -> { //find door on bottom wall
+                for (int i = 0; i < myRoomTiles[this.getRoomHeight() - 1].length; i++) {
+                    if (myRoomTiles[this.getRoomHeight() - 1][i].
+                            getClass() == DoorTile.class) {
+
+                        returnPoint = new Point(this.getRoomHeight() - 1, i);
+                    }
+                }
+            }
+            case EAST -> { // find door on right wall
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
+                        returnPoint = new Point(i, this.getRoomWidth() - 1);
+                    }
+                }
+
+            }
+            case WEST -> { // find door on right wall
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][0].getClass() == DoorTile.class) {
+                        returnPoint = new Point(i, 0);
+                    }
+                }
+            }
+            default -> {
+            }
+        }
+        return returnPoint;
+    }
+
     /**
      * Moves player to a specified location in the room. This may be useful
      * for loading a player in from a specific direction when coming through a door.
@@ -368,7 +412,6 @@ public class Room {
      * @param theXY The player location.
      */
     public void setPlayerLocation(final Point theXY) {
-
         // TODO: Needs bound checks
         myPlayerPosition = theXY == null ? null : new Point(theXY);
     }
@@ -378,45 +421,7 @@ public class Room {
             setPlayerLocation((Point) null);
             return;
         }
-        final Tile[][] tiles = this.getRoomTiles();
-
-        switch (theOriginalDirection) {
-            case NORTH -> { // come from door from south
-                for (int i = 0; i < myRoomTiles[this.getRoomHeight() - 1].length; i++) {
-                    if (myRoomTiles[this.getRoomHeight() - 1][i].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(this.getRoomHeight() - 1, i);
-                        break;
-                    }
-                }
-            }
-            case SOUTH -> { // come from door from north
-                for (int i = 0; i < myRoomTiles[0].length; i++) {
-                    if (myRoomTiles[0][i].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(0, i);
-                        break;
-                    }
-                }
-            }
-            case EAST -> { // come from door from west
-                for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, this.getRoomWidth() - 1);
-                        break;
-                    }
-                }
-            }
-            case WEST -> { // come from door from east
-                for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][0].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, 0);
-                        break;
-                    }
-                }
-
-            }
-            default -> {
-            }
-        }
+        myPlayerPosition = findDoorOnWall(theOriginalDirection.getOpposite());
     }
 
     /**

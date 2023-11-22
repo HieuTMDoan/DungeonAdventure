@@ -16,12 +16,12 @@ public final class Main {
 
     public static void main(final String[] theArgs) {
 
-//        DungeonAdventure.getInstance().initialize();
+        DungeonAdventure.getInstance().initialize();
 
         // NOTE: as of 11/21/2023 11:22 AM, the dungeon is traversable.
         // you can boot up the dungeon adventure and travel from start to end,
         // but you may be blocked by monsters.
-        System.out.println(new Dungeon());
+//        System.out.println(new Dungeon());
 //        SQLiteDB.getCharacters();
 
 

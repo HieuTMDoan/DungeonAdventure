@@ -7,7 +7,11 @@ import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
+
 import java.awt.Point;
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
 import javafx.application.Application;
 
 public final class DungeonAdventure {
@@ -49,7 +53,6 @@ public final class DungeonAdventure {
     }
 
 
-
     /**
      * Starts a NEW game with the specified hero name and hero class.
      *
@@ -59,31 +62,25 @@ public final class DungeonAdventure {
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         this.myPlayer = new Player(thePlayerName, theHero);
         this.myDungeon = new Dungeon();
-//        this.myDungeon.placeDoors();
         System.out.println(myDungeon);
 
         final Room startingRoom = myDungeon.getStartingRoom();
         final Tile[][] roomTiles = startingRoom.getRoomTiles();
 
         // This locates the entrance tile in the entrance room.
-        Point entranceTileLocation = null;
-        loop:
-        for (int i = 0; i < roomTiles.length; i++) {
-            for (int j = 0; j < roomTiles[i].length; j++) {
-                if (roomTiles[i][j].getClass() == EntranceTile.class) {
-                    entranceTileLocation = new Point(i, j);
-                    break loop;
-                }
-            }
-        }
+        final Point entranceTileLocation =
+                IntStream.range(0, roomTiles.length).
+                        boxed().
+                        flatMap(i -> IntStream.range(0, roomTiles[i].length).
+                                filter(j -> roomTiles[i][j].getClass() == EntranceTile.class).
+                                mapToObj(j -> new Point(i, j))).
+                        findFirst().orElse(null);
 
         if (entranceTileLocation == null) {
             throw new IllegalStateException("Could not find EntranceTile in starting room.");
         }
 
-        this.myDungeon.loadPlayerTo(
-                startingRoom,
-                entranceTileLocation);
+        this.myDungeon.loadPlayerTo(startingRoom, entranceTileLocation);
 
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getStartingRoom());
     }
@@ -128,6 +125,7 @@ public final class DungeonAdventure {
 
         return memento;
     }
+
     public void saveGameState() {
         // Create and save a memento
         final DungeonAdventureMemento memento = createMemento();
@@ -141,6 +139,7 @@ public final class DungeonAdventure {
             restoreFromMemento(memento);
         }
     }
+
     // Restore the state from a Memento
     public void restoreFromMemento(final DungeonAdventureMemento theMemento) {
         this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());

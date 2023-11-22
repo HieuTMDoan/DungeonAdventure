@@ -94,9 +94,8 @@ public class Dungeon {
      */
     private static List<Room> generatePillarRooms() {
         final List<Room> pillarRooms = new ArrayList<>();
-        final Class<?>[] pillars = Helper.getPillarList();
 
-        for (Class<?> pillar : pillars) {
+        for (Class<?> pillar : Helper.getPillarList()) {
             pillarRooms.add(new Room(false, false, pillar));
         }
 
@@ -222,10 +221,8 @@ public class Dungeon {
     private boolean generatePath() {
         Point currentLocation = myStartingRoom.getDungeonLocation();
         final Point endingLocation = myExitRoom.getDungeonLocation();
-
         final List<Directions.Cardinal> path = new ArrayList<>();
         final List<Point> pathRoomLocations = new ArrayList<>();
-
 
         final int maxAttempts = 200;
         int currentAttempt = 0;
@@ -269,12 +266,10 @@ public class Dungeon {
 
             // Checks if the 4 adjacent rooms are the exit room.
             // If it is, then a path to the exit has been made successfully.
-
             boolean nextToExit = false;
             for (final Directions.Cardinal direction : Directions.Cardinal.values()) {
                 final Room room =
                         getRoomAt(x + direction.getXOffset(), y + direction.getYOffset());
-
                 if (room != null && room.isExitRoom()) {
                     path.add(direction);
                     nextToExit = true;
@@ -285,12 +280,10 @@ public class Dungeon {
                 System.out.println("Path to exit has been found.");
                 break;
             }
-
         }
 
         // Now that the path has been created, replace path rooms with
         // pillar rooms and filler rooms
-
         // Shuffle the path points to add the pillar rooms to the first 4
         Collections.shuffle(pathRoomLocations);
         for (int i = 0; i < 4; i++) {
@@ -301,7 +294,6 @@ public class Dungeon {
 
             pathRoomLocations.remove(0);
         }
-
         // Fill in the rest of the path points with general rooms.
         for (final Point roomPoint : pathRoomLocations) {
             final Room room = new Room(false, false, null);
@@ -323,8 +315,6 @@ public class Dungeon {
 
             currentRoom = otherRoom;
         }
-
-
         System.out.println(path + " \n");
         return true;
     }

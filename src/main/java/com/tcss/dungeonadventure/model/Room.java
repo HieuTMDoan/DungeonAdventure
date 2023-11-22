@@ -179,11 +179,7 @@ public class Room implements Serializable {
                     "Room cannot be an entrance and an exit.");
         }
 
-        if (thePillar != null
-                && thePillar != PillarOfAbstraction.class
-                && thePillar != PillarOfInheritance.class
-                && thePillar != PillarOfEncapsulation.class
-                && thePillar != PillarOfPolymorphism.class) {
+        if (thePillar != null && !Arrays.asList(Helper.getPillarList()).contains(thePillar)) {
             throw new IllegalArgumentException(
                     thePillar.getSimpleName() + " is not a pillar.");
         }

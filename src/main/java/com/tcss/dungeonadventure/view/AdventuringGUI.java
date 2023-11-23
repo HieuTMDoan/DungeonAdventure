@@ -1,8 +1,12 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
+import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.heroes.Warrior;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
@@ -55,7 +59,7 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     private InventoryPanelHandler myInventoryPaneHandler;
 
-
+    private PlayerStatsBox playerStatsBox;  // Added PlayerStatsBox
     private ScrollPane myMessageScrollPane;
     private VBox myMessageBox;
 
@@ -65,7 +69,14 @@ public class AdventuringGUI implements PropertyChangeListener {
 
         locateNodes();
         createGUI();
+
+// Initialize PlayerStatsBox with a default Hero
+        Hero defaultHero = new Warrior("Warrior", 'W', 100, 10, 20, 5, 0.8, 0.2);  // Replace with your actual default hero instantiation
+        playerStatsBox = new PlayerStatsBox(defaultHero);
+        myMessageBox.getChildren().add(playerStatsBox);
     }
+
+
 
     /**
      * Using a node ID, you can access nodes in the FXML by ID.
@@ -152,8 +163,18 @@ public class AdventuringGUI implements PropertyChangeListener {
         myCurrentRoom = theRoom;
 
         renderRoomWithPlayer();
-
+        updatePlayerStats();  // Update PlayerStatsBox when loading a new room
     }
+
+    private void updatePlayerStats() {
+        if (myCurrentRoom != null && DungeonAdventure.getInstance().getPlayer() != null) {
+            Hero playerHero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+            if (playerStatsBox != null && playerHero != null) {
+                playerStatsBox.updateStats(playerHero);
+            }
+        }
+    }
+
 
     /**
      * This gets called to re-render the room, with the player on top of the tile.
@@ -214,20 +235,22 @@ public class AdventuringGUI implements PropertyChangeListener {
     }
 
 
+
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
             case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
-            case UPDATED_PLAYER_LOCATION -> renderRoomWithPlayer();
+            case UPDATED_PLAYER_LOCATION -> {
+                renderRoomWithPlayer();
+                updatePlayerStats();  // Update PlayerStatsBox when player location changes
+            }
             case ITEMS_CHANGED -> {
                 this.myInventoryPaneHandler.syncItems((Map<Item, Integer>) theEvent.getNewValue());
+                updatePlayerStats();  // Update PlayerStatsBox when items change
             }
             case LOG -> log((String) theEvent.getNewValue());
             default -> {
             }
-
-
         }
-
     }
 }

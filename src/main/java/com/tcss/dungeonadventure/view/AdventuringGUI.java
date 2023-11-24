@@ -59,9 +59,11 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     private InventoryPanelHandler myInventoryPaneHandler;
 
-    private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
+    private  PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
     private ScrollPane myMessageScrollPane;
     private VBox myMessageBox;
+    private VBox PlayerInfoBox;
+
 
     public AdventuringGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;
@@ -71,9 +73,12 @@ public class AdventuringGUI implements PropertyChangeListener {
         createGUI();
 
 // Initialize PlayerStatsBox with a default Hero
-        final Hero defaultHero = new Warrior("Warrior", 'W', 100, 10, 20, 5, 0.8, 0.2);  // Replace with your actual default hero instantiation
+        final Hero defaultHero = new Warrior("Warrior", 'W',
+                100, 10, 20, 5,
+                0.8, 0.2);
+        PlayerInfoBox = (VBox) lookup("PlayerInfoBox");
         myPlayerStatsBox = new PlayerStatsBox(defaultHero);
-        myMessageBox.getChildren().add(myPlayerStatsBox);
+        PlayerInfoBox.getChildren().add(myPlayerStatsBox);
     }
 
 

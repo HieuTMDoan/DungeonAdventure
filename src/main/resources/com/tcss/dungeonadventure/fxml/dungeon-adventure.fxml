@@ -34,7 +34,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <VBox fx:id="PlayerInfoBox" layoutX="17.0" layoutY="361.0" prefHeight="200.0" prefWidth="100.0" />
+                  <VBox fx:id="PlayerInfoBox" layoutX="17.0" layoutY="361.0" prefHeight="200.0" prefWidth="147.0" />
                </children></AnchorPane>
          </left>
          <center>

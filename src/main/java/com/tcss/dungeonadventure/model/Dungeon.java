@@ -3,8 +3,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
-import com.tcss.dungeonadventure.objects.tiles.Tile;
-import com.tcss.dungeonadventure.objects.tiles.WallTile;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -27,12 +26,17 @@ public class Dungeon implements Serializable {
     /**
      * The default dungeon size.
      */
-    private static final Dimension MAZE_SIZE = new Dimension(6, 6);
+    private static final Dimension MAZE_SIZE = new Dimension(10, 10);
+
+    /**
+     * The chance for a door to generate.
+     */
+    private static final double DOOR_CHANCE = 0.7;
 
     /**
      * The 2D representation of the {@link Dungeon}.
      */
-    private final Room[][] myMaze;
+    private Room[][] myMaze;
 
     /**
      * The entrance of the {@link Dungeon}.
@@ -62,7 +66,7 @@ public class Dungeon implements Serializable {
      * @param theExitRoom     the exit of the {@link Dungeon}
      * @param thePillarRooms  the room that contains a pillar of Object-Oriented
      */
-    private Dungeon(final Room theStartingRoom,
+    public Dungeon(final Room theStartingRoom,
                     final Room theExitRoom,
                     final List<Room> thePillarRooms) {
 
@@ -93,9 +97,8 @@ public class Dungeon implements Serializable {
      */
     private static List<Room> generatePillarRooms() {
         final List<Room> pillarRooms = new ArrayList<>();
-        final Class<?>[] pillars = Helper.getPillarList();
 
-        for (Class<?> pillar : pillars) {
+        for (Class<?> pillar : Helper.getPillarList()) {
             pillarRooms.add(new Room(false, false, pillar));
         }
 
@@ -108,9 +111,20 @@ public class Dungeon implements Serializable {
      * and 4 pillars of Object-Oriented randomly placed in the maze.
      */
     private void generateDungeon() {
-        placeEntranceAndExit();
-        placePillarRooms();
-        placeFillerRooms();
+        while (true) {
+            placeEntranceAndExit();
+
+            if (!generatePath()) { // reset dungeon and try again
+                System.out.println("WARNING: Regenerating dungeon...");
+                myMaze = new Room[MAZE_SIZE.height][MAZE_SIZE.width];
+                continue;
+            }
+            break;
+        }
+        generateFillerRooms();
+        generateDoors();
+
+
     }
 
     /**
@@ -151,6 +165,7 @@ public class Dungeon implements Serializable {
 
         myMaze[startingRow][startingCol] = myStartingRoom;
         myStartingRoom.setDungeonLocation(new Point(startingRow, startingCol));
+
         myMaze[exitRow][exitCol] = myExitRoom;
         myExitRoom.setDungeonLocation(new Point(exitRow, exitCol));
     }
@@ -175,166 +190,233 @@ public class Dungeon implements Serializable {
     }
 
     /**
-     * Randomly places the pillar {@link Room} throughout the dungeon.
-     */
-    private void placePillarRooms() {
-        // Shuffles the list of pillar rooms randomly
-        Collections.shuffle(myPillarRooms, Helper.getRandom());
-        int pillarRoomsIndex = 0;
-
-        // Fills the maze until no empty spots are left
-        while (pillarRoomsIndex < myPillarRooms.size()) {
-            final int randomRow = Helper.getRandomIntBetween(0, MAZE_SIZE.height);
-            final int randomCol = Helper.getRandomIntBetween(0, MAZE_SIZE.width);
-
-            //Fills an unoccupied spot in the maze with a pillar room
-            if (myMaze[randomRow][randomCol] == null) {
-                final Room pillarRoom = myPillarRooms.get(pillarRoomsIndex);
-                pillarRoom.setDungeonLocation(new Point(randomRow, randomCol));
-                myMaze[randomRow][randomCol] = pillarRoom;
-                pillarRoomsIndex++;
-            }
-        }
-
-    }
-
-    /**
-     * Fully fills the dungeon with random dead-end or other non-essential rooms.
-     */
-    private void placeFillerRooms() {
-        final int totalSpotsLeft = MAZE_SIZE.height * MAZE_SIZE.width - 6;
-        int filledSpots = 0;
-
-        while (filledSpots < totalSpotsLeft) {
-            final int randomRow = Helper.getRandomIntBetween(0, MAZE_SIZE.height);
-            final int randomCol = Helper.getRandomIntBetween(0, MAZE_SIZE.width);
-
-            //Fills an unoccupied spot in the maze with a room
-            if (myMaze[randomRow][randomCol] == null) {
-                final Room room = new Room(false, false, null);
-                room.setDungeonLocation(new Point(randomRow, randomCol));
-                myMaze[randomRow][randomCol] = room;
-                filledSpots++;
-            }
-        }
-    }
-
-    /**
-     * Checks if the newly constructed dungeon is traversable,
-     * meaning it has at least one available route from the entrance room to the exit room.
+     * Returns a list of valid possible directions to generate a room in.
+     * Will not add a direction to the list if it is against a wall.
      *
-     * @param theMaze   the dungeon to be checked
-     * @param theRow    the row index of the room to be checked for accessibility
-     * @param theCol    the col index of the room to be checked for accessibility
-     * @return          True if the dungeon is traversable
+     * @param theLocation The location to check the 4 cardinal directions in.
+     * @return A List<Cardinal> of valid directions.
      */
-    private boolean isTraversable(final Room[][] theMaze,
-                                  final char[][] theTestMaze,
-                                  final int theRow,
-                                  final int theCol) {
-        boolean traversable = false;
+    private List<Directions.Cardinal> getPossibleDirections(final Point theLocation) {
+        final List<Directions.Cardinal> possibleDirections = new ArrayList<>();
 
-        if (validMove(theMaze, theTestMaze, theRow, theCol)) {
-            theTestMaze[theRow][theCol] = 'v'; //marks the room visited
+        if (theLocation.getX() != 0) { // Not at the top
+            possibleDirections.add(Directions.Cardinal.NORTH);
+        }
+        if (theLocation.getY() < MAZE_SIZE.getWidth() - 1) { // Not on the right wall
+            possibleDirections.add(Directions.Cardinal.EAST);
+        }
+        if (theLocation.getX() < MAZE_SIZE.getHeight() - 1) { // Not at the bottom
+            possibleDirections.add(Directions.Cardinal.SOUTH);
+        }
+        if (theLocation.getY() != 0) { // Not on the left wall
+            possibleDirections.add(Directions.Cardinal.WEST);
+        }
+        return possibleDirections;
+    }
 
-            if (theMaze[theRow][theCol].isExitRoom()) {
-                return true; //returns true if at exit room
+
+    /**
+     * Generates a path to the start to the end, including a
+     * dding pillar rooms and random rooms along that path. Also generates the doors.
+     *
+     * @return True if the dungeon has a traversable path, false otherwise.
+     */
+    private boolean generatePath() {
+        Point currentLocation = myStartingRoom.getDungeonLocation();
+        final Point endingLocation = myExitRoom.getDungeonLocation();
+        final List<Directions.Cardinal> path = new ArrayList<>();
+        final List<Point> pathRoomLocations = new ArrayList<>();
+
+        final int maxAttempts = 200;
+        int currentAttempt = 0;
+
+        while (!currentLocation.equals(endingLocation)) {
+            if (currentAttempt == maxAttempts) {
+                return false;
+            }
+            currentAttempt++;
+
+            // Populates a list with possible valid directions
+            // Ignores directions if it is on the maze boundary
+            final List<Directions.Cardinal> possibleDirections
+                    = getPossibleDirections(currentLocation);
+
+            // If there are no possible directions, return false to try again.
+            if (possibleDirections.isEmpty()) {
+                return false;
             }
 
-            //not at exit so need to try other directions
-            traversable = isTraversable(theMaze, theTestMaze,
-                    theRow + 1, theCol); //travel down
-            if (!traversable) {
-                traversable = isTraversable(theMaze, theTestMaze,
-                        theRow, theCol + 1); //travel right
+            // Chooses a random direction to go in
+            final Directions.Cardinal randomDirection =
+                    possibleDirections.get(
+                            Helper.getRandomIntBetween(0, possibleDirections.size()));
+
+            // Calculates offset
+            final int x = currentLocation.x + randomDirection.getXOffset();
+            final int y = currentLocation.y + randomDirection.getYOffset();
+
+            // If the room is already populated with something, try again.
+            if (getRoomAt(x, y) != null) {
+                continue;
             }
-            if (!traversable) {
-                traversable = isTraversable(theMaze, theTestMaze,
-                        theRow - 1, theCol); //travel up
+            path.add(randomDirection);
+
+            // Update the current location to the next room of the path
+            currentLocation = new Point(x, y);
+            pathRoomLocations.add(currentLocation);
+            // Creates a new room without args. This indicates a path placeholder room.
+            myMaze[x][y] = new Room();
+
+            // Checks if the 4 adjacent rooms are the exit room.
+            // If it is, then a path to the exit has been made successfully.
+            boolean nextToExit = false;
+            for (final Directions.Cardinal direction : Directions.Cardinal.values()) {
+                final Room room =
+                        getRoomAt(x + direction.getXOffset(), y + direction.getYOffset());
+                if (room != null && room.isExitRoom()) {
+                    path.add(direction);
+                    nextToExit = true;
+                    break;
+                }
             }
-            if (!traversable) {
-                traversable = isTraversable(theMaze, theTestMaze,
-                        theRow, theCol - 1); //traverse left
+            if (nextToExit) {
+                System.out.println("Path to exit has been found.");
+                break;
             }
         }
 
-        return traversable;
+        // Now that the path has been created, replace path rooms with
+        // pillar rooms and filler rooms
+        // Shuffle the path points to add the pillar rooms to the first 4
+        Collections.shuffle(pathRoomLocations);
+        for (int i = 0; i < 4; i++) {
+            final Point roomPoint = pathRoomLocations.get(0);
+            final Room pillarRoom = this.myPillarRooms.get(i);
+            myMaze[roomPoint.x][roomPoint.y] = pillarRoom;
+            pillarRoom.setDungeonLocation(roomPoint);
+
+            pathRoomLocations.remove(0);
+        }
+        // Fill in the rest of the path points with general rooms.
+        for (final Point roomPoint : pathRoomLocations) {
+            final Room room = new Room(false, false, null);
+            room.setDungeonLocation(roomPoint);
+            myMaze[roomPoint.x][roomPoint.y] = room;
+        }
+
+        // Generate doors connecting the path
+        Room currentRoom = myStartingRoom;
+        for (final Directions.Cardinal direction : path) {
+            // find the room along the path
+            final Room otherRoom = getRoomAt(
+                    currentRoom.getDungeonLocation().x + direction.getXOffset(),
+                    currentRoom.getDungeonLocation().y + direction.getYOffset());
+
+            // connect currentRoom and otherRoom
+            currentRoom.addDoorToWall(direction, otherRoom);
+            otherRoom.addDoorToWall(direction.getOpposite(), currentRoom);
+
+            currentRoom = otherRoom;
+        }
+        System.out.println(path + " \n");
+        return true;
+    }
+
+
+    /**
+     * Populates the dungeon with filler rooms.
+     */
+    private void generateFillerRooms() {
+        // Fill in the rest of the dungeon with random rooms.
+        for (int i = 0; i < myMaze.length; i++) {
+            for (int j = 0; j < myMaze[i].length; j++) {
+                if (myMaze[i][j] == null) {
+                    final Room room = new Room(false, false, null);
+                    room.setDungeonLocation(new Point(i, j));
+                    myMaze[i][j] = room;
+                }
+            }
+        }
     }
 
     /**
-     * Checks if the room at the specified position in the dungeon can be accessed.
-     *
-     * @param theMaze     the actual dungeon
-     * @param theTestMaze the dummy dungeon with markings of visited rooms
-     * @param theRow      the row index of the room in the dungeon
-     * @param theColumn   the column index of the room in the dungeon
-     * @return            True if the room can be accessed
+     * Iterates over the dungeon both horizontally and vertically
+     * and randomly add doors.
      */
-    private boolean validMove(final Room[][] theMaze,
-                              final char[][] theTestMaze,
-                              final int theRow,
-                              final int theColumn) {
-        return theRow >= 0 && theRow < theMaze.length
-                && theColumn >= 0 && theColumn < theMaze[0].length
-                && theMaze[theRow][theColumn].getDoorNumber() > 1
-                && theTestMaze[theRow][theColumn] == '\u0000';
-    }
+    private void generateDoors() {
+        // Iterate over the dungeon row by row (horizontally), and
+        // randomly generate doors connecting horizontally adjacent rooms.
+        for (final Room[] row : myMaze) {
+            for (int i = 0; i < row.length - 1; i++) {
+                final Room room1 = row[i];
+                final Room room2 = row[i + 1];
 
-    /**
-     * Randomly places doors in each room of the dungeon
-     * such that the dungeon is traversable.
-     */
-    public void placeDoors() {
-        for (Room[] rooms : myMaze) {
-            for (Room room : rooms) {
-                if (room != null) {
-                    // Place doors at wall locations with a limit of 4 doors
-                    room.placeDoors(room, getWallLocations(room));
+                if (Helper.getRandomDoubleBetween(0, 1) < DOOR_CHANCE) {
+                    room1.addDoorToWall(Directions.Cardinal.EAST, room2);
+                    room2.addDoorToWall(Directions.Cardinal.WEST, room1);
                 }
             }
         }
 
-        // Dummy maze for marking visited and dead-end locations in the dungeon
-        final char[][] testMaze = new char[MAZE_SIZE.height][MAZE_SIZE.width];
+        // Iterate over the dungeon col by col (vertically), and
+        // randomly generate doors connecting vertically adjacent rooms.
+        for (int i = 0; i < myMaze[0].length; i++) {
+            for (int j = 0; j < myMaze.length - 1; j++) {
 
-        // Recursively regenerates the dungeon if not traversable
-        if (!isTraversable(myMaze, testMaze,
-                myStartingRoom.getDungeonLocation().x,
-                myStartingRoom.getDungeonLocation().y)) {
-            placeDoors();
-        }
-    }
+                final Room room1 = myMaze[j][i];
+                final Room room2 = myMaze[j + 1][i];
 
-
-    /**
-     * Returns a list of wall locations in the specified room.
-     *
-     * @param theRoom The room to get wall locations from.
-     * @return A list of wall locations in the room.
-     */
-    private List<Point> getWallLocations(final Room theRoom) {
-        final List<Point> wallLocations = new ArrayList<>();
-        final Tile[][] roomTiles = theRoom.getRoomTiles();
-
-        for (int i = 0; i < roomTiles.length; i++) {
-            for (int j = 0; j < roomTiles[i].length; j++) {
-                if (roomTiles[i][j] instanceof WallTile) {
-                    wallLocations.add(new Point(i, j));
+                if (Helper.getRandomDoubleBetween(0, 1) < DOOR_CHANCE) {
+                    room1.addDoorToWall(Directions.Cardinal.SOUTH, room2);
+                    room2.addDoorToWall(Directions.Cardinal.NORTH, room1);
                 }
             }
         }
 
-        return wallLocations;
+        // Iterate over each room in the dungeon and check if it has
+        // any doors leading into it. If there are no doors leading
+        // into the room, choose a random, valid direction and add a door
+        // connecting the room in the specified direction.
+
+        for (int i = 0; i < myMaze.length; i++) {
+            for (int j = 0; j < myMaze[i].length; j++) {
+                final List<Directions.Cardinal> doorDirections = new ArrayList<>();
+
+                final Room room = myMaze[i][j];
+
+                for (final Directions.Cardinal direction : Directions.Cardinal.values()) {
+                    if (room.findDoorOnWall(direction) != null) {
+                        doorDirections.add(direction);
+                    }
+                }
+
+                if (doorDirections.isEmpty()) {
+                    // Choose a random possible direction and add a door there
+
+                    final List<Directions.Cardinal> possibleDirections
+                            = getPossibleDirections(new Point(i, j));
+
+                    // Chooses a random direction to go in
+                    final Directions.Cardinal randomDirection =
+                            possibleDirections.get(
+                                    Helper.getRandomIntBetween(0, possibleDirections.size()));
+
+                    final int x = i + randomDirection.getXOffset();
+                    final int y = j + randomDirection.getYOffset();
+
+                    final Room otherRoom = getRoomAt(x, y);
+
+                    room.addDoorToWall(randomDirection, otherRoom);
+                    otherRoom.addDoorToWall(randomDirection.getOpposite(), otherRoom);
+
+
+                }
+            }
+        }
+
+
     }
 
-    /**
-     * Returns the dungeon as a maze of type {@link Room}.
-     *
-     * @return A maze of type {@link Room}
-     */
-    public Room[][] getRooms() {
-        return myMaze;
-    }
 
     /**
      * Accessor for the room that the player is currently in.
@@ -368,6 +450,7 @@ public class Dungeon implements Serializable {
 
     public void loadPlayerTo(final Room theRoom,
                              final Directions.Cardinal theOriginalDirection) {
+
         this.myCurrentRoom.setPlayerLocation((Point) null);
         theRoom.setPlayerLocation(theOriginalDirection);
         this.myCurrentRoom = theRoom;
@@ -392,28 +475,49 @@ public class Dungeon implements Serializable {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        for (Room[] rooms : myMaze) {
-            for (Room room : rooms) {
+        for (final Room[] row : myMaze) {
+            for (final Room room : row) {
+                stringBuilder.append(" |");
                 if (room == null) {
                     stringBuilder.append("null"); // IDEALLY nothing should be null.
                 } else if (room.getPlayerXPosition() != null) {
                     stringBuilder.append("HERE");
+                } else if (room.getRoomHeight() == null) {
+                    stringBuilder.append("PATH");
                 } else if (room.isEntranceRoom()) {
                     stringBuilder.append("ENTR");
                 } else if (room.isExitRoom()) {
                     stringBuilder.append("EXIT");
-                } else if (room.getPillar() != null) {
-                    stringBuilder.append(" ").
-                            append(room.getPillar().getDisplayChar()).
-                            append("  ");
                 } else {
-                    stringBuilder.append("|").
-                            append(room.getDungeonLocation().x).
-                            append(room.getDungeonLocation().y).
-                            append("|");
+                    final String north
+                            = room.findDoorOnWall(Directions.Cardinal.NORTH) != null
+                            ? "N"
+                            : " ";
+                    final String south
+                            = room.findDoorOnWall(Directions.Cardinal.SOUTH) != null
+                            ? "S"
+                            : " ";
+                    final String east = room.findDoorOnWall(Directions.Cardinal.EAST) != null
+                            ? "E"
+                            : " ";
+                    final String west
+                            = room.findDoorOnWall(Directions.Cardinal.WEST) != null
+                            ? "W"
+                            : " ";
+                    stringBuilder.append(north).append(south).append(east).append(west);
                 }
+//                } else if (room.getPillar() != null) {
+//                    stringBuilder.append(" ").
+//                            append(room.getPillar().getDisplayChar()).
+//                            append("  ");
+//                } else {
+//                    stringBuilder.append("|").
+//                            append(room.getDungeonLocation().x).
+//                            append(room.getDungeonLocation().y).
+//                            append("|");
+//                }
 
-                stringBuilder.append(" ");
+                stringBuilder.append("| ");
             }
 
             stringBuilder.append("\n");

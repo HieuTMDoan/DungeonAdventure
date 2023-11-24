@@ -1,30 +1,23 @@
 package com.tcss.dungeonadventure.model;
+
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
-import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
-import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
-import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
-import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.DoorTile;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.ExitTile;
 import com.tcss.dungeonadventure.objects.tiles.ItemTile;
-import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.objects.tiles.WallTile;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 public class Room implements Serializable {
@@ -58,10 +51,6 @@ public class Room implements Serializable {
      */
     private static final double ONE_MONSTER_CHANCE = 0.35;
 
-    /**
-     * The max number of doors that can generate in a room.
-     */
-    private static final int MAX_DOORS = 4;
 
     /**
      * Boolean if the room is the entrance room.
@@ -89,7 +78,7 @@ public class Room implements Serializable {
     /**
      * The tiles in the room.
      */
-    private Tile[][] myRoomData;
+    private Tile[][] myRoomTiles;
 
     /**
      * The location that the room is located at within
@@ -109,12 +98,12 @@ public class Room implements Serializable {
      * @param theTiles The tiles inside the room.
      */
     public Room(final Tile[][] theTiles) {
-        this.myRoomData = theTiles;
+        this.myRoomTiles = theTiles;
         this.myIsEntranceRoom = contains(TileChars.Room.ENTRANCE);
         this.myIsExitRoom = contains(TileChars.Room.EXIT);
         this.myRoomDimensions = new Dimension(theTiles[0].length, theTiles.length);
 
-        myPillar = Arrays.stream(myRoomData).
+        myPillar = Arrays.stream(myRoomTiles).
                 flatMap(Arrays::stream).
                 filter(tile -> tile.getClass() == ItemTile.class).
                 map(tile -> ((ItemTile) tile).getItem()).
@@ -138,6 +127,12 @@ public class Room implements Serializable {
 
     }
 
+    public Room() {
+        myIsEntranceRoom = false;
+        myIsExitRoom = false;
+        myRoomDimensions = null;
+    }
+
 
     /**
      * Copy constructor for creating a deep copy of the Room.
@@ -159,7 +154,7 @@ public class Room implements Serializable {
                 (theOriginalRoom.myDungeonLocation != null)
                         ? new Point(theOriginalRoom.myDungeonLocation)
                         : null;
-        deepCopyRoomData(theOriginalRoom.myRoomData);
+        deepCopyRoomData(theOriginalRoom.myRoomTiles);
     }
 
     /**
@@ -196,11 +191,6 @@ public class Room implements Serializable {
 
         final Tile[][] tiles = new Tile[roomWidth][roomHeight];
 
-        // Ensure there is always at least one door
-        final int doorX = Helper.getRandomIntBetween(1, roomWidth - 1);
-        final int doorY = Helper.getRandomIntBetween(1, roomHeight - 1);
-        tiles[doorX][doorY] = new DoorTile(Directions.Cardinal.NORTH, null);
-
         for (int row = 0; row < tiles.length; row++) {
             for (int col = 0; col < tiles[row].length; col++) {
                 if (row % (roomWidth - 1) == 0 || col % (roomHeight - 1) == 0) {
@@ -222,7 +212,6 @@ public class Room implements Serializable {
 
             Other tiles can only occupy from (1, 1) to (width - 1, height - 1)
         */
-
 
 
         // if the room is an exit or entrance, it shouldn't contain anything else.
@@ -265,7 +254,7 @@ public class Room implements Serializable {
                 : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
-            putTileAtValidLocation(new NPCTile(randomMonster), tiles);
+//            putTileAtValidLocation(new NPCTile(randomMonster), tiles);
         }
 
         return tiles;
@@ -296,139 +285,36 @@ public class Room implements Serializable {
         }
     }
 
-    /**
-     * Randomly places doors in the specified room. Doors are placed at random wall locations
-     * making sure to avoid corners and that no two doors are placed right next to each other.
-     *
-     * @param theRoom          The Room to add doors to.
-     * @param theWallLocations A list of wall locations where doors can potentially be placed.
-     */
-    public void placeDoors(final Room theRoom,
-                                  final List<Point> theWallLocations) {
-        // Shuffle the wall locations to randomize door placement
-        Collections.shuffle(theWallLocations, Helper.getRandom());
+    public void addDoorToWall(final Directions.Cardinal theWallLocation,
+                              final Room theOtherRoom) {
 
-        int doorsPlaced = 0;
-        final Set<Directions.Cardinal> usedLocations = new HashSet<>();
-
-        for (final Point wallLocation : theWallLocations) {
-            // Introduce a 40% chance of having rooms with just a single door
-            if (doorsPlaced > 0 && Helper.getRandomDoubleBetween(0, 1) > 0.9) {
-                myDoorNumber = doorsPlaced;
-                break;  // Exit the loop
-            }
-
-            if (isValidDoorLocation(wallLocation, theRoom)) {
-                placeDoorAtLocation(wallLocation, theRoom, usedLocations);
-                doorsPlaced++;
-            }
-
-            if (doorsPlaced >= MAX_DOORS) {
-                myDoorNumber = doorsPlaced;
-                break;  // Exit the loop
-            }
-        }
-    }
-
-    /**
-     * Checks if a wall location is a valid location for placing a door.
-     *
-     * @param theWallLocation The wall location to check.
-     * @param theRoom         The Room to add doors to.
-     * @return True if the location is valid for placing a door, false otherwise.
-     */
-    private static boolean isValidDoorLocation(final Point theWallLocation,
-                                               final Room theRoom) {
-        // Check if the location is in the corners, skip if true
-        if (theWallLocation.equals(new Point(0, 0))
-                || theWallLocation.equals(new Point(0, theRoom.getRoomWidth() - 1))
-                || theWallLocation.equals(new Point(theRoom.getRoomHeight() - 1, 0))
-                || theWallLocation.equals(new Point(theRoom.getRoomHeight() - 1,
-                theRoom.getRoomWidth() - 1))) {
-            return false;
+        if (findDoorOnWall(theWallLocation) != null) {
+            return; // don't add multiple doors on the same wall
         }
 
-        // Check to ensure only ONE door is placed along a wall.
-        return !isDoorAlreadyPlaced(theWallLocation, theRoom);
-    }
+        final int x = Helper.getRandomIntBetween(1, getRoomHeight() - 1);
+        final int y = Helper.getRandomIntBetween(1, getRoomWidth() - 1);
 
-    /**
-     * Checks if a door is already placed at a specific wall location.
-     *
-     * @param theWallLocation The wall location to check.
-     * @param theRoom         The Room to add doors to.
-     * @return True if a door is already placed at the location, false otherwise.
-     */
-    private static boolean isDoorAlreadyPlaced(final Point theWallLocation,
-                                               final Room theRoom) {
-        final int x = (int) theWallLocation.getX();
-        final int y = (int) theWallLocation.getY();
 
-        if (y == 0 || y == theRoom.getRoomWidth() - 1) { // door is on top/bottom wall
-            for (final Tile[] tile : theRoom.getRoomTiles()) {
-                if (tile[y].getClass() == DoorTile.class) {
-                    return true;
-                }
-            }
-        } else if (x == 0 || x == theRoom.getRoomHeight() - 1) {  // door is on left/right wall
-            for (final Tile tile : theRoom.getRoomTiles()[x]) {
-                if (tile.getClass() == DoorTile.class) {
-                    return true;
-                }
+        switch (theWallLocation) {
+            case NORTH -> // door is on top wall
+                    this.myRoomTiles[0][y]
+                            = new DoorTile(Directions.Cardinal.NORTH, theOtherRoom);
+            case SOUTH -> // door is on bottom wall
+                    this.myRoomTiles[getRoomHeight() - 1][y]
+                            = new DoorTile(Directions.Cardinal.SOUTH, theOtherRoom);
+            case EAST -> // door is on right wall
+                    this.myRoomTiles[x][getRoomWidth() - 1]
+                            = new DoorTile(Directions.Cardinal.EAST, theOtherRoom);
+            case WEST -> // door is on left wall
+                    this.myRoomTiles[x][0]
+                            = new DoorTile(Directions.Cardinal.WEST, theOtherRoom);
+            default -> {
             }
         }
 
-        return false;
     }
 
-    /**
-     * Places a door at a specific wall location.
-     *
-     * @param theWallLocation The wall location to place the door.
-     * @param theRoom         The Room to add doors to.
-     */
-    private static void placeDoorAtLocation(final Point theWallLocation,
-                                            final Room theRoom,
-                                            final Set<Directions.Cardinal> theUsedLocations) {
-        final int x = (int) theWallLocation.getX();
-        final int y = (int) theWallLocation.getY();
-
-        if (x == 0) { // top
-            placeDoor(Directions.Cardinal.NORTH, theRoom, x, y, theUsedLocations);
-        }
-        if (x == theRoom.getRoomHeight() - 1) { // bottom
-            placeDoor(Directions.Cardinal.SOUTH, theRoom, x, y, theUsedLocations);
-        }
-        if (y == 0) { // left
-            placeDoor(Directions.Cardinal.EAST, theRoom, x, y, theUsedLocations);
-        }
-        if (y == theRoom.getRoomWidth() - 1) { // right
-            placeDoor(Directions.Cardinal.WEST, theRoom, x, y, theUsedLocations);
-        }
-    }
-
-    /**
-     * Places a door in a specific direction and updates the used locations set.
-     *
-     * @param theDirection     The direction to place the door.
-     * @param theRoom          The Room to add doors to.
-     * @param theX             The x-coordinate of the wall location.
-     * @param theY             The y-coordinate of the wall location.
-     * @param theUsedLocations Set of used locations to avoid placing
-     *                         multiple doors at the same location.
-     */
-    private static void placeDoor(final Directions.Cardinal theDirection,
-                                  final Room theRoom,
-                                  final int theX,
-                                  final int theY,
-                                  final Set<Directions.Cardinal> theUsedLocations) {
-
-        final Room adjacentRoom = theRoom.getAdjacentRoomByDirection(theDirection);
-        if (adjacentRoom != null) {
-            theRoom.getRoomTiles()[theX][theY] = new DoorTile(theDirection, adjacentRoom);
-            theUsedLocations.add(theDirection);
-        }
-    }
 
     /**
      * Checks if a specific character exists in the tile set.
@@ -437,7 +323,7 @@ public class Room implements Serializable {
      * @return True if the character is in the room, false otherwise.
      */
     public boolean contains(final char theChar) {
-        for (final Tile[] row : myRoomData) {
+        for (final Tile[] row : myRoomTiles) {
             for (final Tile tile : row) {
                 if (tile.getDisplayChar() == theChar) {
                     return true;
@@ -461,18 +347,63 @@ public class Room implements Serializable {
         final Point tempPoint = new Point(myPlayerPosition);
         switch (theDirection) {
             case NORTH -> tempPoint.translate(-1, 0);
-            case EAST -> tempPoint.translate(0, 1);
             case SOUTH -> tempPoint.translate(1, 0);
+            case EAST -> tempPoint.translate(0, 1);
             case WEST -> tempPoint.translate(0, -1);
             default -> throw new IllegalArgumentException(
                     "Illegal enum passed: " + theDirection);
         }
 
-        final Tile tile = myRoomData[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        final Tile tile = myRoomTiles[(int) tempPoint.getX()][(int) tempPoint.getY()];
         if (tile.isTraversable()) {
             myPlayerPosition = tempPoint;
             tile.onInteract();
         }
+    }
+
+    public Point findDoorOnWall(final Directions.Cardinal theDirection) {
+        final Tile[][] tiles = this.getRoomTiles();
+
+        Point returnPoint = null;
+
+
+        switch (theDirection) {
+            case NORTH -> { // find door on top wall
+                for (int i = 0; i < myRoomTiles[0].length; i++) {
+                    if (myRoomTiles[0][i].getClass() == DoorTile.class) {
+                        returnPoint = new Point(0, i);
+                    }
+                }
+
+            }
+            case SOUTH -> { //find door on bottom wall
+                for (int i = 0; i < myRoomTiles[this.getRoomHeight() - 1].length; i++) {
+                    if (myRoomTiles[this.getRoomHeight() - 1][i].
+                            getClass() == DoorTile.class) {
+
+                        returnPoint = new Point(this.getRoomHeight() - 1, i);
+                    }
+                }
+            }
+            case EAST -> { // find door on right wall
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
+                        returnPoint = new Point(i, this.getRoomWidth() - 1);
+                    }
+                }
+
+            }
+            case WEST -> { // find door on right wall
+                for (int i = 0; i < tiles.length; i++) {
+                    if (tiles[i][0].getClass() == DoorTile.class) {
+                        returnPoint = new Point(i, 0);
+                    }
+                }
+            }
+            default -> {
+            }
+        }
+        return returnPoint;
     }
 
     /**
@@ -482,7 +413,6 @@ public class Room implements Serializable {
      * @param theXY The player location.
      */
     public void setPlayerLocation(final Point theXY) {
-
         // TODO: Needs bound checks
         myPlayerPosition = theXY == null ? null : new Point(theXY);
     }
@@ -492,45 +422,7 @@ public class Room implements Serializable {
             setPlayerLocation((Point) null);
             return;
         }
-        final Tile[][] tiles = this.getRoomTiles();
-
-        switch (theOriginalDirection) {
-            case NORTH -> { // come from door from south
-                for (int i = 0; i < myRoomData[this.getRoomHeight() - 1].length; i++) {
-                    if (myRoomData[this.getRoomHeight() - 1][i].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(this.getRoomHeight() - 1, i);
-                        break;
-                    }
-                }
-            }
-            case SOUTH -> { // come from door from north
-                for (int i = 0; i < myRoomData[0].length; i++) {
-                    if (myRoomData[0][i].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(0, i);
-                        break;
-                    }
-                }
-            }
-            case EAST -> { // come from door from west
-                for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][getRoomWidth() - 1].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, this.getRoomWidth() - 1);
-                        break;
-                    }
-                }
-            }
-            case WEST -> { // come from door from east
-                for (int i = 0; i < tiles.length; i++) {
-                    if (tiles[i][0].getClass() == DoorTile.class) {
-                        myPlayerPosition = new Point(i, 0);
-                        break;
-                    }
-                }
-
-            }
-            default -> {
-            }
-        }
+        myPlayerPosition = findDoorOnWall(theOriginalDirection.getOpposite());
     }
 
     /**
@@ -556,12 +448,8 @@ public class Room implements Serializable {
         final int x = (int) this.getDungeonLocation().getX();
         final int y = (int) this.getDungeonLocation().getY();
 
-        return switch (theDirection) {
-            case NORTH -> dungeon.getRoomAt(x - 1, y);
-            case SOUTH -> dungeon.getRoomAt(x + 1, y);
-            case EAST -> dungeon.getRoomAt(x, y - 1);
-            case WEST -> dungeon.getRoomAt(x, y + 1);
-        };
+        return dungeon.getRoomAt(x + theDirection.getXOffset(), y + theDirection.getYOffset());
+
     }
 
     /**
@@ -583,28 +471,23 @@ public class Room implements Serializable {
     /**
      * @return The width of the room.
      */
-    public int getRoomWidth() {
-        return (int) this.myRoomDimensions.getWidth();
+    public Integer getRoomWidth() {
+        return this.myRoomDimensions == null ? null : (int) this.myRoomDimensions.getWidth();
+
     }
 
     /**
      * @return The height of the room.
      */
-    public int getRoomHeight() {
-        return (int) this.myRoomDimensions.getHeight();
+    public Integer getRoomHeight() {
+        return this.myRoomDimensions == null ? null : (int) this.myRoomDimensions.getHeight();
     }
 
-    /**
-     * @return The number of doors in the room.
-     */
-    public int getDoorNumber() {
-        return myDoorNumber;
-    }
 
     public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
-        myRoomData = new Tile[theOriginalRoomData.length][];
+        myRoomTiles = new Tile[theOriginalRoomData.length][];
         for (int i = 0; i < theOriginalRoomData.length; i++) {
-            myRoomData[i] = Arrays.copyOf(theOriginalRoomData[i],
+            myRoomTiles[i] = Arrays.copyOf(theOriginalRoomData[i],
                     theOriginalRoomData[i].length);
 
             for (int j = 0; j < theOriginalRoomData[i].length; j++) {
@@ -619,24 +502,24 @@ public class Room implements Serializable {
                                 theOriginalRoomData[i][j].isTraversable();
                         newTile = new Tile(displayChar, isTraversable);
                     }
-                    myRoomData[i][j] = newTile;
+                    myRoomTiles[i][j] = newTile;
                 } else {
-                    myRoomData[i][j] = null;
+                    myRoomTiles[i][j] = null;
                 }
             }
         }
     }
 
     public RoomMemento createMemento() {
-        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);
     }
 
     public RoomMemento saveToMemento() {
-        return new RoomMemento(myRoomData, myPlayerPosition, myPillar);
+        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);
     }
 
     public void restoreFromMemento(final RoomMemento theMemento) {
-        myRoomData = theMemento.getSavedRoomData();
+        myRoomTiles = theMemento.getSavedRoomData();
         myPlayerPosition = theMemento.getSavedPlayerPosition();
         myPillar = theMemento.getSavedPillar();
     }
@@ -677,20 +560,20 @@ public class Room implements Serializable {
      * @return The tiles in the room.
      */
     public Tile[][] getRoomTiles() {
-        return this.myRoomData;
+        return this.myRoomTiles;
     }
 
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        for (int i = 0; i < myRoomData.length; i++) {
+        for (int i = 0; i < myRoomTiles.length; i++) {
             String prefix = "";
-            for (int j = 0; j < myRoomData[i].length; j++) {
+            for (int j = 0; j < myRoomTiles[i].length; j++) {
                 if (new Point(i, j).equals(myPlayerPosition)) {
                     stringBuilder.append(prefix).append("/"); //TODO CHANGE TO PLAYER CHARACTER
                 } else {
-                    stringBuilder.append(prefix).append(myRoomData[i][j].getDisplayChar());
+                    stringBuilder.append(prefix).append(myRoomTiles[i][j].getDisplayChar());
                 }
                 prefix = " ";
             }

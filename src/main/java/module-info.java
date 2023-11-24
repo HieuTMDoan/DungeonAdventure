@@ -4,7 +4,8 @@ module com.tcss.dungeonadventure {
     requires org.xerial.sqlitejdbc;
     requires java.desktop;
 
-
+    exports com.tcss.dungeonadventure.objects;
+    exports com.tcss.dungeonadventure.objects.heroes;
     exports com.tcss.dungeonadventure.view;
     opens com.tcss.dungeonadventure.view to javafx.fxml;
 }

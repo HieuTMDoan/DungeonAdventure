@@ -59,7 +59,7 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     private InventoryPanelHandler myInventoryPaneHandler;
 
-    private PlayerStatsBox playerStatsBox;  // Added PlayerStatsBox
+    private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
     private ScrollPane myMessageScrollPane;
     private VBox myMessageBox;
 
@@ -71,9 +71,9 @@ public class AdventuringGUI implements PropertyChangeListener {
         createGUI();
 
 // Initialize PlayerStatsBox with a default Hero
-        Hero defaultHero = new Warrior("Warrior", 'W', 100, 10, 20, 5, 0.8, 0.2);  // Replace with your actual default hero instantiation
-        playerStatsBox = new PlayerStatsBox(defaultHero);
-        myMessageBox.getChildren().add(playerStatsBox);
+        final Hero defaultHero = new Warrior("Warrior", 'W', 100, 10, 20, 5, 0.8, 0.2);  // Replace with your actual default hero instantiation
+        myPlayerStatsBox = new PlayerStatsBox(defaultHero);
+        myMessageBox.getChildren().add(myPlayerStatsBox);
     }
 
 
@@ -168,9 +168,9 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     private void updatePlayerStats() {
         if (myCurrentRoom != null && DungeonAdventure.getInstance().getPlayer() != null) {
-            Hero playerHero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
-            if (playerStatsBox != null && playerHero != null) {
-                playerStatsBox.updateStats(playerHero);
+            final Hero playerHero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+            if (myPlayerStatsBox != null && playerHero != null) {
+                myPlayerStatsBox.updateStats(playerHero);
             }
         }
     }

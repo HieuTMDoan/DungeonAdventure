@@ -3,22 +3,18 @@ package com.tcss.dungeonadventure.view;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
-import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-import com.tcss.dungeonadventure.objects.heroes.Warrior;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
@@ -57,12 +53,27 @@ public class AdventuringGUI implements PropertyChangeListener {
      */
     private Label myTileInfoLabel;
 
+    /**
+     * The handler for the players visual inventory.
+     */
     private InventoryPanelHandler myInventoryPaneHandler;
 
-    private  PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
+    /**
+     * The handler to display the players stats.
+     */
+    private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
+
+    /**
+     * The parent scroll-pane for the scrollable console.
+     * This should not be accessed.
+     */
     private ScrollPane myMessageScrollPane;
+
+    /**
+     * The message box.
+     */
     private VBox myMessageBox;
-    private VBox PlayerInfoBox;
+    private VBox myPlayerInfoBox;
 
 
     public AdventuringGUI(final GUIHandler theGUI) {
@@ -73,14 +84,17 @@ public class AdventuringGUI implements PropertyChangeListener {
         createGUI();
 
 // Initialize PlayerStatsBox with a default Hero
-        final Hero defaultHero = new Warrior("Warrior", 'W',
-                100, 10, 20, 5,
-                0.8, 0.2);
-        PlayerInfoBox = (VBox) lookup("PlayerInfoBox");
-        myPlayerStatsBox = new PlayerStatsBox(defaultHero);
-        PlayerInfoBox.getChildren().add(myPlayerStatsBox);
-    }
 
+
+
+        myPlayerStatsBox = new PlayerStatsBox(
+                DungeonAdventure.getInstance().getPlayer().getPlayerHero());
+
+        myPlayerInfoBox.getChildren().add(myPlayerStatsBox);
+
+        loadRoom(DungeonAdventure.getInstance().getDungeon().getCurrentRoom());
+
+    }
 
 
     /**
@@ -101,14 +115,22 @@ public class AdventuringGUI implements PropertyChangeListener {
         myTileInfoLabel = (Label) this.lookup("tileInfoLabel");
 
         myInventoryPaneHandler = new InventoryPanelHandler(this);
+        myPlayerInfoBox = (VBox) lookup("playerInfoBox");
+
+
         myMessageBox = (VBox) lookup("messageBox");
         myMessageScrollPane = (ScrollPane) lookup("messageScrollPane");
         myMessageBox.heightProperty().addListener((ChangeListener) (observable, oldValue, newValue)
                 -> myMessageScrollPane.setVvalue((Double) newValue));
 
-        myMessageScrollPane.skinProperty().addListener((observableValue, skin, t1) ->
-                myMessageScrollPane.lookup("ScrollPane .viewport").setCache(false));
+        // This is to fix a bug where things within a scroll-pane are blurry
+        myMessageScrollPane.setCache(false);
+        for (Node n : myMessageScrollPane.getChildrenUnmodifiable()) {
+            n.setCache(false);
+        }
     }
+
+
 
     /**
      * Helper method which populates the grid with text boxes.
@@ -205,6 +227,11 @@ public class AdventuringGUI implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Displays a message in the message box, along with a time-stamp.
+     *
+     * @param theMessage The message to display.
+     */
     private void log(final String theMessage) {
         final String time = new SimpleDateFormat("hh:mm:ss").
                 format(Calendar.getInstance().getTime());
@@ -215,6 +242,11 @@ public class AdventuringGUI implements PropertyChangeListener {
         myMessageBox.getChildren().add(label);
     }
 
+    /**
+     * Displays a description in the tile description box.
+     *
+     * @param theString The description to display.
+     */
     void showDescription(final String theString) {
         myTileInfoLabel.setText(theString);
     }
@@ -238,7 +270,6 @@ public class AdventuringGUI implements PropertyChangeListener {
             }
         }
     }
-
 
 
     @Override

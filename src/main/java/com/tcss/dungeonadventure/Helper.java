@@ -79,10 +79,6 @@ public final class Helper {
         return theMin + (theMax - theMin) * RANDOM.nextDouble();
     }
 
-    public static Random getRandom() {
-        return RANDOM;
-    }
-
     public static Item getRandomItem() {
         try {
             return (Item) ITEM_POOL[Helper.getRandomIntBetween(0, ITEM_POOL.length)].
@@ -98,23 +94,6 @@ public final class Helper {
         }
     }
 
-    /**
-     * Returns a random cardinal direction (NESW).
-     *
-     * @return The random cardinal direction.
-     */
-    public static Directions.Cardinal getRandomCardinalDirection() {
-        return Directions.Cardinal.values()[getRandomIntBetween(0, 4)];
-    }
-
-    /**
-     * Returns a random boolean.
-     *
-     * @return The random boolean.
-     */
-    public static boolean getRandomBoolean() {
-        return RANDOM.nextBoolean();
-    }
 
 
     public static Monster getRandomMonster() {

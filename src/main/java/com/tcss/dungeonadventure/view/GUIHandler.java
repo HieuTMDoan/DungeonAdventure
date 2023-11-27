@@ -64,8 +64,8 @@ public class GUIHandler extends Application {
     }
 
     public void startNewGame(final String thePlayerName, final Hero theHero) {
-        new AdventuringGUI(this);
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
+        new AdventuringGUI(this);
         Layouts.swapLayout(Layouts.ADVENTURING);
 
     }

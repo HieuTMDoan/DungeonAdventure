@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -18,18 +19,23 @@ public class PlayerStatsBox extends VBox {
         this.setAlignment(Pos.CENTER_LEFT);
 
         nameLabel = new Label("Name: " + thePlayerHero.getName());
-        healthLabel = new Label("Health: " + thePlayerHero.getHealth() + "/" + thePlayerHero.getMaxHealthPoints());
-        damageLabel = new Label("Damage Range: " + thePlayerHero.getMinDamage() + " - " + thePlayerHero.getMaxDamage());
+        healthLabel = new Label("Health: " + thePlayerHero.getHealth()
+                + "/" + thePlayerHero.getMaxHealthPoints());
+        damageLabel = new Label("Damage Range: "
+                + thePlayerHero.getMinDamage() + " - " + thePlayerHero.getMaxDamage());
         attackSpeedLabel = new Label("Attack Speed: " + thePlayerHero.getAttackSpeed());
         accuracyLabel = new Label("Accuracy: " + thePlayerHero.getAccuracy());
 
-        this.getChildren().addAll(nameLabel, healthLabel, damageLabel, attackSpeedLabel, accuracyLabel);
+        this.getChildren().addAll(nameLabel, healthLabel, damageLabel,
+                attackSpeedLabel, accuracyLabel);
     }
 
     // Update the displayed stats with the given Hero
     public void updateStats(final Hero theHero) {
-        nameLabel.setText("Name: " + theHero.getName());
-        healthLabel.setText("Health: " + theHero.getHealth() + "/" + theHero.getMaxHealthPoints());
+        nameLabel.setText("Name: "
+                + DungeonAdventure.getInstance().getPlayer().getPlayerName());
+        healthLabel.setText("Health: "
+                + theHero.getHealth() + "/" + theHero.getMaxHealthPoints());
         damageLabel.setText("Damage Range: "
                 + theHero.getMinDamage() + " - " + theHero.getMaxDamage());
         attackSpeedLabel.setText("Attack Speed: " + theHero.getAttackSpeed());

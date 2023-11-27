@@ -25,7 +25,6 @@ public class HomeGUI implements PropertyChangeListener {
      */
     private Helper.Characters mySelectedClass = Helper.Characters.WARRIOR;
 
-
     /**
      * The new game button.
      */

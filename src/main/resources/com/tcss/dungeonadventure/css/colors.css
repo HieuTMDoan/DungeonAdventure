@@ -1,4 +1,12 @@
 .root {
-    -fx-default-background: rgb(0, 0, 0);
+    default-background: rgb(0, 0, 0);
 }
+
+
+
+.root * {
+    -fx-background-color: default-background;
+    -fx-font-family: "Consolas"
+}
+
 

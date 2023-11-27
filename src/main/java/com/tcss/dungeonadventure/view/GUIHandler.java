@@ -4,16 +4,14 @@ import com.tcss.dungeonadventure.Main;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import java.awt.Dimension;
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
-import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
 
 public class GUIHandler extends Application {
 
@@ -63,11 +61,31 @@ public class GUIHandler extends Application {
 
     }
 
+    /**
+     * Starts a new game.
+     *
+     * @param thePlayerName
+     * @param theHero
+     */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
         new AdventuringGUI(this);
         Layouts.swapLayout(Layouts.ADVENTURING);
 
+    }
+
+    /**
+     * Resumes the current game.
+     */
+    public void resumeGame() {
+        Layouts.swapLayout(Layouts.ADVENTURING);
+    }
+
+    /**
+     * Saves the current game.
+     */
+    public void saveGame() {
+        DungeonAdventure.getInstance().saveGameState();
     }
 
     private void handleKeyPress(final KeyEvent theEvent) {
@@ -76,10 +94,16 @@ public class GUIHandler extends Application {
         }
 
         switch (theEvent.getCode()) {
-            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case UP, W ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
+            case DOWN, S ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
+            case LEFT, A ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
+            case RIGHT, D ->
+                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case P, ESCAPE ->
+                    Layouts.swapLayout(Layouts.MENU);
             default -> {
             }
         }
@@ -110,6 +134,12 @@ public class GUIHandler extends Application {
          * root pane of the adventuring screen.
          */
         ADVENTURING,
+
+        /**
+         * A layout enum for the pause screen.
+         * Its corresponding layout node should be the
+         * root pane of the pause screen.
+         */
         MENU;
 
 
@@ -128,7 +158,7 @@ public class GUIHandler extends Application {
          *
          * @param theLayout The layout to swap to.
          */
-        private static void swapLayout(final Layouts theLayout) {
+        static void swapLayout(final Layouts theLayout) {
             for (final Layouts layout : Layouts.values()) {
                 layout.getNode().setVisible(false);
             }

@@ -7,14 +7,10 @@ import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
-
 import java.awt.Point;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.stream.IntStream;
-
-
 import javafx.application.Application;
 
 public final class DungeonAdventure implements Serializable {
@@ -120,7 +116,7 @@ public final class DungeonAdventure implements Serializable {
         theItem.useItem(myPlayer.getPlayerHero());
     }
 
-    public DungeonAdventureMemento createMemento() {
+    DungeonAdventureMemento createMemento() {
         final String playerName = this.myPlayer.getPlayerName();
         final Hero hero = this.myPlayer.getPlayerHero();
         final Dungeon dungeon = this.myDungeon;
@@ -134,7 +130,7 @@ public final class DungeonAdventure implements Serializable {
 
     public void saveGameState() {
         // Create and save a memento
-        final DungeonAdventureMemento memento = createMemento();
+        final DungeonAdventureMemento memento = this.createMemento();
         GameStateManager.getInstance().setMemento(memento);
     }
 

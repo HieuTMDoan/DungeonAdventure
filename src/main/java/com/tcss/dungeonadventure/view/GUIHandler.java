@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.Main;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
@@ -30,8 +31,7 @@ public class GUIHandler extends Application {
     /**
      * The path for the FXML file for the home screen.
      */
-    private static final String HOME_FXML_PATH =
-            "./src/main/resources/com/tcss/dungeonadventure/fxml/dungeon-home-screen.fxml";
+    private static final String HOME_FXML_PATH = "fxml/dungeon-home-screen.fxml";
 
 
     /**
@@ -42,8 +42,7 @@ public class GUIHandler extends Application {
     @Override
     public void start(final Stage theStage) throws IOException {
 
-        final FXMLLoader fxmlLoader = new FXMLLoader(
-                new File(HOME_FXML_PATH).toURI().toURL());
+        final FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(HOME_FXML_PATH));
 
         this.myScene = new Scene(fxmlLoader.load(),
                 WINDOW_DIMENSION.getWidth(),
@@ -57,6 +56,7 @@ public class GUIHandler extends Application {
 
         Layouts.HOME.setNode(lookup("homePane"));
         Layouts.ADVENTURING.setNode(lookup("adventuringPane"));
+        Layouts.MENU.setNode(lookup("pausePane"));
 
         Layouts.swapLayout(Layouts.HOME);
         new HomeGUI(this);
@@ -76,14 +76,10 @@ public class GUIHandler extends Application {
         }
 
         switch (theEvent.getCode()) {
-            case UP, W ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
+            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
+            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
+            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
             default -> {
             }
         }
@@ -113,7 +109,8 @@ public class GUIHandler extends Application {
          * Its corresponding layout node should be the
          * root pane of the adventuring screen.
          */
-        ADVENTURING;
+        ADVENTURING,
+        MENU;
 
 
         /**

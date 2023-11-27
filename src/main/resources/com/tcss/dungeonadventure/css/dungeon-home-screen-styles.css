@@ -1,26 +1,22 @@
 @import url("colors.css");
 
-
-
 .text-input {
     -fx-control-inner-background: black;
     -fx-text-fill: white;
     -fx-border-color: white;
     -fx-prompt-text-fill: #989898;
-    -fx-font-family: "Consolas";
-
 }
 
 .button {
     -fx-background-color: black;
     -fx-border-color: white;
     -fx-text-fill: white;
+    -fx-font-size: 20;
 }
 
 .label {
     -fx-text-fill: white;
 }
-
 
 .radio-button .radio {
     -fx-background-color: black;

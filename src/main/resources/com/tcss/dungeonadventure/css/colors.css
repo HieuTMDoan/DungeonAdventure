@@ -2,11 +2,9 @@
     default-background: rgb(0, 0, 0);
 }
 
-
-
 .root * {
     -fx-background-color: default-background;
-    -fx-font-family: "Consolas"
+    -fx-font-family: "SansSerif";
 }
 
 

@@ -145,7 +145,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                 myRoomTextBoxes[row][col] = text;
 
                 text.setBoundsType(TextBoundsType.VISUAL);
-                text.setStyle("-fx-font-size: 60; -fx-fill: rgb(255, 255, 255)");
+                text.setStyle("-fx-font-size: 45; -fx-fill: rgb(255, 255, 255)");
 
                 final int finalRow = row; // these are needed for the lambda statements
                 final int finalCol = col;

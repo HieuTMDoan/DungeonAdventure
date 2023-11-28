@@ -4,7 +4,6 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class PlayerStatsBox extends VBox {
@@ -20,7 +19,7 @@ public class PlayerStatsBox extends VBox {
 
         nameLabel = new Label("Name: " + thePlayerHero.getName());
         healthLabel = new Label("Health: " + thePlayerHero.getHealth()
-                + "/" + thePlayerHero.getMaxHealthPoints());
+                + "/" + thePlayerHero.getMaxHealth());
         damageLabel = new Label("Damage Range: "
                 + thePlayerHero.getMinDamage() + " - " + thePlayerHero.getMaxDamage());
         attackSpeedLabel = new Label("Attack Speed: " + thePlayerHero.getAttackSpeed());
@@ -35,7 +34,7 @@ public class PlayerStatsBox extends VBox {
         nameLabel.setText("Name: "
                 + DungeonAdventure.getInstance().getPlayer().getPlayerName());
         healthLabel.setText("Health: "
-                + theHero.getHealth() + "/" + theHero.getMaxHealthPoints());
+                + theHero.getHealth() + "/" + theHero.getMaxHealth());
         damageLabel.setText("Damage Range: "
                 + theHero.getMinDamage() + " - " + theHero.getMaxDamage());
         attackSpeedLabel.setText("Attack Speed: " + theHero.getAttackSpeed());

@@ -67,7 +67,6 @@ public class GUIHandler extends Application {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
         new AdventuringGUI(this);
         Layouts.swapLayout(Layouts.ADVENTURING);
-
     }
 
     private void handleKeyPress(final KeyEvent theEvent) {
@@ -128,7 +127,7 @@ public class GUIHandler extends Application {
          *
          * @param theLayout The layout to swap to.
          */
-        private static void swapLayout(final Layouts theLayout) {
+        static void swapLayout(final Layouts theLayout) {
             for (final Layouts layout : Layouts.values()) {
                 layout.getNode().setVisible(false);
             }

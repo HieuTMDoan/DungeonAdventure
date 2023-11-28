@@ -5,13 +5,7 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import com.tcss.dungeonadventure.objects.tiles.DoorTile;
-import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
-import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
-import com.tcss.dungeonadventure.objects.tiles.ExitTile;
-import com.tcss.dungeonadventure.objects.tiles.ItemTile;
-import com.tcss.dungeonadventure.objects.tiles.Tile;
-import com.tcss.dungeonadventure.objects.tiles.WallTile;
+import com.tcss.dungeonadventure.objects.tiles.*;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -254,7 +248,7 @@ public class Room implements Serializable {
                 : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
-//            putTileAtValidLocation(new NPCTile(randomMonster), tiles);
+            putTileAtValidLocation(new NPCTile(randomMonster), tiles);
         }
 
         return tiles;

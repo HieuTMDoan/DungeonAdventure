@@ -36,31 +36,31 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="heroNameTextField" prefHeight="40.0" prefWidth="310.0" promptText="hero name..." styleClass="text-input">
+                  <TextField fx:id="homeHeroNameTextField" prefHeight="40.0" prefWidth="310.0" promptText="hero name..." styleClass="text-input">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextField>
                   <HBox alignment="CENTER" spacing="16.0">
                      <children>
-                        <RadioButton fx:id="warriorRadioButton" mnemonicParsing="false" text="Warrior" textFill="WHITE" />
-                        <RadioButton fx:id="priestessRadioButton" mnemonicParsing="false" text="Priestess" textFill="WHITE" />
-                        <RadioButton fx:id="thiefRadioButton" mnemonicParsing="false" text="Thief" textFill="WHITE" />
+                        <RadioButton fx:id="homeWarriorRadioButton" mnemonicParsing="false" text="Warrior" textFill="WHITE" />
+                        <RadioButton fx:id="homePriestessRadioButton" mnemonicParsing="false" text="Priestess" textFill="WHITE" />
+                        <RadioButton fx:id="homeThiefRadioButton" mnemonicParsing="false" text="Thief" textFill="WHITE" />
                      </children>
                   </HBox>
                </children>
             </VBox>
-            <Button fx:id="newGameButton" layoutX="294.0" layoutY="356.0" mnemonicParsing="false" text="New Game">
+            <Button fx:id="homeNewGameButton" layoutX="294.0" layoutY="356.0" mnemonicParsing="false" text="New Game">
                <font>
                   <Font name="Consolas" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="loadGameButton" layoutX="650.0" layoutY="356.0" mnemonicParsing="false" text="Load Game">
+            <Button fx:id="homeLoadGameButton" layoutX="650.0" layoutY="356.0" mnemonicParsing="false" text="Load Game">
                <font>
                   <Font name="Consolas" size="20.0" />
                </font>
             </Button>
-            <Button fx:id="helpButton" layoutX="8.0" layoutY="555.2000122070312" mnemonicParsing="false" text="Help" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" />
+            <Button fx:id="homeHelpButton" layoutX="8.0" layoutY="555.2000122070312" mnemonicParsing="false" text="Help" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="adventuringPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

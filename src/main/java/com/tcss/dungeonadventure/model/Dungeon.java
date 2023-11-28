@@ -3,6 +3,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
+import com.tcss.dungeonadventure.objects.monsters.Monster;
+import com.tcss.dungeonadventure.objects.tiles.NPCTile;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -413,6 +416,46 @@ public class Dungeon implements Serializable {
                 }
             }
         }
+
+
+    }
+
+    /**
+     * Searches the 8 surrounding tiles around the player if there are
+     * any monsters around. If there are monsters, return them in an
+     * array. Otherwise, return null.
+     *
+     * @return A Monster[] of the surrounding monsters, null if there are no monsters.
+     */
+    public Monster[] getAnySurroundingMonsters() {
+        final List<Monster> surroundingMonsters = new ArrayList<>();
+        final Tile[][] roomTiles = myCurrentRoom.getRoomTiles();
+        final int playerPositionX = myCurrentRoom.getPlayerXPosition();
+        final int playerPositionY = myCurrentRoom.getPlayerYPosition();
+
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                final Tile tile;
+                try {
+                    tile = roomTiles[playerPositionX + i][playerPositionY + j];
+                } catch (final ArrayIndexOutOfBoundsException e) {
+                    continue;
+                }
+
+                if (!(tile instanceof final NPCTile npcTile)) {
+                    continue;
+                }
+
+                if (npcTile.getNPC() instanceof Monster) {
+                    surroundingMonsters.add((Monster) npcTile.getNPC());
+                }
+
+
+            }
+        }
+        return surroundingMonsters.size() == 0 ? null : surroundingMonsters.toArray(new Monster[0]);
+
+
 
 
     }

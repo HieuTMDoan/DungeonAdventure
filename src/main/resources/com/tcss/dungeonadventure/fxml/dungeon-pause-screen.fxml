@@ -11,17 +11,17 @@
    <children>
       <VBox alignment="CENTER" layoutX="400.0" layoutY="233.0" prefHeight="200.0" prefWidth="100.0" spacing="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="61.0" prefWidth="346.0" style="-fx-border-color: white; -fx-border-radius: 5;" text="Resume" textFill="WHITE">
+            <Button fx:id="menuResumeButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="346.0" style="-fx-border-color: white; -fx-border-radius: 5;" text="Resume" textFill="WHITE">
                <font>
                   <Font size="31.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="61.0" prefWidth="346.0" style="-fx-border-color: white; -fx-border-radius: 5;" text="Save Game" textFill="WHITE">
+            <Button fx:id="menuSaveButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="346.0" style="-fx-border-color: white; -fx-border-radius: 5;" text="Save Game" textFill="WHITE">
                <font>
                   <Font size="31.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="61.0" prefWidth="346.0" style="-fx-border-color: white; -fx-border-radius: 5;" text="Help" textFill="WHITE">
+            <Button fx:id="menuHelpButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="346.0" style="-fx-border-color: white; -fx-border-radius: 5;" text="Help" textFill="WHITE">
                <font>
                   <Font size="31.0" />
                </font>

@@ -1,14 +1,11 @@
 Model:
     Dungeon:
-        -   Maze traversal algorithm
-            -   Probably after doors, since doors change which rooms can be accessed
 
     Rooms:
-        -   Placing doors on walls
         -   Randomizing damage tiles into rooms
-        -   Loading player into adjacent room with stepping over a DoorTile
-        -   Interacting with things as they are stepped on
-            -   Items, Pits (Damage Tiles), Doors, etc.
+        -   End game (Victory) when player steps on ExitTile with all 4 pillars
+        -   End game (Game Over )when player dies to monster or pit
+
 
     Player (honestly this could be its own class if we want):
         -   Inventory
@@ -26,8 +23,6 @@ View:
         -   Help panel
 
     Adventuring Screen:
-        -   Player stats (health)
-        -   Inventory
         -   Combat with Monster
         -   End screen
         -   Map/minimap
@@ -35,6 +30,6 @@ View:
             -   Return to main menu
             -   Save
             -   Option?
-        -   Game over screen
+        -   Game over screen/Victory screen
         -   Descriptions for monsters and items
 

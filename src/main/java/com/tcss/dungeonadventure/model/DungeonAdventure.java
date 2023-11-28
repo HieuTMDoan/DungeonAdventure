@@ -4,12 +4,15 @@ package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
+import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 import java.awt.Point;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 import javafx.application.Application;
 
@@ -76,7 +79,8 @@ public final class DungeonAdventure implements Serializable {
                         flatMap(i -> IntStream.range(0, roomTiles[i].length).
                                 filter(j -> roomTiles[i][j].getClass() == EntranceTile.class).
                                 mapToObj(j -> new Point(i, j))).
-                        findFirst().orElse(null);
+                        findFirst().
+                        orElse(null);
 
         if (entranceTileLocation == null) {
             throw new IllegalStateException("Could not find EntranceTile in starting room.");
@@ -90,6 +94,15 @@ public final class DungeonAdventure implements Serializable {
     public void movePlayer(final Directions.Cardinal theDirection) {
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
+
+
+        final Monster[] surroundingMonsters = myDungeon.getAnySurroundingMonsters();
+        if (surroundingMonsters == null) { // There are no monsters surrounding
+            return;
+        }
+
+        // TODO: Start combat!!!
+
     }
 
 

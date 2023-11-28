@@ -68,10 +68,10 @@ public class HomeGUI implements PropertyChangeListener {
      * Helper method to organize the binding of nodes to variables.
      */
     private void locateNodes() {
-        this.myNewGameButton = (Button) lookup("newGameButton");
-        this.myLoadGameButton = (Button) lookup("loadGameButton");
-        this.myHelpButton = (Button) lookup("helpButton");
-        this.myHeroNameTextField = (TextField) lookup("heroNameTextField");
+        this.myNewGameButton = (Button) lookup("homeNewGameButton");
+        this.myLoadGameButton = (Button) lookup("homeLoadGameButton");
+        this.myHelpButton = (Button) lookup("homeHelpButton");
+        this.myHeroNameTextField = (TextField) lookup("homeHeroNameTextField");
     }
 
     /**
@@ -92,20 +92,20 @@ public class HomeGUI implements PropertyChangeListener {
         // Toggle groups make it so class selection is mutually exclusive
         final ToggleGroup classGroup = new ToggleGroup();
         final ToggleButton warriorRadioButton =
-                (ToggleButton) lookup("warriorRadioButton");
+                (ToggleButton) lookup("homeWarriorRadioButton");
         warriorRadioButton.setToggleGroup(classGroup);
         warriorRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.WARRIOR);
         warriorRadioButton.setSelected(true);
 
 
         final ToggleButton priestessRadioButton =
-                (ToggleButton) lookup("priestessRadioButton");
+                (ToggleButton) lookup("homePriestessRadioButton");
         priestessRadioButton.setToggleGroup(classGroup);
         priestessRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.PRIESTESS);
 
 
         final ToggleButton thiefRadioButton =
-                (ToggleButton) lookup("thiefRadioButton");
+                (ToggleButton) lookup("homeThiefRadioButton");
         thiefRadioButton.setToggleGroup(classGroup);
         thiefRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.THIEF);
 

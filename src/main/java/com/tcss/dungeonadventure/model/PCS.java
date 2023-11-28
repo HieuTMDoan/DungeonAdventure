@@ -55,7 +55,35 @@ public enum PCS {
      * The property of loading an EXISTING game.
      * Should be paired with //TODO something. idk what that is. game data or sum
      */
-    LOAD_EXISTING_GAME;
+    LOAD_EXISTING_GAME,
+
+    /**
+     * The property of loading a combat sequence between
+     * the player and a monster.
+     * Should be paired with a Monster that the player is fighting.
+     */
+    BEGIN_COMBAT,
+
+    /**
+     * The property of when actions are performed by either the
+     * player or the monster, which synchronizes the health in the GUI.
+     * Should he paired with an DungeonCharacter[] with:
+     *  [0]: The player.
+     *  [1]: The monster.
+     */
+    SYNC_COMBAT,
+
+    /**
+     * The property of when a combat sequence is over.
+     * Should be paired with TODO: nothing? Return to the main screen?
+     */
+    END_COMBAT
+
+
+
+
+    ;
+
 
 
     /**

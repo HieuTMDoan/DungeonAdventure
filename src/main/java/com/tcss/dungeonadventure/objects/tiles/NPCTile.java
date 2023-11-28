@@ -22,6 +22,10 @@ public class NPCTile extends Tile {
         return myDungeonCharacter.getDescription();
     }
 
+    public DungeonCharacter getNPC() {
+        return this.myDungeonCharacter;
+    }
+
 }
 
 

@@ -35,13 +35,6 @@ public class PauseGUI {
      */
     public PauseGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;
-        buildPauseMenu();
-    }
-
-    /**
-     * Builds the pause menu screen.
-     */
-    private void buildPauseMenu() {
         locateNodes();
         attachEvents();
     }
@@ -52,7 +45,7 @@ public class PauseGUI {
      * @param theNodeID The ID of the node to access.
      * @return The looked-up node, or null if it isn't found.
      */
-    Node lookup(final String theNodeID) {
+    private Node lookup(final String theNodeID) {
         return this.myGUI.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
     }
 
@@ -73,7 +66,6 @@ public class PauseGUI {
 
         this.mySaveGameButton.setOnAction(e -> myGUI.saveGame());
 
-        this.myHelpButton.setOnAction(e ->
-                GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.ADVENTURING));
+        this.myHelpButton.setOnAction(e -> System.out.println("Help button pressed"));
     }
 }

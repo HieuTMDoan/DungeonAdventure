@@ -64,8 +64,8 @@ public class GUIHandler extends Application {
     /**
      * Starts a new game.
      *
-     * @param thePlayerName
-     * @param theHero
+     * @param thePlayerName The player name for the new game
+     * @param theHero The chosen hero character for the new game
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);

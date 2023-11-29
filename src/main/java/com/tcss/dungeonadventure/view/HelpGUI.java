@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class PauseGUI {
+public class HelpGUI {
     /**
      * The GUI handler.
      */
@@ -33,14 +33,14 @@ public class PauseGUI {
     /**
      * Initializes a basic pause menu screen with 3 menu options.
      */
-    public PauseGUI(final GUIHandler theGUI) {
+    public HelpGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;
         locateNodes();
         attachEvents();
     }
 
     /**
-     * Using a node ID, you can access nodes in the Pause screen's FXML by ID.
+     * Using a node ID, you can access nodes in the Help screen's FXML by ID.
      *
      * @param theNodeID The ID of the node to access.
      * @return The looked-up node, or null if it isn't found.
@@ -53,19 +53,19 @@ public class PauseGUI {
      * Helper method to attach mouse events to certain nodes.
      */
     private void locateNodes() {
-        this.myResumeButton = (Button) lookup("menuResumeButton");
-        this.mySaveGameButton = (Button) lookup("menuSaveButton");
-        this.myHelpButton = (Button) lookup("menuHelpButton");
+//        this.myResumeButton = (Button) lookup("menuResumeButton");
+//        this.mySaveGameButton = (Button) lookup("menuSaveButton");
+//        this.myHelpButton = (Button) lookup("menuHelpButton");
     }
 
     /**
      * Helper method to organize the binding of nodes to variables.
      */
     private void attachEvents() {
-        this.myResumeButton.setOnAction(e -> myGUI.resumeGame());
-
-        this.mySaveGameButton.setOnAction(e -> myGUI.saveGame());
-
-        this.myHelpButton.setOnAction(e -> System.out.println("Help button pressed"));
+//        this.myResumeButton.setOnAction(e -> myGUI.resumeGame());
+//
+//        this.mySaveGameButton.setOnAction(e -> myGUI.saveGame());
+//
+//        this.myHelpButton.setOnAction(e -> System.out.println("Help button pressed"));
     }
 }

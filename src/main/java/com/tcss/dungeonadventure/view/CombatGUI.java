@@ -41,7 +41,7 @@ public class CombatGUI implements PropertyChangeListener {
     }
 
     /**
-     * Using a node ID, you can access nodes in the FXML by ID.
+     * Using a node ID, you can access nodes in the Combat screen's FXML by ID.
      *
      * @param theNodeID The ID of the node to access.
      * @return The looked-up node, or null if it isn't found.

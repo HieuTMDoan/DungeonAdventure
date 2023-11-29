@@ -98,13 +98,13 @@ public class AdventuringGUI implements PropertyChangeListener {
 
 
     /**
-     * Using a node ID, you can access nodes in the FXML by ID.
+     * Using a node ID, you can access nodes in the Adventuring screen's FXML by ID.
      *
      * @param theNodeID The ID of the node to access.
      * @return The looked-up node, or null if it isn't found.
      */
     Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
+        return this.myGUI.lookup(theNodeID);
     }
 
     /**

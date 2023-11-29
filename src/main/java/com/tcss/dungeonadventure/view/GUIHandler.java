@@ -102,8 +102,10 @@ public class GUIHandler extends Application {
                     DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
             case RIGHT, D ->
                     DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
-            case P, ESCAPE ->
-                    Layouts.swapLayout(Layouts.MENU);
+            case P, ESCAPE -> {
+                new PauseGUI(this);
+                Layouts.swapLayout(Layouts.MENU);
+            }
             default -> {
             }
         }

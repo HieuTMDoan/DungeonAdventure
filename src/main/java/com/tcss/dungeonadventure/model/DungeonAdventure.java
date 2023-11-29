@@ -133,14 +133,16 @@ public final class DungeonAdventure implements Serializable {
         }
     }
     private void handlePlayerDefeat() {
-        // Handle player defeat, e.g., display a message and reset the game
-        PCS.firePropertyChanged(PCS.LOG, "Player defeated! Game over.");
+        // Handle player defeat, --> display message and reset the game
+        PCS.firePropertyChanged(PCS.LOG, myPlayer.getPlayerHero().getName()
+                + " " + DungeonAdventure.getInstance().getPlayer().getPlayerName()
+                + " defeated! Game over.");
         //    resetGame(); TODO
     }
 
-    private void handleMonsterDefeat(Monster defeatedMonster) {
+    private void handleMonsterDefeat(final Monster theDefeatedMonster) {
         // Handle monster defeat
-        PCS.firePropertyChanged(PCS.LOG, "Defeated " + defeatedMonster.getName() + "!");
+        PCS.firePropertyChanged(PCS.LOG, "Defeated " + theDefeatedMonster.getName() + "!");
         // rewards or move to next room?
     }
 

@@ -14,15 +14,16 @@
     -fx-font-size: 20;
 }
 
-.label {
-    -fx-text-fill: white;
-}
-
 .radio-button .radio {
     -fx-background-color: black;
     -fx-border-color: white;
     -fx-border-radius: 5;
     -fx-padding: 0px;
+}
+
+.radio-button:hover .radio .dot {
+    -fx-background-color: #989898;
+    -fx-background-insets: 0;
 }
 
 .radio-button:selected .radio .dot {

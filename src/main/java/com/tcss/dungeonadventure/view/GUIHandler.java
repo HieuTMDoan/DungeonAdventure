@@ -49,6 +49,7 @@ public class GUIHandler extends Application {
         this.myScene.setOnKeyPressed(this::handleKeyPress);
 
         theStage.setTitle(WINDOW_TITLE);
+        theStage.setResizable(false);
         theStage.setScene(this.myScene);
         theStage.show();
 

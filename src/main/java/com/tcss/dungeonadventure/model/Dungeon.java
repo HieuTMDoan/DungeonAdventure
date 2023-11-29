@@ -420,6 +420,70 @@ public class Dungeon implements Serializable {
 
     }
 
+//    /**
+//     * Checks if the newly constructed dungeon is traversable,
+//     * meaning it has at least one available route from the entrance room to the exit room.
+//     *
+//     * @param theMaze   the dungeon to be checked
+//     * @param theRow    the row index of the room to be checked for accessibility
+//     * @param theCol    the col index of the room to be checked for accessibility
+//     * @return          True if the dungeon is traversable
+//     */
+//    private boolean isTraversable(final Room[][] theMaze,
+//                                  final char[][] theTestMaze,
+//                                  final int theRow,
+//                                  final int theCol) {
+//        boolean traversable = false;
+//
+//        if (validMove(theMaze, theTestMaze, theRow, theCol)) {
+//            theTestMaze[theRow][theCol] = 'v'; //marks the room visited
+//
+//            if (theMaze[theRow][theCol].isExitRoom()) {
+//                return true; //returns true if at exit room
+//            }
+//
+//            //not at exit so need to try other directions
+//            traversable
+//                    = isTraversable(theMaze, theTestMaze, theRow + 1, theCol); //travel down
+//
+//            if (!traversable) {
+//                traversable = isTraversable(theMaze, theTestMaze,
+//                        theRow, theCol + 1); //travel right
+//            }
+//            if (!traversable) {
+//                traversable = isTraversable(theMaze, theTestMaze,
+//                        theRow - 1, theCol); //travel up
+//            }
+//            if (!traversable) {
+//                traversable = isTraversable(theMaze, theTestMaze,
+//                        theRow, theCol - 1); //traverse left
+//            }
+//        }
+//
+//        return traversable;
+//    }
+//
+//    /**
+//     * Checks if the room at the specified position in the dungeon can be accessed.
+//     *
+//     * @param theMaze     the actual dungeon
+//     * @param theTestMaze the dummy dungeon with markings of visited rooms
+//     * @param theRow      the row index of the room in the dungeon
+//     * @param theColumn   the column index of the room in the dungeon
+//     * @return            True if the room can be accessed
+//     */
+//    private boolean validMove(final Room[][] theMaze,
+//                              final char[][] theTestMaze,
+//                              final Directions.Cardinal theDirection,
+//                              final int theRow,
+//                              final int theColumn) {
+//
+//        return theRow >= 0 && theRow < theMaze.length
+//                && theColumn >= 0 && theColumn < theMaze[0].length
+//                && theMaze[theRow][theColumn].findDoorOnWall(theDirection.getOpposite()) != null
+//                && theTestMaze[theRow][theColumn] == '\u0000';
+//    }
+
     /**
      * Searches the 8 surrounding tiles around the player if there are
      * any monsters around. If there are monsters, return them in an

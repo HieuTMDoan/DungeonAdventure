@@ -100,6 +100,7 @@ public final class DungeonAdventure implements Serializable {
         if (surroundingMonsters == null) { // There are no monsters surrounding
             return;
         }
+        System.out.println(Arrays.toString(surroundingMonsters));
 
         // TODO: Start combat!!!
 

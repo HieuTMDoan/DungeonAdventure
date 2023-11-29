@@ -103,7 +103,45 @@ public final class DungeonAdventure implements Serializable {
         System.out.println(Arrays.toString(surroundingMonsters));
 
         // TODO: Start combat!!!
+        startCombat(surroundingMonsters);
+    }
 
+    private void startCombat(final Monster[] theSurroundingMonsters) {
+        for (Monster monster : theSurroundingMonsters) {
+            if (monster != null && !monster.isDefeated()) {
+                // Attack logic
+                final int playerDamage = myPlayer.getPlayerHero().calculateDamage();
+                final int monsterDamage = monster.calculateDamage();
+
+                // Update health
+                myPlayer.getPlayerHero().takeDamage(monsterDamage);
+                monster.takeDamage(playerDamage);
+
+                // Check for defeat
+                if (myPlayer.getPlayerHero().isDefeated()) {
+                    // Handle player defeat
+                    handlePlayerDefeat();
+                    return;
+                }
+
+                // Check for victory
+                if (monster.isDefeated()) {
+                    // Handle monster defeat
+                    handleMonsterDefeat(monster);
+                }
+            }
+        }
+    }
+    private void handlePlayerDefeat() {
+        // Handle player defeat, e.g., display a message and reset the game
+        PCS.firePropertyChanged(PCS.LOG, "Player defeated! Game over.");
+        //    resetGame(); TODO
+    }
+
+    private void handleMonsterDefeat(Monster defeatedMonster) {
+        // Handle monster defeat
+        PCS.firePropertyChanged(PCS.LOG, "Defeated " + defeatedMonster.getName() + "!");
+        // rewards or move to next room?
     }
 
 
@@ -168,6 +206,3 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
     }
 }
-
-
-

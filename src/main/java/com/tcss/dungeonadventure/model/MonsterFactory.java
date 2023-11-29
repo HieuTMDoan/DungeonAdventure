@@ -10,16 +10,21 @@ public class MonsterFactory implements CharacterFactory {
     @Override
     public DungeonCharacter createCharacter() {
         // Define an array of monster classes to choose from.
-        Class<?>[] monsterClasses = new Class[]{Gremlin.class, Ogre.class, Skeleton.class};
+        final Class<?>[] monsterClasses = new Class[]{Gremlin.class, Ogre.class, Skeleton.class};
 
         // Use the Helper class to get a random index for the monsterClasses array.
-        int randomIndex = Helper.getRandomIntBetween(0, monsterClasses.length);
+        final int randomIndex = Helper.getRandomIntBetween(0, monsterClasses.length);
 
         // Create an instance of the selected monster type.
         try {
-            Class<?> selectedMonsterClass = monsterClasses[randomIndex];
-            return (DungeonCharacter) selectedMonsterClass.getDeclaredConstructor().newInstance();
-        } catch (ReflectiveOperationException e) {
+            final Class<?> selectedMonsterClass = monsterClasses[randomIndex];
+            final DungeonCharacter monster = (DungeonCharacter) selectedMonsterClass.getDeclaredConstructor().newInstance();
+
+            // Set initial health for the monster
+            monster.setHealth(100);
+
+            return monster;
+        } catch (final ReflectiveOperationException e) {
             e.printStackTrace();
             throw new RuntimeException("Randomly generated monster threw an exception.", e);
         }

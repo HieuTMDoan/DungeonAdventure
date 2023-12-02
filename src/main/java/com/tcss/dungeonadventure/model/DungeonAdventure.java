@@ -33,6 +33,8 @@ public final class DungeonAdventure implements Serializable {
      */
     private Dungeon myDungeon;
 
+    private boolean inCombat = false;
+
 
     private DungeonAdventure() {
     }
@@ -92,21 +94,26 @@ public final class DungeonAdventure implements Serializable {
     }
 
     public void movePlayer(final Directions.Cardinal theDirection) {
+        if (inCombat) {
+            PCS.firePropertyChanged(PCS.LOG, "You cannot move during combat!");
+            return;
+        }
+
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
-
 
         final Monster[] surroundingMonsters = myDungeon.getAnySurroundingMonsters();
         if (surroundingMonsters == null) { // There are no monsters surrounding
             return;
         }
-        System.out.println(Arrays.toString(surroundingMonsters));
 
         // TODO: Start combat!!!
         startCombat(surroundingMonsters);
     }
 
     private void startCombat(final Monster[] theSurroundingMonsters) {
+        inCombat = true;
+
         for (Monster monster : theSurroundingMonsters) {
             if (monster != null && !monster.isDefeated()) {
                 // Attack logic
@@ -131,6 +138,8 @@ public final class DungeonAdventure implements Serializable {
                 }
             }
         }
+        // Combat is over, reset the flag
+        inCombat = false;
     }
     private void handlePlayerDefeat() {
         // Handle player defeat, --> display message and reset the game

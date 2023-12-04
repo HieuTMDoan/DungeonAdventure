@@ -6,7 +6,7 @@
 
 .root * {
     -fx-background-color: default-background;
-    -fx-font-family: "Consolas"
+    -fx-font-family: "SanSerif"
 }
 
 .button {

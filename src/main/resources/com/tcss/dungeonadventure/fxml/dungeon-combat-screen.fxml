@@ -10,100 +10,91 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/colors.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <AnchorPane layoutX="239.0" layoutY="324.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white;" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0">
-         <children>
-            <GridPane gridLinesVisible="true" layoutX="176.0" layoutY="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="424.199951171875" minWidth="10.0" prefWidth="288.199951171875" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="697.0000305175781" minWidth="10.0" prefWidth="577.800048828125" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: red;">
-                     <children>
-                        <VBox layoutX="131.0" layoutY="-27.0" prefHeight="200.0" prefWidth="100.0" spacing="16.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
-                           <children>
-                              <Label fx:id="combatAttackButton" text="Attack" textFill="WHITE">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="combatUseSkillButton" text="Use Skill" textFill="WHITE">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="combatUseItemButton" text="Use Item" textFill="WHITE">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="combatFleeButton" text="Flee" textFill="WHITE">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: blue;" GridPane.columnIndex="1">
-                     <content>
-                        <AnchorPane>
-                           <children>
-                              <VBox fx:id="combatMessageBox" prefHeight="200.0" prefWidth="100.0" spacing="8.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="8.0">
-                                 <children>
-                                    <Label text="[12:59:59] Hero used Crushing Blow!" textFill="WHITE">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                    <Label text="[12:59:59] Skeleton lost 25 health." textFill="WHITE">
-                                       <font>
-                                          <Font size="18.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </ScrollPane>
-               </children>
-            </GridPane>
-         </children>
-      </AnchorPane>
-      <VBox alignment="CENTER" layoutX="84.0" layoutY="159.0" spacing="24.0">
-         <children>
-            <Label text="†" textFill="WHITE">
-               <font>
-                  <Font size="50.0" />
-               </font>
-            </Label>
-            <Label fx:id="combatPlayerHealthLabel" text="HP: 125/125" textFill="WHITE">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
-         </children>
-      </VBox>
-      <VBox alignment="CENTER" layoutX="675.0" layoutY="173.0" spacing="24.0">
-         <children>
-            <Label fx:id="combatEnemyLabel" text="💀" textFill="WHITE">
-               <font>
-                  <Font size="50.0" />
-               </font>
-            </Label>
-            <Label fx:id="combatEnemyHealthLabel" text="HP: 125/125" textFill="WHITE">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
-         </children>
-      </VBox>
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
+            prefWidth="900.0" stylesheets="@../css/colors.css" xmlns="http://javafx.com/javafx/20.0.1"
+            xmlns:fx="http://javafx.com/fxml/1">
+   <AnchorPane layoutX="239.0" layoutY="324.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: white;"
+               AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0">
+      <GridPane gridLinesVisible="true" layoutX="176.0" layoutY="55.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="424.199951171875" minWidth="10.0"
+                               prefWidth="288.199951171875"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="697.0000305175781" minWidth="10.0"
+                               prefWidth="577.800048828125"/>
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+         </rowConstraints>
+         <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: red;">
+            <VBox layoutX="131.0" layoutY="-27.0" prefHeight="200.0" prefWidth="100.0" spacing="16.0"
+                  AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0"
+                  AnchorPane.topAnchor="16.0">
+               <Label fx:id="combatAttackButton" text="Attack" textFill="WHITE">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </Label>
+               <Label fx:id="combatUseSkillButton" text="Use Skill" textFill="WHITE">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </Label>
+               <Label fx:id="combatUseItemButton" text="Use Item" textFill="WHITE">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </Label>
+               <Label fx:id="combatFleeButton" text="Flee" textFill="WHITE">
+                  <font>
+                     <Font size="20.0"/>
+                  </font>
+               </Label>
+            </VBox>
+         </AnchorPane>
+         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0"
+                     style="-fx-border-color: blue;" GridPane.columnIndex="1">
+            <AnchorPane>
+               <VBox fx:id="combatMessageBox" prefHeight="200.0" prefWidth="100.0" spacing="8.0"
+                     AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="8.0"
+                     AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="8.0">
+                  <Label text="[12:59:59] Hero used Crushing Blow!" textFill="WHITE">
+                     <font>
+                        <Font size="18.0"/>
+                     </font>
+                  </Label>
+                  <Label text="[12:59:59] Skeleton lost 25 health." textFill="WHITE">
+                     <font>
+                        <Font size="18.0"/>
+                     </font>
+                  </Label>
+               </VBox>
+            </AnchorPane>
+         </ScrollPane>
+      </GridPane>
+   </AnchorPane>
+   <VBox alignment="CENTER" layoutX="84.0" layoutY="159.0" spacing="24.0">
+      <Label text="†" textFill="WHITE">
+         <font>
+            <Font size="50.0"/>
+         </font>
+      </Label>
+      <Label fx:id="combatPlayerHealthLabel" text="HP: 125/125" textFill="WHITE">
+         <font>
+            <Font size="25.0"/>
+         </font>
+      </Label>
+   </VBox>
+   <VBox alignment="CENTER" layoutX="675.0" layoutY="173.0" spacing="24.0">
+      <Label fx:id="combatEnemyLabel" text="💀" textFill="WHITE">
+         <font>
+            <Font size="50.0"/>
+         </font>
+      </Label>
+      <Label fx:id="combatEnemyHealthLabel" text="HP: 125/125" textFill="WHITE">
+         <font>
+            <Font size="25.0"/>
+         </font>
+      </Label>
+   </VBox>
 </AnchorPane>

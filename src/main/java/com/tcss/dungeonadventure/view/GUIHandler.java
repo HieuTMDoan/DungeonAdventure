@@ -70,6 +70,7 @@ public class GUIHandler extends Application {
         Layouts.HELP.setNode(lookup("helpPane"));
         Layouts.COMBAT.setNode(lookup("combatPane"));
         Layouts.END.setNode(lookup("endPane"));
+        Layouts.DUNGEON.setNode(lookup("dungeonPane"));
     }
 
     /**
@@ -115,6 +116,11 @@ public class GUIHandler extends Application {
             case P, ESCAPE -> {
                 new PauseGUI(this);
                 Layouts.swapLayout(Layouts.MENU);
+            }
+
+            case M -> {
+                new DungeonGUI(this);
+                Layouts.swapLayout(Layouts.DUNGEON);
             }
             default -> {
             }
@@ -173,7 +179,14 @@ public class GUIHandler extends Application {
          * Its corresponding layout node should be the
          * root pane of the end game screen.
          */
-        END;
+        END,
+
+        /**
+         * A layout enum for the dungeon screen.
+         * Its corresponding layout node should be the
+         * root pane of the dungeon screen.
+         */
+        DUNGEON;
 
         /**
          * The current layout.

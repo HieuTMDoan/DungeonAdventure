@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/colors.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="14.0" layoutY="27.0" text="Help" textFill="WHITE" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="16.0">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="404.0" layoutY="14.0" text="Help" textAlignment="CENTER" AnchorPane.bottomAnchor="536.0" AnchorPane.leftAnchor="404.0" AnchorPane.rightAnchor="404.0" AnchorPane.topAnchor="14.0">
          <font>
-            <Font size="46.0" />
+            <Font size="40.0" />
          </font>
       </Label>
+      <Button fx:id="helpBackButton" layoutX="51.0" layoutY="517.0" mnemonicParsing="false" style="-fx-border-color: white; -fx-border-radius: 5;" text="Back" textFill="WHITE" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="750.0" AnchorPane.topAnchor="520.0">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+      <TextArea editable="false" layoutX="200.0" layoutY="70.0" prefHeight="388.0" prefWidth="424.0" text="This is an adventure game where a hero is randomly placed within dungeon. The adventurer needs to find the four Pillars of OO (Abstraction, Encapsulation, Inheritance, and Polymorphism) and take them to the exit to win the game. Some features of the dungeon will prove a hindrance to the adventurer's task (pits), while some will prove helpful (healing and vision potions).&#10;&#10;This is an adventure game where a hero is randomly placed within dungeon. The adventurer needs to find the four Pillars of OO (Abstraction, Encapsulation, Inheritance, and Polymorphism) and take them to the exit to win the game. Some features of the dungeon will prove a hindrance to the adventurer's task (pits), while some will prove helpful (healing and vision potions).&#10;&#10;This is an adventure game where a hero is randomly placed within dungeon. The adventurer needs to find the four Pillars of OO (Abstraction, Encapsulation, Inheritance, and Polymorphism) and take them to the exit to win the game. Some features of the dungeon will prove a hindrance to the adventurer's task (pits), while some will prove helpful (healing and vision potions).&#10;&#10;This is an adventure game where a hero is randomly placed within dungeon. The adventurer needs to find the four Pillars of OO (Abstraction, Encapsulation, Inheritance, and Polymorphism) and take them to the exit to win the game. Some features of the dungeon will prove a hindrance to the adventurer's task (pits), while some will prove helpful (healing and vision potions)." wrapText="true" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="70.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </TextArea>
    </children>
+   <stylesheets>
+      <URL value="@../css/colors.css" />
+      <URL value="@../css/dungeon-help-screen.css" />
+   </stylesheets>
 </AnchorPane>

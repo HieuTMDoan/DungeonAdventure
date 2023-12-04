@@ -9,6 +9,10 @@
     -fx-font-family: "Consolas"
 }
 
+.button {
+    -fx-border-radius: 5;
+}
+
 .button:hover {
     -fx-border-color: #989898;
     -fx-text-fill: #989898;

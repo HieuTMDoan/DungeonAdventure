@@ -56,6 +56,9 @@ public class GUIHandler extends Application {
         Layouts.HOME.setNode(lookup("homePane"));
         Layouts.ADVENTURING.setNode(lookup("adventuringPane"));
         Layouts.MENU.setNode(lookup("pausePane"));
+        Layouts.HELP.setNode(lookup("helpPane"));
+        Layouts.COMBAT.setNode(lookup("combatPane"));
+        Layouts.END.setNode(lookup("endPane"));
 
         Layouts.swapLayout(Layouts.HOME);
         new HomeGUI(this);
@@ -142,13 +145,38 @@ public class GUIHandler extends Application {
          * Its corresponding layout node should be the
          * root pane of the pause screen.
          */
-        MENU;
+        MENU,
 
+        /**
+         * A layout enum for the help screen.
+         * Its corresponding layout node should be the
+         * root pane of the help screen.
+         */
+        HELP,
+
+        /**
+         * A layout enum for the combat screen.
+         * Its corresponding layout node should be the
+         * root pane of the combat screen.
+         */
+        COMBAT,
+
+        /**
+         * A layout enum for the end game screen.
+         * Its corresponding layout node should be the
+         * root pane of the end game screen.
+         */
+        END;
 
         /**
          * The current layout.
          */
         private static Layouts CURRENT_LAYOUT;
+
+        /**
+         * The previous layout.
+         */
+        private static Layouts PREVIOUS_LAYOUT;
 
         /**
          * The layout node stored within each enum.
@@ -161,9 +189,12 @@ public class GUIHandler extends Application {
          * @param theLayout The layout to swap to.
          */
         static void swapLayout(final Layouts theLayout) {
+            PREVIOUS_LAYOUT = CURRENT_LAYOUT;
+
             for (final Layouts layout : Layouts.values()) {
                 layout.getNode().setVisible(false);
             }
+
             theLayout.getNode().setVisible(true);
             CURRENT_LAYOUT = theLayout;
         }
@@ -173,6 +204,13 @@ public class GUIHandler extends Application {
          */
         private static Layouts getCurrentLayout() {
             return CURRENT_LAYOUT;
+        }
+
+        /**
+         * @return The previous layout.
+         */
+        static Layouts getPreviousLayout() {
+            return PREVIOUS_LAYOUT;
         }
 
         /**

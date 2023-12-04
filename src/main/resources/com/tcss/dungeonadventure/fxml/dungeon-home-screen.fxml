@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="homePane" layoutY="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -71,6 +71,22 @@
       <AnchorPane fx:id="pausePane" prefHeight="200.0" prefWidth="663.0" visible="false">
          <children>
             <fx:include source="dungeon-pause-screen.fxml" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="helpPane" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <fx:include source="dungeon-help-screen.fxml" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="combatPane" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <fx:include source="dungeon-combat-screen.fxml" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="endPane" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+            <fx:include source="dungeon-end-game-screen.fxml" />
          </children>
       </AnchorPane>
    </children>

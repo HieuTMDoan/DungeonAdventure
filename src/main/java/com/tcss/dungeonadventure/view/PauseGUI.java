@@ -66,6 +66,9 @@ public class PauseGUI {
 
         this.mySaveGameButton.setOnAction(e -> myGUI.saveGame());
 
-        this.myHelpButton.setOnAction(e -> System.out.println("Help button pressed"));
+        this.myHelpButton.setOnAction(e -> {
+            new HelpGUI(myGUI);
+            GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HELP);
+        });
     }
 }

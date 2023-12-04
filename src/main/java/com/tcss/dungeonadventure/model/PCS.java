@@ -23,6 +23,13 @@ public enum PCS {
     LOG,
 
     /**
+     * The property to log a message in the CombatGUI's logger.
+     * Should be paired with a {@link String} as the message
+     * to display.
+     */
+    COMBAT_LOG,
+
+    /**
      * The property when the players inventory changes.
      * Should be paired with a Map<Item, Integer>, representing
      * the players current inventory.
@@ -67,9 +74,7 @@ public enum PCS {
     /**
      * The property of when actions are performed by either the
      * player or the monster, which synchronizes the health in the GUI.
-     * Should he paired with an DungeonCharacter[] with:
-     *  [0]: The player.
-     *  [1]: The monster.
+     * Should be paired with the monster.
      */
     SYNC_COMBAT,
 
@@ -77,7 +82,15 @@ public enum PCS {
      * The property of when a combat sequence is over.
      * Should be paired with TODO: nothing? Return to the main screen?
      */
-    END_COMBAT
+    END_COMBAT,
+
+
+    /**
+     * The property of when the game ends.
+     * Should be paired with a Boolean representing if
+     * the player was victorious (true), or failed (false).
+     */
+    GAME_END
 
 
 

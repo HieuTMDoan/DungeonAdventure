@@ -2,10 +2,16 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Main;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
+
+import com.tcss.dungeonadventure.objects.monsters.Monster;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,7 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-public class GUIHandler extends Application {
+public class GUIHandler extends Application implements PropertyChangeListener {
 
     /**
      * The title of the window.
@@ -31,14 +37,16 @@ public class GUIHandler extends Application {
      */
     private static final String HOME_FXML_PATH = "fxml/dungeon-home-screen.fxml";
 
-
     /**
      * The current scene.
      */
     private Scene myScene;
 
+    private CombatGUI myCombatGui;
+
     @Override
     public void start(final Stage theStage) throws IOException {
+        PCS.addPropertyListener(this);
 
         final FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(HOME_FXML_PATH));
 
@@ -54,6 +62,7 @@ public class GUIHandler extends Application {
         theStage.show();
 
         setLayoutNodes();
+        myCombatGui = new CombatGUI(this);
 
         Layouts.swapLayout(Layouts.HOME);
         new HomeGUI(this);
@@ -77,7 +86,7 @@ public class GUIHandler extends Application {
      * Starts a new game.
      *
      * @param thePlayerName The player name for the new game
-     * @param theHero The chosen hero character for the new game
+     * @param theHero       The chosen hero character for the new game
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
@@ -105,14 +114,10 @@ public class GUIHandler extends Application {
         }
 
         switch (theEvent.getCode()) {
-            case UP, W ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
+            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
+            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
+            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
             case P, ESCAPE -> {
                 new PauseGUI(this);
                 Layouts.swapLayout(Layouts.MENU);
@@ -135,6 +140,16 @@ public class GUIHandler extends Application {
      */
     Node lookup(final String theNodeID) {
         return this.myScene.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
+    }
+
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+        switch (PCS.valueOf(theEvent.getPropertyName())) {
+            case BEGIN_COMBAT -> {
+                myCombatGui.startCombat((Monster) theEvent.getNewValue());
+                Layouts.swapLayout(Layouts.COMBAT);
+            }
+        }
     }
 
 

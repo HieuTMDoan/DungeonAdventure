@@ -8,11 +8,13 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -35,33 +37,26 @@ public class AdventuringGUI implements PropertyChangeListener {
      * A 2D array of Text nodes, representing each character of the room grid.
      */
     private final Text[][] myRoomTextBoxes = new Text[10][10];
-
-    /**
-     * A 2D array of Tiles, which is what the current room looks like.
-     */
-    private Room myCurrentRoom;
-
-
-    /**
-     * The room grid. 10x10.
-     */
-    private GridPane myGridPane;
-
-    /**
-     * The text box containing tile information on mouse-over.
-     */
-    private Label myTileInfoLabel;
-
-    /**
-     * The handler for the players visual inventory.
-     */
-    private InventoryPanelHandler myInventoryPaneHandler;
-
     /**
      * The handler to display the players stats.
      */
     private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
-
+    /**
+     * A 2D array of Tiles, which is what the current room looks like.
+     */
+    private Room myCurrentRoom;
+    /**
+     * The room grid. 10x10.
+     */
+    private GridPane myGridPane;
+    /**
+     * The text box containing tile information on mouse-over.
+     */
+    private Label myTileInfoLabel;
+    /**
+     * The handler for the players visual inventory.
+     */
+    private InventoryPanelHandler myInventoryPaneHandler;
     /**
      * The parent scroll-pane for the scrollable console.
      * This should not be accessed.
@@ -87,7 +82,6 @@ public class AdventuringGUI implements PropertyChangeListener {
         createGUI();
 
 // Initialize PlayerStatsBox with a default Hero
-
 
 
         myPlayerStatsBox = new PlayerStatsBox(
@@ -132,7 +126,6 @@ public class AdventuringGUI implements PropertyChangeListener {
             n.setCache(false);
         }
     }
-
 
 
     /**
@@ -288,6 +281,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                 updatePlayerStats();  // Update PlayerStatsBox when items change
             }
             case LOG -> log((String) theEvent.getNewValue());
+            case END_COMBAT -> loadRoom(myCurrentRoom);
             default -> {
             }
         }

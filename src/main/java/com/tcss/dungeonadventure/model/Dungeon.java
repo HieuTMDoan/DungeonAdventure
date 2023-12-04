@@ -510,7 +510,7 @@ public class Dungeon implements Serializable {
                     continue;
                 }
 
-                if (npcTile.getNPC() instanceof Monster) {
+                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
                     surroundingMonsters.add((Monster) npcTile.getNPC());
                 }
 

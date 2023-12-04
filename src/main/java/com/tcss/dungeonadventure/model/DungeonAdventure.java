@@ -8,12 +8,13 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
+
 import java.awt.Point;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.IntStream;
+
 import javafx.application.Application;
 
 public final class DungeonAdventure implements Serializable {
@@ -32,6 +33,8 @@ public final class DungeonAdventure implements Serializable {
      * The current Dungeon.
      */
     private Dungeon myDungeon;
+
+    private Monster myCurrentlyFightingMonster;
 
 
     private DungeonAdventure() {
@@ -106,34 +109,67 @@ public final class DungeonAdventure implements Serializable {
         startCombat(surroundingMonsters);
     }
 
-    private void startCombat(final Monster[] theSurroundingMonsters) {
-        for (Monster monster : theSurroundingMonsters) {
-            if (monster != null && !monster.isDefeated()) {
-                // Attack logic
-                final int playerDamage = myPlayer.getPlayerHero().calculateDamage();
-                final int monsterDamage = monster.calculateDamage();
+    public void doCombatAction(final CombatActions theAction) {
+        switch (theAction) {
+            case ATTACK -> {
+                final int damage = myPlayer.getPlayerHero().attack(myCurrentlyFightingMonster);
 
-                // Update health
-                myPlayer.getPlayerHero().takeDamage(monsterDamage);
-                monster.takeDamage(playerDamage);
-
-                // Check for defeat
-                if (myPlayer.getPlayerHero().isDefeated()) {
-                    // Handle player defeat
-                    handlePlayerDefeat();
-                    return;
+                if (damage > 0) {
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player attacked, dealing " + damage + " damage.");
+                } else {
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                 }
+                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+            }
+            case USE_SKILL -> {
+                myPlayer.getPlayerHero().useSkill(myCurrentlyFightingMonster);
 
-                // Check for victory
-                if (monster.isDefeated()) {
-                    // Handle monster defeat
-                    handleMonsterDefeat(monster);
-                }
+
+            }
+            case USE_ITEM -> {
+
+
+            }
+            case FLEE -> {
+
+
             }
         }
+
+        // Check for victory
+        if (myCurrentlyFightingMonster.isDefeated()) {
+            // Handle monster defeat
+            handleMonsterDefeat(myCurrentlyFightingMonster);
+            return;
+        }
+
+
+        final int damage = myCurrentlyFightingMonster.attack(myPlayer.getPlayerHero());
+
+        if (damage > 0) {
+            PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                    myCurrentlyFightingMonster.getName() + " attacked, dealing " + damage + " damage.");
+        } else {
+            PCS.firePropertyChanged(PCS.COMBAT_LOG, myCurrentlyFightingMonster.getName() + " missed!");
+        }
+        PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+
+        // Check for defeat
+        if (myPlayer.getPlayerHero().isDefeated()) {
+            // Handle player defeat
+            handlePlayerDefeat();
+        }
     }
+
+    private void startCombat(final Monster[] theSurroundingMonsters) {
+        this.myCurrentlyFightingMonster = theSurroundingMonsters[0];
+        PCS.firePropertyChanged(PCS.BEGIN_COMBAT, theSurroundingMonsters[0]);
+    }
+
     private void handlePlayerDefeat() {
         // Handle player defeat, --> display message and reset the game
+        PCS.firePropertyChanged(PCS.GAME_END, false);
+
         PCS.firePropertyChanged(PCS.LOG, myPlayer.getPlayerHero().getName()
                 + " " + DungeonAdventure.getInstance().getPlayer().getPlayerName()
                 + " defeated! Game over.");
@@ -142,10 +178,10 @@ public final class DungeonAdventure implements Serializable {
 
     private void handleMonsterDefeat(final Monster theDefeatedMonster) {
         // Handle monster defeat
+        PCS.firePropertyChanged(PCS.END_COMBAT, null);
         PCS.firePropertyChanged(PCS.LOG, "Defeated " + theDefeatedMonster.getName() + "!");
         // rewards or move to next room?
     }
-
 
     public Dungeon getDungeon() {
         return this.myDungeon;
@@ -206,5 +242,12 @@ public final class DungeonAdventure implements Serializable {
         myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
 
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
+    }
+
+    public enum CombatActions {
+        ATTACK,
+        USE_SKILL,
+        USE_ITEM,
+        FLEE
     }
 }

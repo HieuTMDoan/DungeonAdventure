@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.objects;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.PCS;
 
 
 public abstract class DungeonCharacter implements VisualComponent {
@@ -33,14 +34,16 @@ public abstract class DungeonCharacter implements VisualComponent {
         this.myAccuracy = theAccuracy;
     }
 
-    public void attack(final DungeonCharacter theTarget) {
+    public int attack(final DungeonCharacter theTarget) {
         final double randomAccuracy = Helper.getRandomDoubleBetween(0, 1);
+        int damageDealth = 0;
 
-        if (this.myAccuracy > randomAccuracy) {
-            final int damage = Helper.getRandomIntBetween(myMinDamage + 1, myMaxDamage);
-            theTarget.changeHealth(damage);
-            System.out.println(theTarget.getName() + " lost " + damage + " health");
+        if (this.myAccuracy >= randomAccuracy) {
+            final int damage = Helper.getRandomIntBetween(myMinDamage, myMaxDamage);
+            damageDealth = damage;
+            theTarget.changeHealth(-damage);
         }
+        return damageDealth;
     }
 
 
@@ -109,6 +112,7 @@ public abstract class DungeonCharacter implements VisualComponent {
     public double getAccuracy() {
         return myAccuracy;
     }
+
     /**
      * Inflicts damage to the character.
      *

@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
+import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.skills.Heal;
 import com.tcss.dungeonadventure.objects.skills.Skill;
 
@@ -44,6 +45,17 @@ public class Priestess extends Hero {
                 theAccuracy,
                 theBlockChance,
                 MY_SKILL);
+    }
+
+    /**
+     * The priestess should only be able to heal herself, regardless of the opponent is.
+     *
+     * @param theTarget
+     * @return
+     */
+    @Override
+    public boolean useSkill(final DungeonCharacter theTarget) {
+        return super.useSkill(this);
     }
 
 }

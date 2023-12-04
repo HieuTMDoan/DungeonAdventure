@@ -53,16 +53,23 @@ public class GUIHandler extends Application {
         theStage.setScene(this.myScene);
         theStage.show();
 
+        setLayoutNodes();
+
+        Layouts.swapLayout(Layouts.HOME);
+        new HomeGUI(this);
+
+    }
+
+    /**
+     * Set all layout nodes.
+     */
+    private void setLayoutNodes() {
         Layouts.HOME.setNode(lookup("homePane"));
         Layouts.ADVENTURING.setNode(lookup("adventuringPane"));
         Layouts.MENU.setNode(lookup("pausePane"));
         Layouts.HELP.setNode(lookup("helpPane"));
         Layouts.COMBAT.setNode(lookup("combatPane"));
         Layouts.END.setNode(lookup("endPane"));
-
-        Layouts.swapLayout(Layouts.HOME);
-        new HomeGUI(this);
-
     }
 
     /**

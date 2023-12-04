@@ -4,14 +4,13 @@ import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 public class HomeGUI implements PropertyChangeListener {
 
@@ -114,16 +113,8 @@ public class HomeGUI implements PropertyChangeListener {
 
     }
 
-
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
-        switch (PCS.valueOf(theEvent.getPropertyName())) {
-
-            default -> {
-
-            }
-        }
-
 
     }
 }

@@ -21,7 +21,7 @@ public class HelpGUI {
     private Button myBackButton;
 
     /**
-     * Initializes a basic pause menu screen with 3 menu options.
+     * Initializes a basic help screen with the game's manual.
      */
     public HelpGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;

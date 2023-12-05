@@ -28,6 +28,8 @@ import javafx.scene.text.TextBoundsType;
 
 public class AdventuringGUI implements PropertyChangeListener {
 
+    private static final String BOX_SIZE_CSS = "-fx-font-size: 45; ";
+
     /**
      * The GUI handler.
      */
@@ -80,9 +82,6 @@ public class AdventuringGUI implements PropertyChangeListener {
 
         locateNodes();
         createGUI();
-
-// Initialize PlayerStatsBox with a default Hero
-
 
         myPlayerStatsBox = new PlayerStatsBox(
                 DungeonAdventure.getInstance().getPlayer().getPlayerHero());
@@ -141,7 +140,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                 myRoomTextBoxes[row][col] = text;
 
                 text.setBoundsType(TextBoundsType.VISUAL);
-                text.setStyle("-fx-font-size: 45; -fx-fill: rgb(255, 255, 255)");
+                text.setStyle(BOX_SIZE_CSS + "-fx-fill: white;");
 
                 final int finalRow = row; // these are needed for the lambda statements
                 final int finalCol = col;
@@ -176,6 +175,32 @@ public class AdventuringGUI implements PropertyChangeListener {
                                     myGridPane.getColumnCount(),
                                     theRowIndex, theColIndex));
         }
+
+        myRoomTextBoxes[theRowIndex][theColIndex].setStyle(BOX_SIZE_CSS + "-fx-fill: " + switch (theChar) {
+            case TileChars.Player.PLAYER -> "green;";
+
+            case TileChars.Monster.OGRE,
+                    TileChars.Monster.SKELETON,
+                    TileChars.Monster.GREMLIN -> "red;";
+
+            case TileChars.Items.PILLAR_OF_ABSTRACTION,
+                    TileChars.Items.PILLAR_OF_INHERITANCE,
+                    TileChars.Items.PILLAR_OF_ENCAPSULATION,
+                    TileChars.Items.PILLAR_OF_POLYMORPHISM -> "gold;";
+
+            case TileChars.Items.HEALING_POTION,
+                    TileChars.Items.VISION_POTION -> "blue;";
+
+            case TileChars.Room.HORIZONTAL_DOOR,
+                    TileChars.Room.VERTICAL_DOOR -> "coral;";
+
+            case TileChars.Room.ENTRANCE,
+                    TileChars.Room.EXIT -> "purple;";
+
+            case TileChars.Room.PIT -> "orange;";
+
+            default -> "white;";
+        });
 
         myRoomTextBoxes[theRowIndex][theColIndex].setText(String.valueOf(theChar));
     }

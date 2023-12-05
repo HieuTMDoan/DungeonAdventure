@@ -21,7 +21,6 @@ public class CombatGUI implements PropertyChangeListener {
     /* Player Action Nodes */
     private Label myAttackButton;
     private Label myUseSkillButton;
-    private Label myUseItemButton;
     private Label myFleeButton;
     
     private Label myPlayerHealthLabel;
@@ -58,7 +57,6 @@ public class CombatGUI implements PropertyChangeListener {
 
         myAttackButton = (Label) lookup("combatAttackButton");
         myUseSkillButton = (Label) lookup("combatUseSkillButton");
-        myUseItemButton = (Label) lookup("combatUseItemButton");
         myFleeButton = (Label) lookup("combatFleeButton");
 
     }
@@ -66,7 +64,6 @@ public class CombatGUI implements PropertyChangeListener {
     private void attachEvents() {
         myAttackButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.ATTACK));
         myUseSkillButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.USE_SKILL));
-        myUseItemButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.USE_ITEM));
         myFleeButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.FLEE));
     }
 

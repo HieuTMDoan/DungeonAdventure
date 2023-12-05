@@ -126,10 +126,6 @@ public final class DungeonAdventure implements Serializable {
 
 
             }
-            case USE_ITEM -> {
-
-
-            }
             case FLEE -> {
 
 
@@ -247,7 +243,6 @@ public final class DungeonAdventure implements Serializable {
     public enum CombatActions {
         ATTACK,
         USE_SKILL,
-        USE_ITEM,
         FLEE
     }
 }

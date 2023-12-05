@@ -28,12 +28,22 @@ public class Room implements Serializable {
     /**
      * The chance for a room to contain two items.
      */
-    private static final double TWO_ITEM_CHANCE = 0.15;
+    private static final double TWO_ITEM_CHANCE = 0.05;
 
     /**
      * The chance for a room to contain one item.
      */
-    private static final double ONE_ITEM_CHANCE = 0.35;
+    private static final double ONE_ITEM_CHANCE = 0.15;
+
+    /**
+     * Chance for a room to have two pits.
+     */
+    private static final double TWO_PIT_CHANCE = 0.2;
+
+    /**
+     * Chance for a room to have one pit.
+     */
+    private static final double ONE_PIT_CHANCE = 0.4;
 
     /**
      * The chance for a room to contain two monsters.
@@ -45,6 +55,13 @@ public class Room implements Serializable {
      */
     private static final double ONE_MONSTER_CHANCE = 0.35;
 
+    /**
+     * The max amount of attempts to place a tile before abandoning.
+     */
+    private static final int MAX_TILE_PLACEMENT_ATTEMPTS = 50;
+
+
+    private static final double EXTRA_WALL_RATIO = 0.25;
 
     /**
      * Boolean if the room is the entrance room.
@@ -210,7 +227,7 @@ public class Room implements Serializable {
 
         // if the room is an exit or entrance, it shouldn't contain anything else.
         if (theIsEntrance || theIsExit) {
-            putTileAtValidLocation(theIsEntrance ? new EntranceTile() : new ExitTile(), tiles);
+            putTileAtValidLocation(theIsEntrance ? new EntranceTile() : new ExitTile(), tiles, false);
             return tiles;
         }
 
@@ -218,7 +235,7 @@ public class Room implements Serializable {
         if (thePillar != null) {
             try {
                 final Item pillar = (Item) thePillar.getConstructor().newInstance();
-                putTileAtValidLocation(new ItemTile(pillar), tiles);
+                putTileAtValidLocation(new ItemTile(pillar), tiles, false);
             } catch (final InstantiationException
                            | NoSuchMethodException
                            | IllegalAccessException
@@ -237,7 +254,7 @@ public class Room implements Serializable {
                 : 0;
         for (int i = 0; i < itemNum; i++) {
             final Item randomItem = Helper.getRandomItem();
-            putTileAtValidLocation(new ItemTile(randomItem), tiles);
+            putTileAtValidLocation(new ItemTile(randomItem), tiles, false);
         }
 
         final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
@@ -248,8 +265,19 @@ public class Room implements Serializable {
                 : 0;
         for (int i = 0; i < monsterNum; i++) {
             final Monster randomMonster = Helper.getRandomMonster();
-            putTileAtValidLocation(new NPCTile(randomMonster), tiles);
+            putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
         }
+
+        final double pitRandom = Helper.getRandomDoubleBetween(0, 1);
+        final int pitNum = (pitRandom < TWO_PIT_CHANCE)
+                ? 2
+                : (monsterRandom < ONE_PIT_CHANCE)
+                ? 1
+                : 0;
+        for (int i = 0; i < pitNum; i++) {
+            putTileAtValidLocation(new PitTile(), tiles, false);
+        }
+
 
         return tiles;
     }
@@ -261,21 +289,67 @@ public class Room implements Serializable {
      *
      * @param theTile  The tile to add to the tile set.
      * @param theTiles The current tile set.
+     * @param theNextToDoors If the tile can exist next to a door.
      */
     private static void putTileAtValidLocation(final Tile theTile,
-                                               final Tile[][] theTiles) {
+                                               final Tile[][] theTiles,
+                                               final boolean theNextToDoors) {
 
         final Dimension size = new Dimension(theTiles.length, theTiles[0].length);
 
+        int attempts = 0;
         while (true) {
+            if (attempts > MAX_TILE_PLACEMENT_ATTEMPTS) {
+                return;
+            }
+            attempts++;
             final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
             final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
 
-            if (theTiles[x][y] != null && theTiles[x][y].getClass() != EmptyTile.class) {
+            if (theTiles[x][y] != null && !(theTiles[x][y] instanceof EmptyTile)) {
                 continue;
             }
+
+            boolean foundMonster = false;
+            if (theTile instanceof NPCTile) {
+                for (int i = -1; i < 2; i++) {
+                    for (int j = -1; j < 2; j++) {
+                        final Tile t = theTiles[x + i][y + j];
+                        if (t instanceof NPCTile) {
+                            foundMonster = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            boolean foundDoor = false;
+            if (!theNextToDoors) {
+                for (int i = -1; i < 2; i++) {
+                    for (int j = -1; j < 2; j++) {
+                        final Tile t = theTiles[x + i][y + j];
+                        if (t instanceof DoorTile) {
+                            foundDoor = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (foundDoor || foundMonster) {
+                continue;
+            }
+
             theTiles[x][y] = theTile;
             return;
+        }
+    }
+
+    public static void addExtraWalls(final Room theRoom) {
+
+        final int extraWalls = (int) ((theRoom.getRoomWidth() - 1) * (theRoom.getRoomHeight() - 1) * 0.1);
+        for (int i = 0; i < extraWalls; i++) {
+            putTileAtValidLocation(new WallTile(), theRoom.getRoomTiles(), false);
         }
     }
 
@@ -288,7 +362,6 @@ public class Room implements Serializable {
 
         final int x = Helper.getRandomIntBetween(1, getRoomHeight() - 1);
         final int y = Helper.getRandomIntBetween(1, getRoomWidth() - 1);
-
 
         switch (theWallLocation) {
             case NORTH -> // door is on top wall
@@ -333,12 +406,7 @@ public class Room implements Serializable {
      * @param theDirection The direction to move the player in.
      */
     public void movePlayer(final Directions.Cardinal theDirection) {
-        if (this.myPlayerPosition == null) {
-            this.myPlayerPosition = new Point(1, 1);
-            //TODO: Change this to where the player enters the room
-        }
-
-        final Point tempPoint = new Point(myPlayerPosition);
+        Point tempPoint = new Point(myPlayerPosition);
         switch (theDirection) {
             case NORTH -> tempPoint.translate(-1, 0);
             case SOUTH -> tempPoint.translate(1, 0);
@@ -348,7 +416,18 @@ public class Room implements Serializable {
                     "Illegal enum passed: " + theDirection);
         }
 
-        final Tile tile = myRoomTiles[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        Tile tile;
+        try {
+            tile = myRoomTiles[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            // If this is reached, that means the player is in a doorway and attempted to move
+            // in the direction they came in. Doesn't change their location, just interacts with
+            // the tile directly under them again.
+
+            tempPoint = new Point(myPlayerPosition);
+            tile = myRoomTiles[(int) tempPoint.getX()][(int) tempPoint.getY()];
+        }
+
         if (tile.isTraversable()) {
             myPlayerPosition = tempPoint;
             tile.onInteract();
@@ -359,7 +438,6 @@ public class Room implements Serializable {
         final Tile[][] tiles = this.getRoomTiles();
 
         Point returnPoint = null;
-
 
         switch (theDirection) {
             case NORTH -> { // find door on top wall
@@ -397,6 +475,8 @@ public class Room implements Serializable {
             default -> {
             }
         }
+
+
         return returnPoint;
     }
 
@@ -417,6 +497,12 @@ public class Room implements Serializable {
             return;
         }
         myPlayerPosition = findDoorOnWall(theOriginalDirection.getOpposite());
+
+        if (myPlayerPosition == null) {
+            System.out.println("WARNING: Could not find door on wall: " + theOriginalDirection.getOpposite());
+            System.out.println(this);
+        }
+
     }
 
     /**

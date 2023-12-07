@@ -4,9 +4,7 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * Represents the pause menu GUI of the program.
@@ -67,20 +65,63 @@ public class PauseGUI {
      * Save the game state to a file using serialization.
      */
     private void saveGame() {
-        try (FileOutputStream fileOutputStream = new FileOutputStream("savedGame.ser");
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("savedGame.ser"))) {
 
             // Serialize the game state (DungeonAdventure instance) to the file
             objectOutputStream.writeObject(DungeonAdventure.getInstance());
 
-            // Display a message or perform any other necessary actions after saving
+
             System.out.println("Game saved successfully!");
 
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             ex.printStackTrace();
-
         }
     }
+
+    /**
+     * Load the game state from a serialized file.
+     */
+    /**
+     * Load the game state from a serialized file.
+     */
+    private void loadGame() {
+        try (ObjectInputStream objectInputStream =
+                     new ObjectInputStream(new FileInputStream("savedGame.ser"))) {
+
+            // Deserialize the game state from the file
+            final Object loadedObject = objectInputStream.readObject();
+
+            // Check if the loaded object is an instance of DungeonAdventure
+            if (loadedObject instanceof final DungeonAdventure loadedGame) {
+
+                // Set the loaded game state to the current game instance
+                DungeonAdventure.getInstance().restoreFromMemento(loadedGame.createMemento());
+
+
+                System.out.println("Game loaded successfully!");
+
+                // Resume the game or update the GUI accordingly
+                myGUI.resumeGame();
+            } else {
+                // Handle the case where the loaded object is not of the expected type
+                System.out.println("Invalid saved game file!");
+            }
+
+        } catch (final FileNotFoundException ex) {
+            // Handle the case where the file is not found
+            System.out.println("Saved game file not found!");
+            ex.printStackTrace();
+        } catch (final IOException ex) {
+            // Handle I/O exceptions (e.g., reading or closing the stream)
+            System.out.println("Error reading saved game file!");
+            ex.printStackTrace();
+        } catch (final ClassNotFoundException ex) {
+            // Handle the case where the loaded class is not found
+            System.out.println("Class not found during deserialization!");
+            ex.printStackTrace();
+        }
+    }
+
 
     /**
      * Helper method to organize the binding of nodes to variables.
@@ -90,7 +131,9 @@ public class PauseGUI {
 
         this.mySaveGameButton.setOnAction(e -> saveGame());
 
+        // Load the game when the "Load Game" button is clicked
         this.myHelpButton.setOnAction(e -> {
+            loadGame();
             new HelpGUI(myGUI);
             GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HELP);
         });

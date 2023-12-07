@@ -2,6 +2,8 @@ package com.tcss.dungeonadventure.objects.tiles;
 
 import com.tcss.dungeonadventure.objects.VisualComponent;
 
+import java.io.Serializable;
+
 /**
  * Parent class of all Tiles, which represents one square in
  * a room. Can contain a multitude of things, such as the
@@ -12,7 +14,7 @@ import com.tcss.dungeonadventure.objects.VisualComponent;
  * @author Sunny Ali
  * @version Fall 2023
  */
-public class Tile implements VisualComponent {
+public class Tile implements VisualComponent, Serializable {
 
     /**
      * The character of the tile.

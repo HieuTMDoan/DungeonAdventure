@@ -8,6 +8,13 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Map;
+
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,13 +26,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Map;
-
 public class AdventuringGUI implements PropertyChangeListener {
+
+    private static final String BOX_SIZE_CSS = "-fx-font-size: 45; ";
 
     /**
      * The GUI handler.
@@ -36,33 +39,26 @@ public class AdventuringGUI implements PropertyChangeListener {
      * A 2D array of Text nodes, representing each character of the room grid.
      */
     private final Text[][] myRoomTextBoxes = new Text[10][10];
-
-    /**
-     * A 2D array of Tiles, which is what the current room looks like.
-     */
-    private Room myCurrentRoom;
-
-
-    /**
-     * The room grid. 10x10.
-     */
-    private GridPane myGridPane;
-
-    /**
-     * The text box containing tile information on mouse-over.
-     */
-    private Label myTileInfoLabel;
-
-    /**
-     * The handler for the players visual inventory.
-     */
-    private InventoryPanelHandler myInventoryPaneHandler;
-
     /**
      * The handler to display the players stats.
      */
     private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
-
+    /**
+     * A 2D array of Tiles, which is what the current room looks like.
+     */
+    private Room myCurrentRoom;
+    /**
+     * The room grid. 10x10.
+     */
+    private GridPane myGridPane;
+    /**
+     * The text box containing tile information on mouse-over.
+     */
+    private Label myTileInfoLabel;
+    /**
+     * The handler for the players visual inventory.
+     */
+    private InventoryPanelHandler myInventoryPaneHandler;
     /**
      * The parent scroll-pane for the scrollable console.
      * This should not be accessed.
@@ -73,6 +69,10 @@ public class AdventuringGUI implements PropertyChangeListener {
      * The message box.
      */
     private VBox myMessageBox;
+
+    /**
+     * The player info box.
+     */
     private VBox myPlayerInfoBox;
 
 
@@ -82,10 +82,6 @@ public class AdventuringGUI implements PropertyChangeListener {
 
         locateNodes();
         createGUI();
-
-// Initialize PlayerStatsBox with a default Hero
-
-
 
         myPlayerStatsBox = new PlayerStatsBox(
                 DungeonAdventure.getInstance().getPlayer().getPlayerHero());
@@ -98,13 +94,13 @@ public class AdventuringGUI implements PropertyChangeListener {
 
 
     /**
-     * Using a node ID, you can access nodes in the FXML by ID.
+     * Using a node ID, you can access nodes in the Adventuring screen's FXML by ID.
      *
      * @param theNodeID The ID of the node to access.
      * @return The looked-up node, or null if it isn't found.
      */
     Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
+        return this.myGUI.lookup(theNodeID);
     }
 
     /**
@@ -131,7 +127,6 @@ public class AdventuringGUI implements PropertyChangeListener {
     }
 
 
-
     /**
      * Helper method which populates the grid with text boxes.
      */
@@ -145,7 +140,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                 myRoomTextBoxes[row][col] = text;
 
                 text.setBoundsType(TextBoundsType.VISUAL);
-                text.setStyle("-fx-font-size: 45; -fx-fill: rgb(255, 255, 255)");
+                text.setStyle(BOX_SIZE_CSS + "-fx-fill: white;");
 
                 final int finalRow = row; // these are needed for the lambda statements
                 final int finalCol = col;
@@ -180,6 +175,32 @@ public class AdventuringGUI implements PropertyChangeListener {
                                     myGridPane.getColumnCount(),
                                     theRowIndex, theColIndex));
         }
+
+        myRoomTextBoxes[theRowIndex][theColIndex].setStyle(BOX_SIZE_CSS + "-fx-fill: " + switch (theChar) {
+            case TileChars.Player.PLAYER -> "green;";
+
+            case TileChars.Monster.OGRE,
+                    TileChars.Monster.SKELETON,
+                    TileChars.Monster.GREMLIN -> "red;";
+
+            case TileChars.Items.PILLAR_OF_ABSTRACTION,
+                    TileChars.Items.PILLAR_OF_INHERITANCE,
+                    TileChars.Items.PILLAR_OF_ENCAPSULATION,
+                    TileChars.Items.PILLAR_OF_POLYMORPHISM -> "gold;";
+
+            case TileChars.Items.HEALING_POTION,
+                    TileChars.Items.VISION_POTION -> "blue;";
+
+            case TileChars.Room.HORIZONTAL_DOOR,
+                    TileChars.Room.VERTICAL_DOOR -> "coral;";
+
+            case TileChars.Room.ENTRANCE,
+                    TileChars.Room.EXIT -> "purple;";
+
+            case TileChars.Room.PIT -> "orange;";
+
+            default -> "white;";
+        });
 
         myRoomTextBoxes[theRowIndex][theColIndex].setText(String.valueOf(theChar));
     }
@@ -285,6 +306,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                 updatePlayerStats();  // Update PlayerStatsBox when items change
             }
             case LOG -> log((String) theEvent.getNewValue());
+            case END_COMBAT -> loadRoom(myCurrentRoom);
             default -> {
             }
         }

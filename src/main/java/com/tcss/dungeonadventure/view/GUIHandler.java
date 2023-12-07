@@ -2,10 +2,16 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Main;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
+
+import com.tcss.dungeonadventure.objects.monsters.Monster;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,7 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-public class GUIHandler extends Application {
+public class GUIHandler extends Application implements PropertyChangeListener {
 
     /**
      * The title of the window.
@@ -31,14 +37,16 @@ public class GUIHandler extends Application {
      */
     private static final String HOME_FXML_PATH = "fxml/dungeon-home-screen.fxml";
 
-
     /**
      * The current scene.
      */
     private Scene myScene;
 
+    private CombatGUI myCombatGui;
+
     @Override
     public void start(final Stage theStage) throws IOException {
+        PCS.addPropertyListener(this);
 
         final FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(HOME_FXML_PATH));
 
@@ -53,9 +61,8 @@ public class GUIHandler extends Application {
         theStage.setScene(this.myScene);
         theStage.show();
 
-        Layouts.HOME.setNode(lookup("homePane"));
-        Layouts.ADVENTURING.setNode(lookup("adventuringPane"));
-        Layouts.MENU.setNode(lookup("pausePane"));
+        setLayoutNodes();
+        myCombatGui = new CombatGUI(this);
 
         Layouts.swapLayout(Layouts.HOME);
         new HomeGUI(this);
@@ -63,10 +70,23 @@ public class GUIHandler extends Application {
     }
 
     /**
+     * Set all layout nodes.
+     */
+    private void setLayoutNodes() {
+        Layouts.HOME.setNode(lookup("homePane"));
+        Layouts.ADVENTURING.setNode(lookup("adventuringPane"));
+        Layouts.MENU.setNode(lookup("pausePane"));
+        Layouts.HELP.setNode(lookup("helpPane"));
+        Layouts.COMBAT.setNode(lookup("combatPane"));
+        Layouts.END.setNode(lookup("endPane"));
+        Layouts.DUNGEON.setNode(lookup("dungeonPane"));
+    }
+
+    /**
      * Starts a new game.
      *
      * @param thePlayerName The player name for the new game
-     * @param theHero The chosen hero character for the new game
+     * @param theHero       The chosen hero character for the new game
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
@@ -94,16 +114,19 @@ public class GUIHandler extends Application {
         }
 
         switch (theEvent.getCode()) {
-            case UP, W ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D ->
-                    DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
-            case P, ESCAPE ->
-                    Layouts.swapLayout(Layouts.MENU);
+            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
+            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
+            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
+            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case P, ESCAPE -> {
+                new PauseGUI(this);
+                Layouts.swapLayout(Layouts.MENU);
+            }
+
+            case M -> {
+                new DungeonGUI(this);
+                Layouts.swapLayout(Layouts.DUNGEON);
+            }
             default -> {
             }
         }
@@ -117,6 +140,16 @@ public class GUIHandler extends Application {
      */
     Node lookup(final String theNodeID) {
         return this.myScene.lookup(theNodeID.charAt(0) == '#' ? theNodeID : "#" + theNodeID);
+    }
+
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+        switch (PCS.valueOf(theEvent.getPropertyName())) {
+            case BEGIN_COMBAT -> {
+                myCombatGui.startCombat((Monster) theEvent.getNewValue());
+                Layouts.swapLayout(Layouts.COMBAT);
+            }
+        }
     }
 
 
@@ -140,13 +173,45 @@ public class GUIHandler extends Application {
          * Its corresponding layout node should be the
          * root pane of the pause screen.
          */
-        MENU;
+        MENU,
 
+        /**
+         * A layout enum for the help screen.
+         * Its corresponding layout node should be the
+         * root pane of the help screen.
+         */
+        HELP,
+
+        /**
+         * A layout enum for the combat screen.
+         * Its corresponding layout node should be the
+         * root pane of the combat screen.
+         */
+        COMBAT,
+
+        /**
+         * A layout enum for the end game screen.
+         * Its corresponding layout node should be the
+         * root pane of the end game screen.
+         */
+        END,
+
+        /**
+         * A layout enum for the dungeon screen.
+         * Its corresponding layout node should be the
+         * root pane of the dungeon screen.
+         */
+        DUNGEON;
 
         /**
          * The current layout.
          */
         private static Layouts CURRENT_LAYOUT;
+
+        /**
+         * The previous layout.
+         */
+        private static Layouts PREVIOUS_LAYOUT;
 
         /**
          * The layout node stored within each enum.
@@ -159,9 +224,12 @@ public class GUIHandler extends Application {
          * @param theLayout The layout to swap to.
          */
         static void swapLayout(final Layouts theLayout) {
+            PREVIOUS_LAYOUT = CURRENT_LAYOUT;
+
             for (final Layouts layout : Layouts.values()) {
                 layout.getNode().setVisible(false);
             }
+
             theLayout.getNode().setVisible(true);
             CURRENT_LAYOUT = theLayout;
         }
@@ -171,6 +239,13 @@ public class GUIHandler extends Application {
          */
         private static Layouts getCurrentLayout() {
             return CURRENT_LAYOUT;
+        }
+
+        /**
+         * @return The previous layout.
+         */
+        static Layouts getPreviousLayout() {
+            return PREVIOUS_LAYOUT;
         }
 
         /**

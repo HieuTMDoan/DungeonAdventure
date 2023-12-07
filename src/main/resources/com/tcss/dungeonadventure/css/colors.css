@@ -6,7 +6,11 @@
 
 .root * {
     -fx-background-color: default-background;
-    -fx-font-family: "Consolas"
+    -fx-font-family: "SanSerif"
+}
+
+.button {
+    -fx-border-radius: 5;
 }
 
 .button:hover {

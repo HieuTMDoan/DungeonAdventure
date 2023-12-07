@@ -1,6 +1,8 @@
 package com.tcss.dungeonadventure.model;
+
 import java.io.Serial;
 import java.io.Serializable;
+
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
@@ -35,27 +37,22 @@ public class Dungeon implements Serializable {
      * The chance for a door to generate.
      */
     private static final double DOOR_CHANCE = 0.7;
-
-    /**
-     * The 2D representation of the {@link Dungeon}.
-     */
-    private Room[][] myMaze;
-
     /**
      * The entrance of the {@link Dungeon}.
      */
     private final Room myStartingRoom;
-
     /**
      * The exit of the {@link Dungeon}.
      */
     private final Room myExitRoom;
-
     /**
      * The room that contains a pillar of Object-Oriented.
      */
     private final List<Room> myPillarRooms;
-
+    /**
+     * The 2D representation of the {@link Dungeon}.
+     */
+    private Room[][] myMaze;
     /**
      * The room that the player is currently in.
      */
@@ -70,8 +67,8 @@ public class Dungeon implements Serializable {
      * @param thePillarRooms  the room that contains a pillar of Object-Oriented
      */
     public Dungeon(final Room theStartingRoom,
-                    final Room theExitRoom,
-                    final List<Room> thePillarRooms) {
+                   final Room theExitRoom,
+                   final List<Room> thePillarRooms) {
 
         myMaze = new Room[MAZE_SIZE.height][MAZE_SIZE.width];
         myExitRoom = theExitRoom;
@@ -126,8 +123,20 @@ public class Dungeon implements Serializable {
         }
         generateFillerRooms();
         generateDoors();
+        generateExtraWalls();
 
 
+    }
+
+    /**
+     * Adds extra terrain to rooms.
+     */
+    private void generateExtraWalls() {
+        for (final Room[] row : myMaze) {
+            for (final Room room : row) {
+                Room.addExtraWalls(room);
+            }
+        }
     }
 
     /**
@@ -497,29 +506,45 @@ public class Dungeon implements Serializable {
         final int playerPositionX = myCurrentRoom.getPlayerXPosition();
         final int playerPositionY = myCurrentRoom.getPlayerYPosition();
 
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                final Tile tile;
-                try {
-                    tile = roomTiles[playerPositionX + i][playerPositionY + j];
-                } catch (final ArrayIndexOutOfBoundsException e) {
-                    continue;
-                }
-
+        for (final Directions.Cardinal d : Directions.Cardinal.values()) {
+            try {
+                final Tile tile
+                        = roomTiles[playerPositionX + d.getXOffset()][playerPositionY + d.getYOffset()];
                 if (!(tile instanceof final NPCTile npcTile)) {
                     continue;
                 }
 
-                if (npcTile.getNPC() instanceof Monster) {
+                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
                     surroundingMonsters.add((Monster) npcTile.getNPC());
                 }
-
-
+            } catch (final ArrayIndexOutOfBoundsException ignored) {
             }
+
+
         }
+
+        // This searches the 8 surrounding tiles.
+//        for (int i = -1; i < 2; i++) {
+//            for (int j = -1; j < 2; j++) {
+//                final Tile tile;
+//                try {
+//                    tile = roomTiles[playerPositionX + i][playerPositionY + j];
+//                } catch (final ArrayIndexOutOfBoundsException e) {
+//                    continue;
+//                }
+//
+//                if (!(tile instanceof final NPCTile npcTile)) {
+//                    continue;
+//                }
+//
+//                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
+//                    surroundingMonsters.add((Monster) npcTile.getNPC());
+//                }
+//
+//
+//            }
+//        }
         return surroundingMonsters.size() == 0 ? null : surroundingMonsters.toArray(new Monster[0]);
-
-
 
 
     }
@@ -559,6 +584,7 @@ public class Dungeon implements Serializable {
                              final Directions.Cardinal theOriginalDirection) {
 
         this.myCurrentRoom.setPlayerLocation((Point) null);
+
         theRoom.setPlayerLocation(theOriginalDirection);
         this.myCurrentRoom = theRoom;
     }

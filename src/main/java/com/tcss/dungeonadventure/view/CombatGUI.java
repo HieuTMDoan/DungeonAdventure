@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class CombatGUI implements PropertyChangeListener {
 
@@ -19,17 +21,12 @@ public class CombatGUI implements PropertyChangeListener {
     /* Player Action Nodes */
     private Label myAttackButton;
     private Label myUseSkillButton;
-    private Label myUseItemButton;
     private Label myFleeButton;
-
-
+    
     private Label myPlayerHealthLabel;
     private Label myEnemyLabel;
     private Label myEnemyHealthLabel;
-
     private VBox myMessageBox;
-
-
 
     public CombatGUI(final GUIHandler theGUIHandler) {
         PCS.addPropertyListener(this);
@@ -37,11 +34,12 @@ public class CombatGUI implements PropertyChangeListener {
 
         locateNodes();
         attachEvents();
-
     }
 
+
+
     /**
-     * Using a node ID, you can access nodes in the FXML by ID.
+     * Using a node ID, you can access nodes in the Combat screen's FXML by ID.
      *
      * @param theNodeID The ID of the node to access.
      * @return The looked-up node, or null if it isn't found.
@@ -59,54 +57,56 @@ public class CombatGUI implements PropertyChangeListener {
 
         myAttackButton = (Label) lookup("combatAttackButton");
         myUseSkillButton = (Label) lookup("combatUseSkillButton");
-        myUseItemButton = (Label) lookup("combatUseItemButton");
         myFleeButton = (Label) lookup("combatFleeButton");
 
     }
 
     private void attachEvents() {
-        myAttackButton.setOnMouseClicked(e -> {
-            System.out.println("Attack button pressed");
-        });
-        myUseSkillButton.setOnMouseClicked(e -> {
-            System.out.println("Use skill button pressed");
-        });
-        myUseItemButton.setOnMouseClicked(e -> {
-            System.out.println("Use item button pressed");
-        });
-        myFleeButton.setOnMouseClicked(e -> {
-            System.out.println("Flee button pressed");
-        });
+        myAttackButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.ATTACK));
+        myUseSkillButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.USE_SKILL));
+        myFleeButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.FLEE));
     }
 
-    private void syncCombat(final Hero thePlayer, final Monster theMonster) {
-        myPlayerHealthLabel.setText(String.format("HP: %s/%s", thePlayer.getHealth(), thePlayer.getMaxHealth()));
+    private void syncCombat(final Monster theMonster) {
+        myEnemyHealthLabel.setText(String.format("HP: %s/%s", theMonster.getHealth(), theMonster.getMaxHealth()));
+        myEnemyLabel.setText(String.valueOf(theMonster.getDisplayChar()));
 
+        final Hero player = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+        myPlayerHealthLabel.setText(String.format("HP: %s/%s", player.getHealth(), player.getMaxHealth()));
+    }
 
+    void startCombat(final Monster theMonster) {
+        myMessageBox.getChildren().clear();
+        final Hero player = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+
+        myPlayerHealthLabel.setText(String.format("HP: %s/%s", player.getHealth(), player.getMaxHealth()));
         myEnemyLabel.setText(String.valueOf(theMonster.getDisplayChar()));
         myEnemyHealthLabel.setText(String.format("HP: %s/%s", theMonster.getHealth(), theMonster.getMaxHealth()));
 
+    }
+
+    /**
+     * Displays a message in the message box, along with a time-stamp.
+     *
+     * @param theMessage The message to display.
+     */
+    private void log(final String theMessage) {
+        final String time = new SimpleDateFormat("hh:mm:ss").
+                format(Calendar.getInstance().getTime());
+
+        final Label label = new Label(String.format("[%s] %s", time, theMessage));
+        label.setWrapText(true);
+        label.setStyle("-fx-font-fill: white; -fx-font-size: 18");
+        myMessageBox.getChildren().add(label);
     }
 
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
-            case BEGIN_COMBAT -> {
-                final Monster opponent = (Monster) theEvent.getNewValue();
-
-                syncCombat(DungeonAdventure.getInstance().getPlayer().getPlayerHero(), opponent);
-            }
-            case SYNC_COMBAT -> {
-                final DungeonCharacter[] payload = (DungeonCharacter[]) theEvent.getNewValue();
-                final Hero player = (Hero) payload[0];
-                final Monster opponent = (Monster) payload[1];
-
-                syncCombat(player, opponent);
-            }
-            case END_COMBAT -> {
-                GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.ADVENTURING);
-            }
+            case SYNC_COMBAT -> syncCombat((Monster) theEvent.getNewValue());
+            case END_COMBAT -> GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.ADVENTURING);
+            case COMBAT_LOG -> log((String) theEvent.getNewValue());
         }
     }
 }

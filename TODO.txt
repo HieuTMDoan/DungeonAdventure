@@ -2,7 +2,6 @@ Model:
     Dungeon:
 
     Rooms:
-        -   Randomizing damage tiles into rooms
         -   End game (Victory) when player steps on ExitTile with all 4 pillars
         -   End game (Game Over )when player dies to monster or pit
 
@@ -26,10 +25,6 @@ View:
         -   Combat with Monster
         -   End screen
         -   Map/minimap
-        -   Pause menu
-            -   Return to main menu
-            -   Save
-            -   Option?
         -   Game over screen/Victory screen
         -   Descriptions for monsters and items
 

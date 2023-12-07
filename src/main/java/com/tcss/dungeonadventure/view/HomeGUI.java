@@ -1,11 +1,18 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.DungeonAdventureMemento;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -83,7 +90,7 @@ public class HomeGUI implements PropertyChangeListener {
         );
 
 
-        this.myLoadGameButton.setOnAction(e -> myGUI.saveGame());
+        this.myLoadGameButton.setOnAction(e -> loadGameFromFile());
 
         this.myHelpButton.setOnAction(e -> {
             new HelpGUI(myGUI);
@@ -117,4 +124,38 @@ public class HomeGUI implements PropertyChangeListener {
     public void propertyChange(final PropertyChangeEvent theEvent) {
 
     }
+
+    private void loadGameFromFile() {
+        try (FileInputStream fileInputStream = new FileInputStream("savedGame.ser");
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+
+            // Deserialize game state from the file
+            final Object loadedObject = objectInputStream.readObject();
+
+            // Check if the loaded object is an instance of DungeonAdventureMemento
+            if (loadedObject instanceof DungeonAdventureMemento loadedMemento) {
+
+                // Create a new instance of DungeonAdventure and restore from the loaded memento
+                final DungeonAdventure loadedGame = DungeonAdventure.getInstance();
+                loadedGame.restoreFromMemento(loadedMemento);
+
+                System.out.println("Game loaded successfully!");
+
+                // Resume the game or update the GUI accordingly
+                myGUI.resumeGame();
+            } else {
+                System.out.println("Invalid saved game file!");
+            }
+
+        } catch (final FileNotFoundException ex) {
+            // file not found
+            System.out.println("Saved game file not found!");
+            ex.printStackTrace();
+        } catch (final IOException | ClassNotFoundException ex) {
+            // I/O exceptions or loaded class not found
+            System.out.println("Error reading saved game file!");
+            ex.printStackTrace();
+        }
+    }
+
 }

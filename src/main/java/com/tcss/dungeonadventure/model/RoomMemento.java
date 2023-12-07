@@ -3,6 +3,7 @@ package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  * Represents a snapshot of the state of a room in the dungeon.
@@ -13,7 +14,7 @@ import java.awt.Point;
  */
 
 
-public class RoomMemento {
+public class RoomMemento implements Serializable {
     /**
      * The saved room data, representing the layout of tiles in the room.
      */

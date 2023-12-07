@@ -8,13 +8,10 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
-
 import java.awt.Point;
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Arrays;
 import java.util.stream.IntStream;
-
 import javafx.application.Application;
 
 public final class DungeonAdventure implements Serializable {
@@ -27,6 +24,9 @@ public final class DungeonAdventure implements Serializable {
      */
     private static DungeonAdventure INSTANCE;
 
+    /**
+     * The current player.
+     */
     private Player myPlayer;
 
     /**
@@ -34,6 +34,9 @@ public final class DungeonAdventure implements Serializable {
      */
     private Dungeon myDungeon;
 
+    /**
+     * The current monster that the player is in combat with.
+     */
     private Monster myCurrentlyFightingMonster;
 
 
@@ -130,6 +133,7 @@ public final class DungeonAdventure implements Serializable {
 
 
             }
+            default -> throw new IllegalStateException("Unexpected value: " + theAction);
         }
 
         // Check for victory
@@ -202,7 +206,7 @@ public final class DungeonAdventure implements Serializable {
         theItem.useItem(myPlayer.getPlayerHero());
     }
 
-    DungeonAdventureMemento createMemento() {
+    public DungeonAdventureMemento createMemento() {
         final String playerName = this.myPlayer.getPlayerName();
         final Hero hero = this.myPlayer.getPlayerHero();
         final Dungeon dungeon = this.myDungeon;
@@ -216,17 +220,31 @@ public final class DungeonAdventure implements Serializable {
 
     public void saveGameState() {
         // Create and save a memento
-        final DungeonAdventureMemento memento = this.createMemento();
-        GameStateManager.getInstance().setMemento(memento);
+        GameStateManager.getInstance().createMemento();
     }
 
+
     public void loadGameState() {
-        // Load and restore the saved memento
-        final DungeonAdventureMemento memento = GameStateManager.getInstance().getMemento();
-        if (memento != null) {
+        try {
+            // Load the memento from the GameStateManager
+            final DungeonAdventureMemento memento = GameStateManager.getInstance().getMemento();
+
+            // Restore the game state from the loaded memento
             restoreFromMemento(memento);
+
+            // Trigger necessary events to update the GUI
+            PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
+            PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
+
+            System.out.println("Game loaded successfully!");
+        } catch (NullPointerException ex) {
+            // Handle the case where the memento is not found
+            System.out.println("No saved game state found!");
+            ex.printStackTrace();
         }
     }
+
+
 
     // Restore the state from a Memento
     public void restoreFromMemento(final DungeonAdventureMemento theMemento) {
@@ -240,9 +258,23 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
     }
 
+    /**
+     * Enums for combat actions.
+     */
     public enum CombatActions {
+        /**
+         * Enum for using normal attack.
+         */
         ATTACK,
+
+        /**
+         * Enum for using skill.
+         */
         USE_SKILL,
+
+        /**
+         * Enum for fleeing.
+         */
         FLEE
     }
 }

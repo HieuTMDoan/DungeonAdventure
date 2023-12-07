@@ -3,8 +3,10 @@ package com.tcss.dungeonadventure.objects;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.PCS;
 
+import java.io.Serializable;
 
-public abstract class DungeonCharacter implements VisualComponent {
+
+public abstract class DungeonCharacter implements VisualComponent, Serializable {
 
     private final char myDisplayChar;
     private final String myName;

@@ -3,7 +3,9 @@ package com.tcss.dungeonadventure.objects.skills;
 
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
-public abstract class Skill {
+import java.io.Serializable;
+
+public abstract class Skill implements Serializable {
 
 
     public Skill() {

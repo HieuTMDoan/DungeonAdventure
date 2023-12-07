@@ -1,7 +1,12 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * Represents the pause menu GUI of the program.
@@ -59,12 +64,31 @@ public class PauseGUI {
     }
 
     /**
+     * Save the game state to a file using serialization.
+     */
+    private void saveGame() {
+        try (FileOutputStream fileOutputStream = new FileOutputStream("savedGame.ser");
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+
+            // Serialize the game state (DungeonAdventure instance) to the file
+            objectOutputStream.writeObject(DungeonAdventure.getInstance());
+
+            // Display a message or perform any other necessary actions after saving
+            System.out.println("Game saved successfully!");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+
+        }
+    }
+
+    /**
      * Helper method to organize the binding of nodes to variables.
      */
     private void attachEvents() {
         this.myResumeButton.setOnAction(e -> myGUI.resumeGame());
 
-        this.mySaveGameButton.setOnAction(e -> myGUI.saveGame());
+        this.mySaveGameButton.setOnAction(e -> saveGame());
 
         this.myHelpButton.setOnAction(e -> {
             new HelpGUI(myGUI);

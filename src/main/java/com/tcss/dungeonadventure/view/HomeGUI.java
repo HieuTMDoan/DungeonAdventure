@@ -1,11 +1,17 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -83,7 +89,7 @@ public class HomeGUI implements PropertyChangeListener {
         );
 
 
-        this.myLoadGameButton.setOnAction(e -> myGUI.saveGame());
+        this.myLoadGameButton.setOnAction(e -> loadGameFromFile());
 
         this.myHelpButton.setOnAction(e -> {
             new HelpGUI(myGUI);
@@ -116,5 +122,37 @@ public class HomeGUI implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
 
+    }
+
+    private void loadGameFromFile() {
+        try (FileInputStream fileInputStream = new FileInputStream("savedGame.ser");
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+
+            // Deserialize game state from the file
+            Object loadedObject = objectInputStream.readObject();
+
+            // Check if the loaded object is an instance of DungeonAdventure
+            if (loadedObject instanceof DungeonAdventure) {
+                // Set the loaded game state to the current game instance
+                DungeonAdventure.getInstance().loadGameState();
+
+                System.out.println("Game loaded successfully!");
+            } else {
+                System.out.println("Invalid saved game file!");
+            }
+
+        } catch (final FileNotFoundException ex) {
+            // file not found
+            System.out.println("Saved game file not found!");
+            ex.printStackTrace();
+        } catch (final IOException ex) {
+            // I/O exceptions
+            System.out.println("Error reading saved game file!");
+            ex.printStackTrace();
+        } catch (final ClassNotFoundException ex) {
+            // loaded class not found
+            System.out.println("Class not found during deserialization!");
+            ex.printStackTrace();
+        }
     }
 }

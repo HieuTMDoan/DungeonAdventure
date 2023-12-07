@@ -68,9 +68,8 @@ public class PauseGUI {
     private void saveGame() {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("savedGame.ser"))) {
 
-            // Serialize the game state (DungeonAdventure instance) to the file
-            objectOutputStream.writeObject(DungeonAdventure.getInstance());
-
+            // Serialize the game state (DungeonAdventureMemento instance) to the file
+            objectOutputStream.writeObject(DungeonAdventure.getInstance().createMemento());
 
             System.out.println("Game saved successfully!");
 
@@ -79,9 +78,7 @@ public class PauseGUI {
         }
     }
 
-    /**
-     * Load the game state from a serialized file.
-     */
+
     /**
      * Load the game state from a serialized file.
      */

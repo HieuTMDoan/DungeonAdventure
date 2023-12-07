@@ -130,15 +130,19 @@ public class HomeGUI implements PropertyChangeListener {
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
             // Deserialize game state from the file
-            Object loadedObject = objectInputStream.readObject();
+            final Object loadedObject = objectInputStream.readObject();
 
             // Check if the loaded object is an instance of DungeonAdventureMemento
             if (loadedObject instanceof DungeonAdventureMemento loadedMemento) {
 
-                // Restore the game state from the loaded memento
-                DungeonAdventure.getInstance().restoreFromMemento(loadedMemento);
+                // Create a new instance of DungeonAdventure and restore from the loaded memento
+                final DungeonAdventure loadedGame = DungeonAdventure.getInstance();
+                loadedGame.restoreFromMemento(loadedMemento);
 
                 System.out.println("Game loaded successfully!");
+
+                // Resume the game or update the GUI accordingly
+                myGUI.resumeGame();
             } else {
                 System.out.println("Invalid saved game file!");
             }
@@ -147,14 +151,11 @@ public class HomeGUI implements PropertyChangeListener {
             // file not found
             System.out.println("Saved game file not found!");
             ex.printStackTrace();
-        } catch (final IOException ex) {
-            // I/O exceptions
+        } catch (final IOException | ClassNotFoundException ex) {
+            // I/O exceptions or loaded class not found
             System.out.println("Error reading saved game file!");
-            ex.printStackTrace();
-        } catch (final ClassNotFoundException ex) {
-            // loaded class not found
-            System.out.println("Class not found during deserialization!");
             ex.printStackTrace();
         }
     }
+
 }

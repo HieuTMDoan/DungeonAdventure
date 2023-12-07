@@ -215,46 +215,26 @@ public final class DungeonAdventure implements Serializable {
 
     public void saveGameState() {
         // Create and save a memento
-        final DungeonAdventureMemento memento = this.createMemento();
-        GameStateManager.getInstance().setMemento(memento);
+        GameStateManager.getInstance().createMemento();
     }
 
+
     public void loadGameState() {
-        try (FileInputStream fileInputStream = new FileInputStream("savedGame.ser");
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+        try {
+            // Load the memento from the GameStateManager
+            final DungeonAdventureMemento memento = GameStateManager.getInstance().getMemento();
 
-            // Deserialize the game state from the file
-            final Object loadedObject = objectInputStream.readObject();
+            // Restore the game state from the loaded memento
+            restoreFromMemento(memento);
 
-            // Check if the loaded object is an instance of DungeonAdventureMemento
-            if (loadedObject instanceof DungeonAdventureMemento) {
-                final DungeonAdventureMemento memento = (DungeonAdventureMemento) loadedObject;
+            // Trigger necessary events to update the GUI
+            PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
+            PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
-                // Restore the game state from the loaded memento
-                restoreFromMemento(memento);
-
-                // Trigger necessary events to update the GUI
-                PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
-                PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
-
-
-
-                System.out.println("Game loaded successfully!");
-            } else {
-                System.out.println("Invalid saved game file!");
-            }
-
-        } catch (final FileNotFoundException ex) {
-            // file is not found
-            System.out.println("Saved game file not found!");
-            ex.printStackTrace();
-        } catch (final IOException ex) {
-            //  I/O exceptions
-            System.out.println("Error reading saved game file!");
-            ex.printStackTrace();
-        } catch (final ClassNotFoundException ex) {
-            // loaded class is not found
-            System.out.println("Class not found during deserialization!");
+            System.out.println("Game loaded successfully!");
+        } catch (NullPointerException ex) {
+            // Handle the case where the memento is not found
+            System.out.println("No saved game state found!");
             ex.printStackTrace();
         }
     }

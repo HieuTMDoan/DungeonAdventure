@@ -1,6 +1,8 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  * @author Sunny, Aaron, Hieu
  * @version Fall 2023
  */
-public class DungeonAdventureMemento {
+public class DungeonAdventureMemento implements Serializable {
     /**
      * The saved player name.
      */

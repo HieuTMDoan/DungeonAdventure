@@ -236,25 +236,24 @@ public final class DungeonAdventure implements Serializable {
                 // Trigger necessary events to update the GUI
                 PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
                 PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
-                // Add other event triggers if needed
 
-                // Display a message or perform any other necessary actions after loading
+
+
                 System.out.println("Game loaded successfully!");
             } else {
-                // Handle the case where the loaded object is not of the expected type
                 System.out.println("Invalid saved game file!");
             }
 
         } catch (final FileNotFoundException ex) {
-            // Handle the case where the file is not found
+            // file is not found
             System.out.println("Saved game file not found!");
             ex.printStackTrace();
         } catch (final IOException ex) {
-            // Handle I/O exceptions (e.g., reading or closing the stream)
+            //  I/O exceptions
             System.out.println("Error reading saved game file!");
             ex.printStackTrace();
         } catch (final ClassNotFoundException ex) {
-            // Handle the case where the loaded class is not found
+            // loaded class is not found
             System.out.println("Class not found during deserialization!");
             ex.printStackTrace();
         }

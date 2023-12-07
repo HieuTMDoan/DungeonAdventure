@@ -103,20 +103,20 @@ public class PauseGUI {
                 // Resume the game or update the GUI accordingly
                 myGUI.resumeGame();
             } else {
-                // Handle the case where the loaded object is not of the expected type
+
                 System.out.println("Invalid saved game file!");
             }
 
         } catch (final FileNotFoundException ex) {
-            // Handle the case where the file is not found
+
             System.out.println("Saved game file not found!");
             ex.printStackTrace();
         } catch (final IOException ex) {
-            // Handle I/O exceptions (e.g., reading or closing the stream)
+            //  I/O exceptions
             System.out.println("Error reading saved game file!");
             ex.printStackTrace();
         } catch (final ClassNotFoundException ex) {
-            // Handle the case where the loaded class is not found
+            //  loaded class is not found
             System.out.println("Class not found during deserialization!");
             ex.printStackTrace();
         }

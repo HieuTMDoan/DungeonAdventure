@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.DungeonAdventureMemento;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
@@ -131,10 +132,11 @@ public class HomeGUI implements PropertyChangeListener {
             // Deserialize game state from the file
             Object loadedObject = objectInputStream.readObject();
 
-            // Check if the loaded object is an instance of DungeonAdventure
-            if (loadedObject instanceof DungeonAdventure) {
-                // Set the loaded game state to the current game instance
-                DungeonAdventure.getInstance().loadGameState();
+            // Check if the loaded object is an instance of DungeonAdventureMemento
+            if (loadedObject instanceof DungeonAdventureMemento loadedMemento) {
+
+                // Restore the game state from the loaded memento
+                DungeonAdventure.getInstance().restoreFromMemento(loadedMemento);
 
                 System.out.println("Game loaded successfully!");
             } else {

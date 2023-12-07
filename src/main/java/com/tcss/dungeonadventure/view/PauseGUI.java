@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.DungeonAdventureMemento;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 
@@ -91,36 +92,32 @@ public class PauseGUI {
             // Deserialize the game state from the file
             final Object loadedObject = objectInputStream.readObject();
 
-            // Check if the loaded object is an instance of DungeonAdventure
-            if (loadedObject instanceof final DungeonAdventure loadedGame) {
+            // Check if the loaded object is an instance of DungeonAdventureMemento
+            if (loadedObject instanceof final DungeonAdventureMemento loadedMemento) {
 
-                // Set the loaded game state to the current game instance
-                DungeonAdventure.getInstance().restoreFromMemento(loadedGame.createMemento());
-
+                // Restore the game state from the loaded memento
+                DungeonAdventure.getInstance().restoreFromMemento(loadedMemento);
 
                 System.out.println("Game loaded successfully!");
 
                 // Resume the game or update the GUI accordingly
                 myGUI.resumeGame();
             } else {
-
                 System.out.println("Invalid saved game file!");
             }
 
         } catch (final FileNotFoundException ex) {
-
             System.out.println("Saved game file not found!");
             ex.printStackTrace();
         } catch (final IOException ex) {
-            //  I/O exceptions
             System.out.println("Error reading saved game file!");
             ex.printStackTrace();
         } catch (final ClassNotFoundException ex) {
-            //  loaded class is not found
             System.out.println("Class not found during deserialization!");
             ex.printStackTrace();
         }
     }
+
 
 
     /**

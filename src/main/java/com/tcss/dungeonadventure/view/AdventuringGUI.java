@@ -8,13 +8,11 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
-
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -28,7 +26,10 @@ import javafx.scene.text.TextBoundsType;
 
 public class AdventuringGUI implements PropertyChangeListener {
 
-    private static final String BOX_SIZE_CSS = "-fx-font-size: 45; ";
+    /**
+     * The CSS styling for the box size.
+     */
+    static final String BOX_SIZE_CSS = "-fx-font-size: 45; ";
 
     /**
      * The GUI handler.
@@ -142,7 +143,8 @@ public class AdventuringGUI implements PropertyChangeListener {
                 text.setBoundsType(TextBoundsType.VISUAL);
                 text.setStyle(BOX_SIZE_CSS + "-fx-fill: white;");
 
-                final int finalRow = row; // these are needed for the lambda statements
+                // these are needed for the lambda statements
+                final int finalRow = row;
                 final int finalCol = col;
 
                 hbox.setOnMouseEntered(e -> onMouseOver(finalRow, finalCol));
@@ -155,7 +157,7 @@ public class AdventuringGUI implements PropertyChangeListener {
 
 
     /**
-     * Changes the tile at a specified index.
+     * Changes the tile at a specified index based on a given tile.
      *
      * @param theRowIndex The row of the tile.
      * @param theColIndex The column of the tile.
@@ -165,6 +167,13 @@ public class AdventuringGUI implements PropertyChangeListener {
         setTileAt(theRowIndex, theColIndex, theTile.getDisplayChar());
     }
 
+    /**
+     * Changes the tile at a specified index based on a given tile character.
+     *
+     * @param theRowIndex The row of the tile.
+     * @param theColIndex The column of the tile.
+     * @param theChar     The new tile character.
+     */
     private void setTileAt(final int theRowIndex, final int theColIndex, final char theChar) {
         if (theRowIndex > myGridPane.getRowCount()
                 || theColIndex > myGridPane.getColumnCount()) {

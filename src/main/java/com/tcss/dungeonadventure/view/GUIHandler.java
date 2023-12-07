@@ -108,6 +108,18 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         DungeonAdventure.getInstance().saveGameState();
     }
 
+    /**
+     * Loads the most recent saved game.
+     */
+    public void loadGame() {
+        DungeonAdventure.getInstance().loadGameState();
+    }
+
+    /**
+     * Handles a key press event.
+     *
+     * @param theEvent the key press event
+     */
     private void handleKeyPress(final KeyEvent theEvent) {
         if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
             return;

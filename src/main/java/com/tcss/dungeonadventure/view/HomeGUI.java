@@ -83,7 +83,7 @@ public class HomeGUI implements PropertyChangeListener {
         );
 
 
-        this.myLoadGameButton.setOnAction(e -> myGUI.saveGame());
+        this.myLoadGameButton.setOnAction(e -> myGUI.loadGame());
 
         this.myHelpButton.setOnAction(e -> {
             new HelpGUI(myGUI);

@@ -52,6 +52,8 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private CombatGUI myCombatGui;
 
+    private AdventuringGUI myAdventuringGui;
+
     @Override
     public void start(final Stage theStage) throws IOException {
         PCS.addPropertyListener(this);
@@ -100,6 +102,8 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
+
+
         new AdventuringGUI(this);
         Layouts.swapLayout(Layouts.ADVENTURING);
     }

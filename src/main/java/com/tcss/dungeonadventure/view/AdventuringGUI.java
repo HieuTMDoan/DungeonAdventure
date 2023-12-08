@@ -8,11 +8,13 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -59,6 +61,7 @@ public class AdventuringGUI implements PropertyChangeListener {
      * The room grid. 10x10.
      */
     private GridPane myGridPane;
+
     /**
      * The text box containing tile information on mouse-over.
      */
@@ -67,6 +70,7 @@ public class AdventuringGUI implements PropertyChangeListener {
      * The handler for the players visual inventory.
      */
     private InventoryPanelHandler myInventoryPaneHandler;
+
     /**
      * The parent scroll-pane for the scrollable console.
      * This should not be accessed.
@@ -88,12 +92,14 @@ public class AdventuringGUI implements PropertyChangeListener {
         this.myGUI = theGUI;
         PCS.addPropertyListener(this);
 
+
         locateNodes();
         createGUI();
 
-        myPlayerStatsBox = new PlayerStatsBox(
-                DungeonAdventure.getInstance().getPlayer().getPlayerHero());
+        myMessageBox.getChildren().clear();
+        myPlayerInfoBox.getChildren().clear();
 
+        myPlayerStatsBox = new PlayerStatsBox();
         myPlayerInfoBox.getChildren().add(myPlayerStatsBox);
 
         loadRoom(DungeonAdventure.getInstance().getDungeon().getCurrentRoom());
@@ -328,4 +334,10 @@ public class AdventuringGUI implements PropertyChangeListener {
             }
         }
     }
+
+    @Override
+    public boolean equals(final Object theOther) {
+        return theOther instanceof AdventuringGUI;
+    }
+
 }

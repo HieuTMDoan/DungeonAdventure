@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -14,17 +15,19 @@ public class PlayerStatsBox extends VBox {
     private final Label attackSpeedLabel;
     private final Label accuracyLabel;
 
-    public PlayerStatsBox(final Hero thePlayerHero) {
+    public PlayerStatsBox() {
         this.setAlignment(Pos.CENTER_LEFT);
         this.getChildren().clear();
 
-        nameLabel = new Label("Name: " + thePlayerHero.getName());
-        healthLabel = new Label("Health: " + thePlayerHero.getHealth()
-                + "/" + thePlayerHero.getMaxHealth());
+        final Hero player = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+
+        nameLabel = new Label("Name: " + player.getName());
+        healthLabel = new Label("Health: " + player.getHealth()
+                + "/" + player.getMaxHealth());
         damageLabel = new Label("Damage Range: "
-                + thePlayerHero.getMinDamage() + " - " + thePlayerHero.getMaxDamage());
-        attackSpeedLabel = new Label("Attack Speed: " + thePlayerHero.getAttackSpeed());
-        accuracyLabel = new Label("Accuracy: " + thePlayerHero.getAccuracy());
+                + player.getMinDamage() + " - " + player.getMaxDamage());
+        attackSpeedLabel = new Label("Attack Speed: " + player.getAttackSpeed());
+        accuracyLabel = new Label("Accuracy: " + player.getAccuracy());
 
         this.getChildren().addAll(nameLabel, healthLabel, damageLabel,
                 attackSpeedLabel, accuracyLabel);

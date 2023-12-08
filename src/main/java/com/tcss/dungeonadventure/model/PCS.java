@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.Directions;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -122,6 +123,7 @@ public enum PCS {
     }
 
     public static void addPropertyListener(final PropertyChangeListener theListener) {
+        PCS.removePropertyChangeListener(theListener);
         PCS.addPropertyChangeListener(theListener);
     }
 

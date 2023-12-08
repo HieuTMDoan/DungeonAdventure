@@ -24,6 +24,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
+/**
+ * Represents the GUI of the current room the player is in,
+ * and of player's stats, tile info, inventory, and message box.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class AdventuringGUI implements PropertyChangeListener {
 
     /**
@@ -185,31 +192,32 @@ public class AdventuringGUI implements PropertyChangeListener {
                                     theRowIndex, theColIndex));
         }
 
-        myRoomTextBoxes[theRowIndex][theColIndex].setStyle(BOX_SIZE_CSS + "-fx-fill: " + switch (theChar) {
-            case TileChars.Player.PLAYER -> "green;";
+        myRoomTextBoxes[theRowIndex][theColIndex].setStyle(BOX_SIZE_CSS + "-fx-fill: "
+                + switch (theChar) {
+                case TileChars.Player.PLAYER -> "green;";
 
-            case TileChars.Monster.OGRE,
-                    TileChars.Monster.SKELETON,
-                    TileChars.Monster.GREMLIN -> "red;";
+                case TileChars.Monster.OGRE,
+                        TileChars.Monster.SKELETON,
+                        TileChars.Monster.GREMLIN -> "red;";
 
-            case TileChars.Items.PILLAR_OF_ABSTRACTION,
-                    TileChars.Items.PILLAR_OF_INHERITANCE,
-                    TileChars.Items.PILLAR_OF_ENCAPSULATION,
-                    TileChars.Items.PILLAR_OF_POLYMORPHISM -> "gold;";
+                case TileChars.Items.PILLAR_OF_ABSTRACTION,
+                        TileChars.Items.PILLAR_OF_INHERITANCE,
+                        TileChars.Items.PILLAR_OF_ENCAPSULATION,
+                        TileChars.Items.PILLAR_OF_POLYMORPHISM -> "gold;";
 
-            case TileChars.Items.HEALING_POTION,
-                    TileChars.Items.VISION_POTION -> "blue;";
+                case TileChars.Items.HEALING_POTION,
+                        TileChars.Items.VISION_POTION -> "blue;";
 
-            case TileChars.Room.HORIZONTAL_DOOR,
-                    TileChars.Room.VERTICAL_DOOR -> "coral;";
+                case TileChars.Room.HORIZONTAL_DOOR,
+                        TileChars.Room.VERTICAL_DOOR -> "coral;";
 
-            case TileChars.Room.ENTRANCE,
-                    TileChars.Room.EXIT -> "purple;";
+                case TileChars.Room.ENTRANCE,
+                        TileChars.Room.EXIT -> "purple;";
 
-            case TileChars.Room.PIT -> "orange;";
+                case TileChars.Room.PIT -> "orange;";
 
-            default -> "white;";
-        });
+                default -> "white;";
+            });
 
         myRoomTextBoxes[theRowIndex][theColIndex].setText(String.valueOf(theChar));
     }

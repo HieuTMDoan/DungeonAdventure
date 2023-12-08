@@ -19,6 +19,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
+/**
+ * Represents the GUI of the home screen
+ * before starting a new or saved game.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class HomeGUI implements PropertyChangeListener {
 
     /**

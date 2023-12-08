@@ -5,13 +5,13 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.monsters.Monster;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-import com.tcss.dungeonadventure.objects.monsters.Monster;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,8 +19,13 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+/**
+ * Represents the GUI manager for the program.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class GUIHandler extends Application implements PropertyChangeListener {
-
     /**
      * The title of the window.
      */

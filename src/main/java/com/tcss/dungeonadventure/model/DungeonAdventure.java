@@ -159,9 +159,7 @@ public final class DungeonAdventure implements Serializable {
                 PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             }
 
-            case USE_SKILL -> {
-                myPlayer.getPlayerHero().useSkill(myCurrentlyFightingMonster);
-            }
+            case USE_SKILL -> myPlayer.getPlayerHero().useSkill(myCurrentlyFightingMonster);
 
             case FLEE -> {
             }

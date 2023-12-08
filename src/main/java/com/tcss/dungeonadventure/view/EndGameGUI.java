@@ -5,6 +5,12 @@ import com.tcss.dungeonadventure.model.Player;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
+/**
+ * Represents the GUI of the end screen when the game is over.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class EndGameGUI {
 
     private final GUIHandler myGUI;

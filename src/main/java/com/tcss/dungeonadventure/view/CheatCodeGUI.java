@@ -3,6 +3,7 @@ package com.tcss.dungeonadventure.view;
 import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
+import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -13,9 +14,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
-
-import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
-
 
 /**
  * Represents the GUI of the current dungeon

@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 
 /**
- * Represents the Help GUI of the program.
+ * Represents the Help GUI of the game that includes the game's instruction.
  *
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023

@@ -82,15 +82,17 @@ public class DungeonGUI implements PropertyChangeListener {
     private void updateMap() {
         for (int row = 0; row < myDiscoveredRooms.length; row++) {
             for (int col = 0; col < myDiscoveredRooms[0].length; col++) {
-                if (myDiscoveredRooms[row][col] != null) {
-                    final HBox hbox = new HBox();
-                    hbox.setAlignment(Pos.CENTER);
+                final HBox hbox = new HBox();
+                hbox.setAlignment(Pos.CENTER);
+                hbox.setMaxSize(49, 49);
 
+                if (myDiscoveredRooms[row][col] != null) {
                     final Text text = new Text("discovered");
                     text.setBoundsType(TextBoundsType.VISUAL);
-                    text.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
-
+                    text.setStyle("-fx-font-size: 5; " + "-fx-fill: white;");
                     hbox.getChildren().add(text);
+                    myGridPane.add(hbox, row, col);
+                } else {
                     myGridPane.add(hbox, row, col);
                 }
             }

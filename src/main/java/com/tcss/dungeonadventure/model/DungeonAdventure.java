@@ -82,7 +82,7 @@ public final class DungeonAdventure implements Serializable {
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         // This is where ALL data needs to be reset, just in case the player
         // is restarting their game.
-
+        resetDiscoveredRooms();
 
 
 
@@ -120,6 +120,16 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
     }
 
+    /**
+     * Clears all discovered rooms for a new game.
+     */
+    public void resetDiscoveredRooms() {
+        if (myDiscoveredRooms != null) {
+            Arrays.stream(myDiscoveredRooms).forEach(rooms -> Arrays.fill(rooms, null));
+            PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
+        }
+    }
+
     public void movePlayer(final Directions.Cardinal theDirection) {
         Player.Stats.increaseCounter(Player.Stats.MOVES);
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
@@ -147,15 +157,14 @@ public final class DungeonAdventure implements Serializable {
                 }
                 PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             }
+
             case USE_SKILL -> {
                 myPlayer.getPlayerHero().useSkill(myCurrentlyFightingMonster);
-
-
             }
+
             case FLEE -> {
-
-
             }
+
             default -> throw new IllegalStateException("Unexpected value: " + theAction);
         }
 
@@ -271,7 +280,8 @@ public final class DungeonAdventure implements Serializable {
     public void loadGameState() {
         try {
             // Load the memento from the GameStateManager
-            final DungeonAdventureMemento memento = GameStateManager.getInstance().getMemento();
+            final DungeonAdventureMemento memento =
+                    GameStateManager.getInstance().getMemento();
 
             // Restore the game state from the loaded memento
             restoreFromMemento(memento);

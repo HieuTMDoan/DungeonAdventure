@@ -26,7 +26,7 @@ public class Dungeon implements Serializable {
     /**
      * The default dungeon size.
      */
-    static final Dimension MAZE_SIZE = new Dimension(10, 10);
+    public static final Dimension MAZE_SIZE = new Dimension(10, 10);
 
     @Serial
     private static final long serialVersionUID = 1L;

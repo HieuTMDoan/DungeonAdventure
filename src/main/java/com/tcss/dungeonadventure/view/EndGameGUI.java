@@ -1,7 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.Dungeon;
-import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.Player;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -43,8 +42,9 @@ public class EndGameGUI {
 
 
     private void attachEvents() {
-        this.myMainMenuLabel.setOnMouseClicked(e -> GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HOME));
-
+        this.myMainMenuLabel.setOnMouseClicked(e ->
+            GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HOME)
+        );
     }
 
     void show(final boolean theVictory) {

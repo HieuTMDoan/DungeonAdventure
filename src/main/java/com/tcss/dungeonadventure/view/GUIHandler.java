@@ -42,6 +42,9 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private Scene myScene;
 
+    /**
+     * The combat GUI.
+     */
     private CombatGUI myCombatGui;
 
     @Override
@@ -129,12 +132,16 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         switch (theEvent.getCode()) {
             case UP, W -> DungeonAdventure.getInstance().
                     movePlayer(Directions.Cardinal.NORTH);
+
             case DOWN, S -> DungeonAdventure.getInstance().
                     movePlayer(Directions.Cardinal.SOUTH);
+
             case LEFT, A -> DungeonAdventure.getInstance().
                     movePlayer(Directions.Cardinal.WEST);
+
             case RIGHT, D -> DungeonAdventure.getInstance().
                     movePlayer(Directions.Cardinal.EAST);
+
             case P, ESCAPE -> {
                 new PauseGUI(this);
                 Layouts.swapLayout(Layouts.MENU);
@@ -144,6 +151,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
                 new DungeonGUI(this);
                 Layouts.swapLayout(Layouts.DUNGEON);
             }
+
             default -> {
             }
         }
@@ -169,6 +177,8 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             case GAME_END -> {
                 new EndGameGUI(this).show((boolean) theEvent.getNewValue());
                 Layouts.swapLayout(Layouts.END_SCREEN);
+            }
+            default -> {
             }
         }
     }
@@ -227,8 +237,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         /**
          * The layout corresponding with the end screen.
          */
-        END_SCREEN,
-        ;
+        END_SCREEN;
 
         /**
          * The current layout.

@@ -3,7 +3,6 @@ package com.tcss.dungeonadventure.view;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
-import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javafx.geometry.Pos;
@@ -35,22 +34,29 @@ public class DungeonGUI implements PropertyChangeListener {
 
     /**
      * The grid pane that is the layout
-     * of the currently discovered dungeon.
+     * of the currently discovered rooms in the dungeon.
      */
     private GridPane myGridPane;
 
     /**
-     * Initializes a basic help screen with the game's manual.
+     * The 2D array mimicking the dungeon's underlying
+     * structure that contains the discovered {@link Room}s.
+     */
+    private final Room[][] myDiscoveredRooms;
+
+    /**
+     * Initializes a basic dungeon screen with the game's current
+     * discovered rooms and a back button to resume the game.
      */
     public DungeonGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;
+        this.myDiscoveredRooms = DungeonAdventure.getInstance().getDiscoveredRooms();
 
         PCS.addPropertyListener(this);
+
         locateNodes();
         this.myBackButton.setOnAction(e -> myGUI.resumeGame());
-
-        final Room entrance = DungeonAdventure.getInstance().getDungeon().getStartingRoom();
-        createMap(entrance);
+        updateMap();
     }
 
     /**
@@ -71,29 +77,24 @@ public class DungeonGUI implements PropertyChangeListener {
     }
 
     /**
-     * Creates the initial dungeon map GUI with the starting room.
-     *
-     * @param theStartingRoom the starting room.
-     */
-    private void createMap(final Room theStartingRoom) {
-        final Point entrancePos = theStartingRoom.getDungeonLocation();
-
-        final HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER);
-
-        final Text text = new Text();
-        text.setBoundsType(TextBoundsType.VISUAL);
-        text.setStyle("-fx-font-size: 5; " + "-fx-fill: white;");
-
-        hbox.getChildren().add(text);
-        myGridPane.add(hbox, entrancePos.y, entrancePos.x);
-    }
-
-    /**
      * Updates the current map of the discovered dungeon.
      */
     private void updateMap() {
+        for (int row = 0; row < myDiscoveredRooms.length; row++) {
+            for (int col = 0; col < myDiscoveredRooms[0].length; col++) {
+                if (myDiscoveredRooms[row][col] != null) {
+                    final HBox hbox = new HBox();
+                    hbox.setAlignment(Pos.CENTER);
 
+                    final Text text = new Text("discovered");
+                    text.setBoundsType(TextBoundsType.VISUAL);
+                    text.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
+
+                    hbox.getChildren().add(text);
+                    myGridPane.add(hbox, row, col);
+                }
+            }
+        }
     }
 
     @Override

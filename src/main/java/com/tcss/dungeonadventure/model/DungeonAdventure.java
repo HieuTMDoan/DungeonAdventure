@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
+import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
 
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
@@ -9,7 +10,8 @@ import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 import java.awt.Point;
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 import javafx.application.Application;
@@ -33,6 +35,11 @@ public final class DungeonAdventure implements Serializable {
      * The current Dungeon.
      */
     private Dungeon myDungeon;
+
+    /**
+     * The current discovered rooms in the dungeon.
+     */
+    private Room[][] myDiscoveredRooms;
 
     /**
      * The current monster that the player is in combat with.
@@ -73,6 +80,7 @@ public final class DungeonAdventure implements Serializable {
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         this.myPlayer = new Player(thePlayerName, theHero);
         this.myDungeon = new Dungeon();
+        this.myDiscoveredRooms = new Room[MAZE_SIZE.height][MAZE_SIZE.width];
         System.out.println(myDungeon);
 
         final Room startingRoom = myDungeon.getStartingRoom();
@@ -94,7 +102,13 @@ public final class DungeonAdventure implements Serializable {
 
         this.myDungeon.loadPlayerTo(startingRoom, entranceTileLocation);
 
-        PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getStartingRoom());
+        //y is row index, x is column index in a 2D array
+        final int row = startingRoom.getDungeonLocation().y;
+        final int col = startingRoom.getDungeonLocation().x;
+        this.myDiscoveredRooms[row][col] = startingRoom;
+
+        PCS.firePropertyChanged(PCS.LOAD_ROOM, startingRoom);
+        PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
     }
 
     public void movePlayer(final Directions.Cardinal theDirection) {
@@ -118,7 +132,8 @@ public final class DungeonAdventure implements Serializable {
                 final int damage = myPlayer.getPlayerHero().attack(myCurrentlyFightingMonster);
 
                 if (damage > 0) {
-                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player attacked, dealing " + damage + " damage.");
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                            "Player attacked, dealing " + damage + " damage.");
                 } else {
                     PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                 }
@@ -147,10 +162,11 @@ public final class DungeonAdventure implements Serializable {
         final int damage = myCurrentlyFightingMonster.attack(myPlayer.getPlayerHero());
 
         if (damage > 0) {
-            PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                    myCurrentlyFightingMonster.getName() + " attacked, dealing " + damage + " damage.");
+            PCS.firePropertyChanged(PCS.COMBAT_LOG, myCurrentlyFightingMonster.getName()
+                    + " attacked, dealing " + damage + " damage.");
         } else {
-            PCS.firePropertyChanged(PCS.COMBAT_LOG, myCurrentlyFightingMonster.getName() + " missed!");
+            PCS.firePropertyChanged(PCS.COMBAT_LOG, myCurrentlyFightingMonster.getName()
+                    + " missed!");
         }
         PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
 
@@ -183,16 +199,32 @@ public final class DungeonAdventure implements Serializable {
         // rewards or move to next room?
     }
 
+    /**
+     * @return The current dungeon.
+     */
     public Dungeon getDungeon() {
         return this.myDungeon;
+    }
+
+    /**
+     * @return The current discovered rooms
+     * in the dungeon.
+     */
+    public Room[][] getDiscoveredRooms() {
+        return this.myDiscoveredRooms;
     }
 
     public void changeRoom(final Directions.Cardinal theDirection) {
         final Room room =
                 this.myDungeon.getCurrentRoom().getAdjacentRoomByDirection(theDirection);
+        final int row = room.getDungeonLocation().y;
+        final int col = room.getDungeonLocation().x;
 
         this.myDungeon.loadPlayerTo(room, theDirection);
+        this.myDiscoveredRooms[row][col] = room;
+
         System.out.println(this.myDungeon);
+        PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
     }
 
     public Player getPlayer() {
@@ -237,7 +269,7 @@ public final class DungeonAdventure implements Serializable {
             PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
             System.out.println("Game loaded successfully!");
-        } catch (NullPointerException ex) {
+        } catch (final NullPointerException ex) {
             // Handle the case where the memento is not found
             System.out.println("No saved game state found!");
             ex.printStackTrace();

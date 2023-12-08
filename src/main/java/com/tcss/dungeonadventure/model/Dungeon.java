@@ -22,34 +22,39 @@ import java.util.Map;
  * @version TCSS 360: Fall 2023
  */
 public class Dungeon implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
-
     /**
      * The default dungeon size.
      */
-    private static final Dimension MAZE_SIZE = new Dimension(10, 10);
+    static final Dimension MAZE_SIZE = new Dimension(10, 10);
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * The chance for a door to generate.
      */
     private static final double DOOR_CHANCE = 0.7;
+
     /**
      * The entrance of the {@link Dungeon}.
      */
     private final Room myStartingRoom;
+
     /**
      * The exit of the {@link Dungeon}.
      */
     private final Room myExitRoom;
+
     /**
      * The room that contains a pillar of Object-Oriented.
      */
     private final List<Room> myPillarRooms;
+
     /**
      * The 2D representation of the {@link Dungeon}.
      */
     private Room[][] myMaze;
+
     /**
      * The room that the player is currently in.
      */

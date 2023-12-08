@@ -8,10 +8,12 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
+
 import java.awt.Point;
 import java.io.*;
 import java.util.Arrays;
 import java.util.stream.IntStream;
+
 import javafx.application.Application;
 
 public final class DungeonAdventure implements Serializable {
@@ -71,6 +73,13 @@ public final class DungeonAdventure implements Serializable {
      * @param theHero       The hero class.
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
+        // This is where ALL data needs to be reset, just in case the player
+        // is restarting their game.
+
+
+
+
+
         this.myPlayer = new Player(thePlayerName, theHero);
         this.myDungeon = new Dungeon();
         System.out.println(myDungeon);
@@ -98,6 +107,7 @@ public final class DungeonAdventure implements Serializable {
     }
 
     public void movePlayer(final Directions.Cardinal theDirection) {
+        Player.Stats.increaseCounter(Player.Stats.MOVES);
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
@@ -106,9 +116,6 @@ public final class DungeonAdventure implements Serializable {
         if (surroundingMonsters == null) { // There are no monsters surrounding
             return;
         }
-        System.out.println(Arrays.toString(surroundingMonsters));
-
-        // TODO: Start combat!!!
         startCombat(surroundingMonsters);
     }
 
@@ -118,8 +125,10 @@ public final class DungeonAdventure implements Serializable {
                 final int damage = myPlayer.getPlayerHero().attack(myCurrentlyFightingMonster);
 
                 if (damage > 0) {
+                    Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, damage);
                     PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player attacked, dealing " + damage + " damage.");
                 } else {
+                    Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
                     PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                 }
                 PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
@@ -178,6 +187,7 @@ public final class DungeonAdventure implements Serializable {
 
     private void handleMonsterDefeat(final Monster theDefeatedMonster) {
         // Handle monster defeat
+        Player.Stats.increaseCounter(Player.Stats.MONSTERS_DEFEATED);
         PCS.firePropertyChanged(PCS.END_COMBAT, null);
         PCS.firePropertyChanged(PCS.LOG, "Defeated " + theDefeatedMonster.getName() + "!");
         // rewards or move to next room?
@@ -200,9 +210,12 @@ public final class DungeonAdventure implements Serializable {
     }
 
     public void useItem(final Item theItem) {
+        if (theItem.getItemType() == Item.ItemTypes.PILLAR) {
+            return;
+        }
+
         myPlayer.removeItemFromInventory(theItem);
         PCS.firePropertyChanged(PCS.LOG, "Used item: " + theItem.getClass().getSimpleName());
-
         theItem.useItem(myPlayer.getPlayerHero());
     }
 
@@ -243,7 +256,6 @@ public final class DungeonAdventure implements Serializable {
             ex.printStackTrace();
         }
     }
-
 
 
     // Restore the state from a Memento

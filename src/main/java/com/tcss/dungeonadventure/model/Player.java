@@ -14,15 +14,26 @@ public class Player implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private String myPlayerName;
+    /**
+     * The name of the player.
+     */
+    private final String myPlayerName;
 
-    private Hero myPlayerHero;
+    /**
+     * The Hero of the player.
+     */
+    private final Hero myPlayerHero;
 
+    /**
+     * The inventory of the player.
+     */
     private final Map<Item, Integer> myInventory = new HashMap<>();
+
 
     public Player(final String thePlayerName, final Hero thePlayerHero) {
         this.myPlayerName = thePlayerName;
         this.myPlayerHero = thePlayerHero;
+        Player.Stats.resetAll();
     }
 
     public String getPlayerName() {
@@ -38,6 +49,7 @@ public class Player implements Serializable {
     }
 
     public void addItemToInventory(final Item theItem) {
+        Stats.increaseCounter(Stats.ITEMS_COLLECTED);
         Integer itemCount = this.myInventory.get(theItem);
         if (itemCount == null) {
             itemCount = 0;
@@ -48,6 +60,8 @@ public class Player implements Serializable {
     }
 
     public void removeItemFromInventory(final Item theItem) {
+        Stats.increaseCounter(Stats.ITEMS_USED);
+
         final Integer itemCount = this.myInventory.get(theItem);
         if (itemCount == null) {
             // Doesn't exist in inventory, do nothing
@@ -78,5 +92,41 @@ public class Player implements Serializable {
         }
         return pillarSet.size() == 4;
     }
+
+    public enum Stats {
+        MOVES,
+        EXPLORED_ROOMS,
+        MISSED_ATTACKS,
+        DAMAGE_DEALT,
+        MONSTERS_ENCOUNTERED,
+        MONSTERS_DEFEATED,
+        ITEMS_USED,
+        ITEMS_COLLECTED;
+
+        int myCounter;
+
+        public static void increaseCounter(final Stats theStat) {
+            theStat.myCounter++;
+        }
+
+        public static void increaseCounter(final Stats theStat, final int theAmount) {
+            theStat.myCounter += theAmount;
+        }
+
+        public static int getCounter(final Stats theStat) {
+            return theStat.myCounter;
+        }
+
+        static void resetAll() {
+            for (final Stats s : values()) {
+                s.myCounter = 0;
+            }
+        }
+
+        public int getCounter() {
+            return this.myCounter;
+        }
+    }
+
 
 }

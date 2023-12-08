@@ -5,6 +5,7 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.Serial;
@@ -28,7 +29,7 @@ public class Dungeon implements Serializable {
     /**
      * The default dungeon size.
      */
-    private static final Dimension MAZE_SIZE = new Dimension(10, 10);
+    public static final Dimension MAZE_SIZE = new Dimension(10, 10);
 
     /**
      * The chance for a door to generate.
@@ -122,11 +123,11 @@ public class Dungeon implements Serializable {
         generateDoors();
         generateExtraWalls();
 
-
     }
 
     /**
-     * Adds extra terrain to rooms.
+     * Adds extra terrain to rooms. This needs to be called AFTER doors are
+     * generated to ensure no doors are blocked by terrain.
      */
     private void generateExtraWalls() {
         for (final Room[] row : myMaze) {
@@ -225,8 +226,8 @@ public class Dungeon implements Serializable {
 
 
     /**
-     * Generates a path to the start to the end, including a
-     * dding pillar rooms and random rooms along that path. Also generates the doors.
+     * Generates a path to the start to the end, including
+     * adding pillar rooms and random rooms along that path. Also generates the doors.
      *
      * @return True if the dungeon has a traversable path, false otherwise.
      */
@@ -426,69 +427,6 @@ public class Dungeon implements Serializable {
 
     }
 
-//    /**
-//     * Checks if the newly constructed dungeon is traversable,
-//     * meaning it has at least one available route from the entrance room to the exit room.
-//     *
-//     * @param theMaze   the dungeon to be checked
-//     * @param theRow    the row index of the room to be checked for accessibility
-//     * @param theCol    the col index of the room to be checked for accessibility
-//     * @return          True if the dungeon is traversable
-//     */
-//    private boolean isTraversable(final Room[][] theMaze,
-//                                  final char[][] theTestMaze,
-//                                  final int theRow,
-//                                  final int theCol) {
-//        boolean traversable = false;
-//
-//        if (validMove(theMaze, theTestMaze, theRow, theCol)) {
-//            theTestMaze[theRow][theCol] = 'v'; //marks the room visited
-//
-//            if (theMaze[theRow][theCol].isExitRoom()) {
-//                return true; //returns true if at exit room
-//            }
-//
-//            //not at exit so need to try other directions
-//            traversable
-//                    = isTraversable(theMaze, theTestMaze, theRow + 1, theCol); //travel down
-//
-//            if (!traversable) {
-//                traversable = isTraversable(theMaze, theTestMaze,
-//                        theRow, theCol + 1); //travel right
-//            }
-//            if (!traversable) {
-//                traversable = isTraversable(theMaze, theTestMaze,
-//                        theRow - 1, theCol); //travel up
-//            }
-//            if (!traversable) {
-//                traversable = isTraversable(theMaze, theTestMaze,
-//                        theRow, theCol - 1); //traverse left
-//            }
-//        }
-//
-//        return traversable;
-//    }
-//
-//    /**
-//     * Checks if the room at the specified position in the dungeon can be accessed.
-//     *
-//     * @param theMaze     the actual dungeon
-//     * @param theTestMaze the dummy dungeon with markings of visited rooms
-//     * @param theRow      the row index of the room in the dungeon
-//     * @param theColumn   the column index of the room in the dungeon
-//     * @return            True if the room can be accessed
-//     */
-//    private boolean validMove(final Room[][] theMaze,
-//                              final char[][] theTestMaze,
-//                              final Directions.Cardinal theDirection,
-//                              final int theRow,
-//                              final int theColumn) {
-//
-//        return theRow >= 0 && theRow < theMaze.length
-//                && theColumn >= 0 && theColumn < theMaze[0].length
-//                && theMaze[theRow][theColumn].findDoorOnWall(theDirection.getOpposite()) != null
-//                && theTestMaze[theRow][theColumn] == '\u0000';
-//    }
 
     /**
      * Searches the 8 surrounding tiles around the player if there are
@@ -500,13 +438,12 @@ public class Dungeon implements Serializable {
     public Monster[] getAnySurroundingMonsters() {
         final List<Monster> surroundingMonsters = new ArrayList<>();
         final Tile[][] roomTiles = myCurrentRoom.getRoomTiles();
-        final int playerPositionX = myCurrentRoom.getPlayerXPosition();
-        final int playerPositionY = myCurrentRoom.getPlayerYPosition();
+        final int x = myCurrentRoom.getPlayerXPosition();
+        final int y = myCurrentRoom.getPlayerYPosition();
 
         for (final Directions.Cardinal d : Directions.Cardinal.values()) {
             try {
-                final Tile tile
-                        = roomTiles[playerPositionX + d.getXOffset()][playerPositionY + d.getYOffset()];
+                final Tile tile = roomTiles[x + d.getXOffset()][y + d.getYOffset()];
                 if (!(tile instanceof final NPCTile npcTile)) {
                     continue;
                 }
@@ -516,34 +453,10 @@ public class Dungeon implements Serializable {
                 }
             } catch (final ArrayIndexOutOfBoundsException ignored) {
             }
-
-
         }
 
-        // This searches the 8 surrounding tiles.
-//        for (int i = -1; i < 2; i++) {
-//            for (int j = -1; j < 2; j++) {
-//                final Tile tile;
-//                try {
-//                    tile = roomTiles[playerPositionX + i][playerPositionY + j];
-//                } catch (final ArrayIndexOutOfBoundsException e) {
-//                    continue;
-//                }
-//
-//                if (!(tile instanceof final NPCTile npcTile)) {
-//                    continue;
-//                }
-//
-//                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
-//                    surroundingMonsters.add((Monster) npcTile.getNPC());
-//                }
-//
-//
-//            }
-//        }
-        return surroundingMonsters.size() == 0 ? null : surroundingMonsters.toArray(new Monster[0]);
-
-
+        return surroundingMonsters.size() == 0
+                ? null : surroundingMonsters.toArray(new Monster[0]);
     }
 
 

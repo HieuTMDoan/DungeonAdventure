@@ -83,6 +83,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         Layouts.COMBAT.setNode(lookup("combatPane"));
         Layouts.END.setNode(lookup("endPane"));
         Layouts.DUNGEON.setNode(lookup("dungeonPane"));
+        Layouts.CHEAT_CODE.setNode(lookup("cheatPane"));
         Layouts.END_SCREEN.setNode(lookup("endPane"));
     }
 
@@ -150,6 +151,11 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             case M -> {
                 new DungeonGUI(this);
                 Layouts.swapLayout(Layouts.DUNGEON);
+            }
+
+            case PERIOD -> {
+                new CheatCodeGUI(this);
+                Layouts.swapLayout(Layouts.CHEAT_CODE);
             }
 
             default -> {
@@ -235,9 +241,18 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         DUNGEON,
 
         /**
-         * The layout corresponding with the end screen.
+         * A layout enum for the end screen.
+         * Its corresponding layout node should be the
+         * root pane of the end screen.
          */
-        END_SCREEN;
+        END_SCREEN,
+
+        /**
+         * A layout enum for the cheat code screen.
+         * Its corresponding layout node should be the
+         * root pane of the cheat code screen.
+         */
+        CHEAT_CODE;
 
         /**
          * The current layout.

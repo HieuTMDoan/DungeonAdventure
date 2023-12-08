@@ -118,6 +118,7 @@ public final class DungeonAdventure implements Serializable {
 
         PCS.firePropertyChanged(PCS.LOAD_ROOM, startingRoom);
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
+        PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
     }
 
     /**

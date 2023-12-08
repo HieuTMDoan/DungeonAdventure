@@ -94,7 +94,12 @@ public enum PCS {
      * Should be paired with a Boolean representing if
      * the player was victorious (true), or failed (false).
      */
-    GAME_END;
+    GAME_END,
+
+    /**
+     * The property of the entire view of the dungeon.
+     */
+    CHEAT_CODE;
 
 
     /**

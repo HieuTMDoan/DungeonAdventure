@@ -80,6 +80,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         Layouts.COMBAT.setNode(lookup("combatPane"));
         Layouts.END.setNode(lookup("endPane"));
         Layouts.DUNGEON.setNode(lookup("dungeonPane"));
+        Layouts.END_SCREEN.setNode(lookup("endPane"));
     }
 
     /**
@@ -126,10 +127,14 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         }
 
         switch (theEvent.getCode()) {
-            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case UP, W -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.NORTH);
+            case DOWN, S -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.SOUTH);
+            case LEFT, A -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.WEST);
+            case RIGHT, D -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.EAST);
             case P, ESCAPE -> {
                 new PauseGUI(this);
                 Layouts.swapLayout(Layouts.MENU);
@@ -160,6 +165,10 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             case BEGIN_COMBAT -> {
                 myCombatGui.startCombat((Monster) theEvent.getNewValue());
                 Layouts.swapLayout(Layouts.COMBAT);
+            }
+            case GAME_END -> {
+                new EndGameGUI(this).show((boolean) theEvent.getNewValue());
+                Layouts.swapLayout(Layouts.END_SCREEN);
             }
         }
     }
@@ -213,7 +222,13 @@ public class GUIHandler extends Application implements PropertyChangeListener {
          * Its corresponding layout node should be the
          * root pane of the dungeon screen.
          */
-        DUNGEON;
+        DUNGEON,
+
+        /**
+         * The layout corresponding with the end screen.
+         */
+        END_SCREEN,
+        ;
 
         /**
          * The current layout.

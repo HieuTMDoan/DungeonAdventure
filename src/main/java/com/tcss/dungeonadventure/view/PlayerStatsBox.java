@@ -16,6 +16,7 @@ public class PlayerStatsBox extends VBox {
 
     public PlayerStatsBox(final Hero thePlayerHero) {
         this.setAlignment(Pos.CENTER_LEFT);
+        this.getChildren().clear();
 
         nameLabel = new Label("Name: " + thePlayerHero.getName());
         healthLabel = new Label("Health: " + thePlayerHero.getHealth()

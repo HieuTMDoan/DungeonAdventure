@@ -116,30 +116,6 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
     }
 
     /**
-     * Inflicts damage to the character.
-     *
-     * @param theDamage The amount of damage to be inflicted.
-     */
-    public void takeDamage(final int theDamage) {
-        // Subtract the damage from health
-        this.setHealth(this.getHealth() - theDamage);
-
-        // Check if the character is defeated
-        if (this.isDefeated()) {
-            System.out.println(this.getName() + " has been defeated!");
-        }
-    }
-
-    /**
-     * Calculates the damage that the character can deal in an attack.
-     *
-     * @return The calculated damage.
-     */
-    public int calculateDamage() {
-        return Helper.getRandomIntBetween(this.getMinDamage() + 1, this.getMaxDamage());
-    }
-
-    /**
      * Checks if the character is defeated.
      *
      * @return True if the character is defeated, false otherwise.

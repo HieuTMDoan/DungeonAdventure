@@ -60,8 +60,10 @@ public class Room implements Serializable {
      */
     private static final int MAX_TILE_PLACEMENT_ATTEMPTS = 50;
 
-
-    private static final double EXTRA_WALL_RATIO = 0.25;
+    /**
+     * The percent of tiles that are transformed into walls.
+     */
+    private static final double EXTRA_WALL_RATIO = 0.10;
 
     /**
      * Boolean if the room is the entrance room.
@@ -102,6 +104,7 @@ public class Room implements Serializable {
      */
     private Point myPlayerPosition;
 
+
     /**
      * Constructor to creating a room with an existing tile set.
      * This may be useful when loading a room from files.
@@ -137,6 +140,7 @@ public class Room implements Serializable {
         this(generateRandomTileSet(theIsEntrance, theIsExit, thePillar));
 
     }
+
 
     public Room() {
         myIsEntranceRoom = false;
@@ -204,11 +208,10 @@ public class Room implements Serializable {
 
         for (int row = 0; row < tiles.length; row++) {
             for (int col = 0; col < tiles[row].length; col++) {
-                if (row % (roomWidth - 1) == 0 || col % (roomHeight - 1) == 0) {
-                    tiles[row][col] = new WallTile();
-                } else {
-                    tiles[row][col] = new EmptyTile();
-                }
+                tiles[row][col]
+                        = (row % (roomWidth - 1) == 0 || col % (roomHeight - 1) == 0)
+                        ? new WallTile()
+                        : new EmptyTile();
             }
         }
 
@@ -227,7 +230,8 @@ public class Room implements Serializable {
 
         // if the room is an exit or entrance, it shouldn't contain anything else.
         if (theIsEntrance || theIsExit) {
-            putTileAtValidLocation(theIsEntrance ? new EntranceTile() : new ExitTile(), tiles, false);
+            putTileAtValidLocation(theIsEntrance ? new EntranceTile()
+                    : new ExitTile(), tiles, false);
             return tiles;
         }
 
@@ -287,8 +291,8 @@ public class Room implements Serializable {
      * Helper method to use while generating a new Room.
      * Will ensure no overlap between tiles.
      *
-     * @param theTile  The tile to add to the tile set.
-     * @param theTiles The current tile set.
+     * @param theTile        The tile to add to the tile set.
+     * @param theTiles       The current tile set.
      * @param theNextToDoors If the tile can exist next to a door.
      */
     private static void putTileAtValidLocation(final Tile theTile,
@@ -347,7 +351,7 @@ public class Room implements Serializable {
 
     public static void addExtraWalls(final Room theRoom) {
 
-        final int extraWalls = (int) ((theRoom.getRoomWidth() - 1) * (theRoom.getRoomHeight() - 1) * 0.1);
+        final int extraWalls = (int) ((theRoom.getRoomWidth() - 1) * (theRoom.getRoomHeight() - 1) * EXTRA_WALL_RATIO);
         for (int i = 0; i < extraWalls; i++) {
             putTileAtValidLocation(new WallTile(), theRoom.getRoomTiles(), false);
         }
@@ -642,6 +646,7 @@ public class Room implements Serializable {
     public Tile[][] getRoomTiles() {
         return this.myRoomTiles;
     }
+
 
     @Override
     public String toString() {

@@ -49,14 +49,17 @@ public class AdventuringGUI implements PropertyChangeListener {
      * A 2D array of Text nodes, representing each character of the room grid.
      */
     private final Text[][] myRoomTextBoxes = new Text[10][10];
+
     /**
      * The handler to display the players stats.
      */
     private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
+
     /**
      * A 2D array of Tiles, which is what the current room looks like.
      */
     private Room myCurrentRoom;
+
     /**
      * The room grid. 10x10.
      */
@@ -66,6 +69,7 @@ public class AdventuringGUI implements PropertyChangeListener {
      * The text box containing tile information on mouse-over.
      */
     private Label myTileInfoLabel;
+
     /**
      * The handler for the players visual inventory.
      */

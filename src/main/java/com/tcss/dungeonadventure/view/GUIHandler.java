@@ -5,13 +5,13 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.monsters.Monster;
 
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-import com.tcss.dungeonadventure.objects.monsters.Monster;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,8 +19,13 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+/**
+ * Represents the GUI manager for the program.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class GUIHandler extends Application implements PropertyChangeListener {
-
     /**
      * The title of the window.
      */
@@ -42,7 +47,15 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private Scene myScene;
 
+    /**
+     * The combat GUI.
+     */
     private CombatGUI myCombatGui;
+
+    /**
+     * The adventuring GUI.
+     */
+    private AdventuringGUI myAdventuringGui;
 
     @Override
     public void start(final Stage theStage) throws IOException {
@@ -80,6 +93,8 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         Layouts.COMBAT.setNode(lookup("combatPane"));
         Layouts.END.setNode(lookup("endPane"));
         Layouts.DUNGEON.setNode(lookup("dungeonPane"));
+        Layouts.CHEAT_CODE.setNode(lookup("cheatPane"));
+        Layouts.END_SCREEN.setNode(lookup("endPane"));
     }
 
     /**
@@ -90,6 +105,8 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
+
+
         new AdventuringGUI(this);
         Layouts.swapLayout(Layouts.ADVENTURING);
     }
@@ -108,16 +125,36 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         DungeonAdventure.getInstance().saveGameState();
     }
 
+    /**
+     * Loads the most recent saved game.
+     */
+    public void loadGame() {
+        DungeonAdventure.getInstance().loadGameState();
+    }
+
+    /**
+     * Handles a key press event.
+     *
+     * @param theEvent the key press event
+     */
     private void handleKeyPress(final KeyEvent theEvent) {
         if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
             return;
         }
 
         switch (theEvent.getCode()) {
-            case UP, W -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.NORTH);
-            case DOWN, S -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.SOUTH);
-            case LEFT, A -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.WEST);
-            case RIGHT, D -> DungeonAdventure.getInstance().movePlayer(Directions.Cardinal.EAST);
+            case UP, W -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.NORTH);
+
+            case DOWN, S -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.SOUTH);
+
+            case LEFT, A -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.WEST);
+
+            case RIGHT, D -> DungeonAdventure.getInstance().
+                    movePlayer(Directions.Cardinal.EAST);
+
             case P, ESCAPE -> {
                 new PauseGUI(this);
                 Layouts.swapLayout(Layouts.MENU);
@@ -127,6 +164,12 @@ public class GUIHandler extends Application implements PropertyChangeListener {
                 new DungeonGUI(this);
                 Layouts.swapLayout(Layouts.DUNGEON);
             }
+
+            case PERIOD -> {
+                new CheatCodeGUI(this);
+                Layouts.swapLayout(Layouts.CHEAT_CODE);
+            }
+
             default -> {
             }
         }
@@ -148,6 +191,12 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             case BEGIN_COMBAT -> {
                 myCombatGui.startCombat((Monster) theEvent.getNewValue());
                 Layouts.swapLayout(Layouts.COMBAT);
+            }
+            case GAME_END -> {
+                new EndGameGUI(this).show((boolean) theEvent.getNewValue());
+                Layouts.swapLayout(Layouts.END_SCREEN);
+            }
+            default -> {
             }
         }
     }
@@ -201,7 +250,21 @@ public class GUIHandler extends Application implements PropertyChangeListener {
          * Its corresponding layout node should be the
          * root pane of the dungeon screen.
          */
-        DUNGEON;
+        DUNGEON,
+
+        /**
+         * A layout enum for the end screen.
+         * Its corresponding layout node should be the
+         * root pane of the end screen.
+         */
+        END_SCREEN,
+
+        /**
+         * A layout enum for the cheat code screen.
+         * Its corresponding layout node should be the
+         * root pane of the cheat code screen.
+         */
+        CHEAT_CODE;
 
         /**
          * The current layout.

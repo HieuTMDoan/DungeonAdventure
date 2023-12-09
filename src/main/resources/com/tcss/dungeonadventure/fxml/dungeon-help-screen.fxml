@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
       <URL value="@../css/colors.css" />
       <URL value="@../css/dungeon-help-screen.css" />
@@ -17,11 +17,7 @@
          <Font size="40.0" />
       </font>
    </Label>
-   <Button fx:id="helpBackButton" layoutX="51.0" layoutY="517.0" mnemonicParsing="false" style="-fx-border-color: white; -fx-border-radius: 5;" text="Back" textFill="WHITE" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="750.0" AnchorPane.topAnchor="520.0">
-      <font>
-         <Font size="20.0" />
-      </font>
-   </Button>
+   <Button fx:id="helpBackButton" layoutX="8.0" layoutY="555.2000122070312" mnemonicParsing="false" text="Back" />
    <TextArea editable="false" layoutX="200.0" layoutY="70.0" prefHeight="419.0" prefWidth="500.0" text="This is an adventure game where a hero is randomly placed within dungeon. The adventurer needs to find the four Pillars of OO (Abstraction, Encapsulation, Inheritance, and Polymorphism) and take them to the exit to win the game. Some features of the dungeon will prove a hindrance to the adventurer's task (pits), while some will prove helpful (healing and vision potions).&#10;&#10;Movement: WASD or Arrow keys&#10;" wrapText="true" AnchorPane.bottomAnchor="111.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="70.0">
       <font>
          <Font size="18.0" />

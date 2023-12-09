@@ -7,13 +7,6 @@
     -fx-prompt-text-fill: #989898;
 }
 
-.button {
-    -fx-background-color: black;
-    -fx-border-color: white;
-    -fx-text-fill: white;
-    -fx-font-size: 20;
-}
-
 .radio-button .radio {
     -fx-background-color: black;
     -fx-border-color: white;

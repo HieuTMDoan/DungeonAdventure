@@ -19,6 +19,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
+/**
+ * Represents the GUI of the home screen
+ * before starting a new or saved game.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class HomeGUI implements PropertyChangeListener {
 
     /**
@@ -85,10 +92,9 @@ public class HomeGUI implements PropertyChangeListener {
      */
     private void attachEvents() {
         this.myNewGameButton.setOnAction(e -> myGUI.startNewGame(
-                myHeroNameTextField.getText(),
+                getHeroName(myHeroNameTextField),
                 (Hero) SQLiteDB.getCharacterByName(mySelectedClass))
         );
-
 
         this.myLoadGameButton.setOnAction(e -> loadGameFromFile());
 
@@ -96,7 +102,6 @@ public class HomeGUI implements PropertyChangeListener {
             new HelpGUI(myGUI);
             GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HELP);
         });
-
 
         // Toggle groups make it so class selection is mutually exclusive
         final ToggleGroup classGroup = new ToggleGroup();
@@ -106,18 +111,27 @@ public class HomeGUI implements PropertyChangeListener {
         warriorRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.WARRIOR);
         warriorRadioButton.setSelected(true);
 
-
         final ToggleButton priestessRadioButton =
                 (ToggleButton) lookup("homePriestessRadioButton");
         priestessRadioButton.setToggleGroup(classGroup);
         priestessRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.PRIESTESS);
 
-
         final ToggleButton thiefRadioButton =
                 (ToggleButton) lookup("homeThiefRadioButton");
         thiefRadioButton.setToggleGroup(classGroup);
         thiefRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.THIEF);
+    }
 
+    /**
+     * Returns the hero name inputted in the text field as-is,
+     * or "nameless" if there's no input.
+     *
+     * @param theTextField the text field containing the hero name
+     * @return Hero name.
+     */
+    private String getHeroName(final TextField theTextField) {
+        final String heroName = theTextField.getText();
+        return heroName.isEmpty() ? "nameless" : heroName;
     }
 
     @Override

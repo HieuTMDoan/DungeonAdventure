@@ -1,10 +1,9 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.Directions;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
-
 
 /**
  * This class contains constants for the Property Chance Listener.
@@ -57,6 +56,12 @@ public enum PCS {
      */
     LOAD_ROOM,
 
+    /**
+     * The property of discovering new room(s)
+     * by going into them or using the vision potion.
+     */
+    ROOMS_DISCOVERED,
+
 
     /**
      * The property of loading an EXISTING game.
@@ -90,13 +95,12 @@ public enum PCS {
      * Should be paired with a Boolean representing if
      * the player was victorious (true), or failed (false).
      */
-    GAME_END
+    GAME_END,
 
-
-
-
-    ;
-
+    /**
+     * The property of the entire view of the dungeon.
+     */
+    CHEAT_CODE;
 
 
     /**
@@ -119,6 +123,7 @@ public enum PCS {
     }
 
     public static void addPropertyListener(final PropertyChangeListener theListener) {
+        PCS.removePropertyChangeListener(theListener);
         PCS.addPropertyChangeListener(theListener);
     }
 

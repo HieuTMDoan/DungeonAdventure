@@ -1,15 +1,28 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.Dungeon;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.model.Room;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
+
 
 /**
- * Represents the dungeon GUI of the program.
+ * Represents the GUI of the current discovered rooms
+ * in the dungeon.
  *
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class DungeonGUI {
+public class DungeonGUI implements PropertyChangeListener {
     /**
      * The GUI handler.
      */
@@ -21,12 +34,37 @@ public class DungeonGUI {
     private Button myBackButton;
 
     /**
-     * Initializes a basic help screen with the game's manual.
+     * The grid pane that is the layout
+     * of the currently discovered rooms in the dungeon.
+     */
+    private GridPane myGridPane;
+
+    /**
+     * The 2D array mimicking the dungeon's underlying
+     * structure that contains the discovered {@link Room}s.
+     */
+    private final Room[][] myDiscoveredRooms;
+
+    /**
+     * The current dungeon.
+     */
+    private final Dungeon myDungeon;
+
+
+    /**
+     * Initializes a basic dungeon screen with the game's current
+     * discovered rooms and a back button to resume the game.
      */
     public DungeonGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;
+        this.myDiscoveredRooms = DungeonAdventure.getInstance().getDiscoveredRooms();
+        this.myDungeon = DungeonAdventure.getInstance().getDungeon();
+
+        PCS.addPropertyListener(this);
+
         locateNodes();
-        attachEvents();
+        this.myBackButton.setOnAction(e -> myGUI.resumeGame());
+        updateMap();
     }
 
     /**
@@ -34,21 +72,56 @@ public class DungeonGUI {
      *
      * @return The looked-up node, or null if it isn't found.
      */
-    private Node lookup() {
-        return this.myGUI.lookup("dungeonBackButton");
+    private Node lookup(final String theNodeID) {
+        return this.myGUI.lookup(theNodeID);
     }
 
     /**
      * Helper method to attach mouse events to certain nodes.
      */
     private void locateNodes() {
-        this.myBackButton = (Button) lookup();
+        myBackButton = (Button) lookup("dungeonBackButton");
+        myGridPane = (GridPane) lookup("dungeonGridPane");
     }
 
     /**
-     * Helper method to organize the binding of nodes to variables.
+     * Updates the current map of the discovered dungeon.
      */
-    private void attachEvents() {
-        this.myBackButton.setOnAction(e -> myGUI.resumeGame());
+    private void updateMap() {
+        for (int row = 0; row < myDiscoveredRooms.length; row++) {
+            for (int col = 0; col < myDiscoveredRooms[0].length; col++) {
+                final HBox hbox = new HBox();
+                hbox.setAlignment(Pos.CENTER);
+                hbox.setMaxSize(49, 49);
+
+                if (myDiscoveredRooms[row][col] != null) {
+                    final Text text;
+
+                    if (myDungeon.getCurrentRoom().equals(myDiscoveredRooms[row][col])) {
+                        text = new Text("here");
+                    } else if (myDiscoveredRooms[row][col].equals(myDungeon.getStartingRoom())) {
+                        text = new Text("entrance");
+                    } else if (myDungeon.getRoomAt(row, col).isExitRoom()) {
+                        text = new Text("exit");
+                    } else {
+                        text = new Text("found");
+                    }
+
+                    text.setBoundsType(TextBoundsType.VISUAL);
+                    text.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
+                    hbox.getChildren().add(text);
+                    myGridPane.add(hbox, row, col);
+                } else {
+                    myGridPane.add(hbox, row, col);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void propertyChange(final PropertyChangeEvent theEvent) {
+        if (PCS.valueOf(theEvent.getPropertyName()) == PCS.ROOMS_DISCOVERED) {
+            updateMap();
+        }
     }
 }

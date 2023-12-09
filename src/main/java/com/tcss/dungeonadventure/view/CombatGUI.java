@@ -2,7 +2,6 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
-import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import javafx.scene.Node;
@@ -14,6 +13,12 @@ import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+/**
+ * Represents the GUI of the combat screen whenever the player interacts with a monster.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class CombatGUI implements PropertyChangeListener {
 
     private final GUIHandler myGUI;

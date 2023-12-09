@@ -26,9 +26,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
+/**
+ * Represents the GUI of the current room the player is in,
+ * and of player's stats, tile info, inventory, and message box.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class AdventuringGUI implements PropertyChangeListener {
 
-    private static final String BOX_SIZE_CSS = "-fx-font-size: 45; ";
+    /**
+     * The CSS styling for the box size.
+     */
+    static final String BOX_SIZE_CSS = "-fx-font-size: 45; ";
 
     /**
      * The GUI handler.
@@ -39,26 +49,32 @@ public class AdventuringGUI implements PropertyChangeListener {
      * A 2D array of Text nodes, representing each character of the room grid.
      */
     private final Text[][] myRoomTextBoxes = new Text[10][10];
+
     /**
      * The handler to display the players stats.
      */
     private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
+
     /**
      * A 2D array of Tiles, which is what the current room looks like.
      */
     private Room myCurrentRoom;
+
     /**
      * The room grid. 10x10.
      */
     private GridPane myGridPane;
+
     /**
      * The text box containing tile information on mouse-over.
      */
     private Label myTileInfoLabel;
+
     /**
      * The handler for the players visual inventory.
      */
     private InventoryPanelHandler myInventoryPaneHandler;
+
     /**
      * The parent scroll-pane for the scrollable console.
      * This should not be accessed.
@@ -80,12 +96,14 @@ public class AdventuringGUI implements PropertyChangeListener {
         this.myGUI = theGUI;
         PCS.addPropertyListener(this);
 
+
         locateNodes();
         createGUI();
 
-        myPlayerStatsBox = new PlayerStatsBox(
-                DungeonAdventure.getInstance().getPlayer().getPlayerHero());
+        myMessageBox.getChildren().clear();
+        myPlayerInfoBox.getChildren().clear();
 
+        myPlayerStatsBox = new PlayerStatsBox();
         myPlayerInfoBox.getChildren().add(myPlayerStatsBox);
 
         loadRoom(DungeonAdventure.getInstance().getDungeon().getCurrentRoom());
@@ -142,7 +160,8 @@ public class AdventuringGUI implements PropertyChangeListener {
                 text.setBoundsType(TextBoundsType.VISUAL);
                 text.setStyle(BOX_SIZE_CSS + "-fx-fill: white;");
 
-                final int finalRow = row; // these are needed for the lambda statements
+                // these are needed for the lambda statements
+                final int finalRow = row;
                 final int finalCol = col;
 
                 hbox.setOnMouseEntered(e -> onMouseOver(finalRow, finalCol));
@@ -155,7 +174,7 @@ public class AdventuringGUI implements PropertyChangeListener {
 
 
     /**
-     * Changes the tile at a specified index.
+     * Changes the tile at a specified index based on a given tile.
      *
      * @param theRowIndex The row of the tile.
      * @param theColIndex The column of the tile.
@@ -165,6 +184,13 @@ public class AdventuringGUI implements PropertyChangeListener {
         setTileAt(theRowIndex, theColIndex, theTile.getDisplayChar());
     }
 
+    /**
+     * Changes the tile at a specified index based on a given tile character.
+     *
+     * @param theRowIndex The row of the tile.
+     * @param theColIndex The column of the tile.
+     * @param theChar     The new tile character.
+     */
     private void setTileAt(final int theRowIndex, final int theColIndex, final char theChar) {
         if (theRowIndex > myGridPane.getRowCount()
                 || theColIndex > myGridPane.getColumnCount()) {
@@ -176,31 +202,32 @@ public class AdventuringGUI implements PropertyChangeListener {
                                     theRowIndex, theColIndex));
         }
 
-        myRoomTextBoxes[theRowIndex][theColIndex].setStyle(BOX_SIZE_CSS + "-fx-fill: " + switch (theChar) {
-            case TileChars.Player.PLAYER -> "green;";
+        myRoomTextBoxes[theRowIndex][theColIndex].setStyle(BOX_SIZE_CSS + "-fx-fill: "
+                + switch (theChar) {
+                case TileChars.Player.PLAYER -> "green;";
 
-            case TileChars.Monster.OGRE,
-                    TileChars.Monster.SKELETON,
-                    TileChars.Monster.GREMLIN -> "red;";
+                case TileChars.Monster.OGRE,
+                        TileChars.Monster.SKELETON,
+                        TileChars.Monster.GREMLIN -> "red;";
 
-            case TileChars.Items.PILLAR_OF_ABSTRACTION,
-                    TileChars.Items.PILLAR_OF_INHERITANCE,
-                    TileChars.Items.PILLAR_OF_ENCAPSULATION,
-                    TileChars.Items.PILLAR_OF_POLYMORPHISM -> "gold;";
+                case TileChars.Items.PILLAR_OF_ABSTRACTION,
+                        TileChars.Items.PILLAR_OF_INHERITANCE,
+                        TileChars.Items.PILLAR_OF_ENCAPSULATION,
+                        TileChars.Items.PILLAR_OF_POLYMORPHISM -> "gold;";
 
-            case TileChars.Items.HEALING_POTION,
-                    TileChars.Items.VISION_POTION -> "blue;";
+                case TileChars.Items.HEALING_POTION,
+                        TileChars.Items.VISION_POTION -> "blue;";
 
-            case TileChars.Room.HORIZONTAL_DOOR,
-                    TileChars.Room.VERTICAL_DOOR -> "coral;";
+                case TileChars.Room.HORIZONTAL_DOOR,
+                        TileChars.Room.VERTICAL_DOOR -> "coral;";
 
-            case TileChars.Room.ENTRANCE,
-                    TileChars.Room.EXIT -> "purple;";
+                case TileChars.Room.ENTRANCE,
+                        TileChars.Room.EXIT -> "purple;";
 
-            case TileChars.Room.PIT -> "orange;";
+                case TileChars.Room.PIT -> "orange;";
 
-            default -> "white;";
-        });
+                default -> "white;";
+            });
 
         myRoomTextBoxes[theRowIndex][theColIndex].setText(String.valueOf(theChar));
     }
@@ -311,4 +338,10 @@ public class AdventuringGUI implements PropertyChangeListener {
             }
         }
     }
+
+    @Override
+    public boolean equals(final Object theOther) {
+        return theOther instanceof AdventuringGUI;
+    }
+
 }

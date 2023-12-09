@@ -4,7 +4,6 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.objects.items.Item;
 import javafx.scene.layout.VBox;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class InventoryPanelHandler {

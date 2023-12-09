@@ -121,16 +121,6 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
     }
 
-    /**
-     * Clears all discovered rooms for a new game.
-     */
-    public void resetDiscoveredRooms() {
-        if (myDiscoveredRooms != null) {
-            Arrays.stream(myDiscoveredRooms).forEach(rooms -> Arrays.fill(rooms, null));
-            PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
-        }
-    }
-
     public void movePlayer(final Directions.Cardinal theDirection) {
         Player.Stats.increaseCounter(Player.Stats.MOVES);
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
@@ -229,6 +219,27 @@ public final class DungeonAdventure implements Serializable {
      */
     public Room[][] getDiscoveredRooms() {
         return this.myDiscoveredRooms;
+    }
+
+    /**
+     * Sets the current discovered rooms
+     * in the dungeon to the new discovered rooms.
+     *
+     * @param theNewDiscoveredRooms the new discovered rooms
+     */
+    public void setDiscoveredRooms(final Room[][] theNewDiscoveredRooms) {
+        this.myDiscoveredRooms = theNewDiscoveredRooms;
+        PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
+    }
+
+    /**
+     * Clears all discovered rooms for a new game.
+     */
+    public void resetDiscoveredRooms() {
+        if (myDiscoveredRooms != null) {
+            Arrays.stream(myDiscoveredRooms).forEach(rooms -> Arrays.fill(rooms, null));
+            PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
+        }
     }
 
     public void changeRoom(final Directions.Cardinal theDirection) {

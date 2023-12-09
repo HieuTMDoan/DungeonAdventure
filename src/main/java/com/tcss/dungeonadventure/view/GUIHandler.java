@@ -52,6 +52,9 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private CombatGUI myCombatGui;
 
+    /**
+     * The adventuring GUI.
+     */
     private AdventuringGUI myAdventuringGui;
 
     @Override

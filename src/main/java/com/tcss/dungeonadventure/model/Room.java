@@ -527,13 +527,32 @@ public class Room implements Serializable {
         this.myDungeonLocation = new Point(theXY);
     }
 
+    /**
+     * Returns the adjacent room by the given {@link Directions.Cardinal}.
+     *
+     * @param theDirection the given {@link Directions.Cardinal}.
+     * @return The adjacent room by the given {@link Directions.Cardinal}.
+     */
     public Room getAdjacentRoomByDirection(final Directions.Cardinal theDirection) {
         final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
         final int x = (int) this.getDungeonLocation().getX();
         final int y = (int) this.getDungeonLocation().getY();
 
         return dungeon.getRoomAt(x + theDirection.getXOffset(), y + theDirection.getYOffset());
+    }
 
+    /**
+     * Returns the adjacent room by the given {@link Directions.Diagonal}.
+     *
+     * @param theDirection the given {@link Directions.Cardinal}.
+     * @return The adjacent room by the given {@link Directions.Diagonal}.
+     */
+    public Room getAdjacentRoomByDirection(final Directions.Diagonal theDirection) {
+        final Dungeon dungeon = DungeonAdventure.getInstance().getDungeon();
+        final int x = (int) this.getDungeonLocation().getX();
+        final int y = (int) this.getDungeonLocation().getY();
+
+        return dungeon.getRoomAt(x + theDirection.getXOffset(), y + theDirection.getYOffset());
     }
 
     /**

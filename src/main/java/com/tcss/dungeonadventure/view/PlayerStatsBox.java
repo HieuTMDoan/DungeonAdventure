@@ -1,7 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
-import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;

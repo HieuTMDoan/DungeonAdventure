@@ -86,10 +86,19 @@ public class CheatCodeGUI implements PropertyChangeListener {
                 hbox.setAlignment(Pos.CENTER);
                 hbox.setMaxSize(49, 49);
 
-                final Text text = new Text(myCurrentDungeon.getRoomAt(col, row).toString());
-                text.setBoundsType(TextBoundsType.VISUAL);
-                text.setStyle("-fx-font-size: 5; " + "-fx-fill: white;");
+                final Text text;
+                if (myCurrentDungeon.getRoomAt(row, col).equals(myCurrentDungeon.getCurrentRoom())) {
+                    text = new Text("here");
+                } else if (myCurrentDungeon.getRoomAt(row, col).equals(myCurrentDungeon.getStartingRoom())) {
+                    text = new Text("entrance");
+                } else if (myCurrentDungeon.getRoomAt(row, col).isExitRoom()) {
+                    text = new Text("exit");
+                } else {
+                    text = new Text("found");
+                }
 
+                text.setBoundsType(TextBoundsType.VISUAL);
+                text.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
                 hbox.getChildren().add(text);
                 myGridPane.add(hbox, row, col);
             }

@@ -6,9 +6,8 @@ import com.tcss.dungeonadventure.model.PCS;
 import java.io.Serializable;
 
 
-public abstract class DungeonCharacter implements VisualComponent, Serializable {
+public abstract class DungeonCharacter extends VisualComponent implements Serializable {
 
-    private final char myDisplayChar;
     private final String myName;
     private final int myMaxHealthPoints;
     private final int myMinDamage;
@@ -16,6 +15,7 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
     private final int myAttackSpeed;
     private final double myAccuracy; // same as hit rate
 
+    private Object myLastDamageSource;
     private int myHealthPoints;
 
     public DungeonCharacter(final String theName,
@@ -26,8 +26,8 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
                             final int theAttackSpeed,
                             final double theAccuracy) {
 
+        super(theDisplayChar);
         this.myName = theName;
-        this.myDisplayChar = theDisplayChar;
         this.myHealthPoints = theDefaultHealth;
         this.myMaxHealthPoints = theDefaultHealth;
         this.myMinDamage = theMinDamage;
@@ -43,7 +43,7 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
         if (this.myAccuracy >= randomAccuracy) {
             final int damage = Helper.getRandomIntBetween(myMinDamage, myMaxDamage);
             damageDealth = damage;
-            theTarget.changeHealth(-damage);
+            theTarget.changeHealth(this, -damage);
         }
         return damageDealth;
     }
@@ -51,11 +51,6 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
 
     public String getName() {
         return this.myName;
-    }
-
-    @Override
-    public char getDisplayChar() {
-        return myDisplayChar;
     }
 
     @Override
@@ -97,6 +92,18 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
 
     public void changeHealth(final int theChangeInHealth) {
         this.setHealth(this.myHealthPoints + theChangeInHealth);
+    }
+
+    public void changeHealth(final Object theSource, final int theChangeInHealth) {
+        if (theSource != null) {
+            myLastDamageSource = theSource;
+        }
+
+        changeHealth(theChangeInHealth);
+    }
+
+    public Object getLastDamageSource() {
+        return this.myLastDamageSource;
     }
 
     public int getMinDamage() {

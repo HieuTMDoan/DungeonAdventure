@@ -85,8 +85,6 @@ public final class DungeonAdventure implements Serializable {
         resetDiscoveredRooms();
 
 
-
-
         this.myPlayer = new Player(thePlayerName, theHero);
         this.myDungeon = new Dungeon();
         this.myDiscoveredRooms = new Room[MAZE_SIZE.height][MAZE_SIZE.width];

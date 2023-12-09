@@ -7,7 +7,7 @@ import com.tcss.dungeonadventure.objects.VisualComponent;
 import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Item implements VisualComponent, Serializable {
+public abstract class Item extends VisualComponent implements Serializable {
 
     public enum ItemTypes {
 
@@ -23,10 +23,6 @@ public abstract class Item implements VisualComponent, Serializable {
 
     }
 
-    /**
-     * The display character of the item.
-     */
-    private final char myDisplayChar;
 
     /**
      * The type of the item.
@@ -34,13 +30,8 @@ public abstract class Item implements VisualComponent, Serializable {
     private final ItemTypes myItemType;
 
     public Item(final char theDisplayChar, final ItemTypes theItemType) {
-        this.myDisplayChar = theDisplayChar;
+        super(theDisplayChar);
         this.myItemType = theItemType;
-    }
-
-    @Override
-    public char getDisplayChar() {
-        return myDisplayChar;
     }
 
     @Override
@@ -74,6 +65,6 @@ public abstract class Item implements VisualComponent, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(myDisplayChar);
+        return Objects.hash(super.getDisplayChar());
     }
 }

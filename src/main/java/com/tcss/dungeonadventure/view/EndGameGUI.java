@@ -1,7 +1,10 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.Dungeon;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.Player;
+import com.tcss.dungeonadventure.objects.monsters.Monster;
+import com.tcss.dungeonadventure.objects.tiles.PitTile;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 
@@ -19,6 +22,9 @@ public class EndGameGUI {
     private Label myTitleLabel;
     private Label myMainMenuLabel;
     private Label myStatsLabel;
+    private Label myDefeatedByChar;
+    private Label myDefeatedByName;
+    private Label myDefeatedByHealth;
 
 
     /**
@@ -44,12 +50,16 @@ public class EndGameGUI {
         this.myStatsLabel = (Label) lookup("EGstatsLabel");
         this.myTitleLabel = (Label) lookup("EGtitleLabel");
         this.myMainMenuLabel = (Label) lookup("EGmainMenuLabel");
+
+        this.myDefeatedByChar = (Label) lookup("EGdefeatedChar");
+        this.myDefeatedByName = (Label) lookup("EGdefeatedName");
+        this.myDefeatedByHealth = (Label) lookup("EGdefeatedHealth");
     }
 
 
     private void attachEvents() {
         this.myMainMenuLabel.setOnMouseClicked(e ->
-            GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HOME)
+                GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HOME)
         );
     }
 
@@ -57,15 +67,15 @@ public class EndGameGUI {
         myTitleLabel.setText(theVictory ? "Victory!" : "Game Over");
 
         myStatsLabel.setText(String.format("""
-                Moves: %s
-                Explored Rooms: %s/%s
-                Attacks Missed: %s
-                Damage Dealt: %s
-                Monsters Encountered: %s
-                Monsters Defeated: %s
-                Items Used: %s
-                Items Collected: %s
-                """,
+                        Moves: %s
+                        Explored Rooms: %s/%s
+                        Attacks Missed: %s
+                        Damage Dealt: %s
+                        Monsters Encountered: %s
+                        Monsters Defeated: %s
+                        Items Used: %s
+                        Items Collected: %s
+                        """,
                 Player.Stats.MOVES.getCounter(),
                 Player.Stats.EXPLORED_ROOMS.getCounter(),
                 Dungeon.MAZE_SIZE.height * Dungeon.MAZE_SIZE.width,
@@ -75,6 +85,15 @@ public class EndGameGUI {
                 Player.Stats.MONSTERS_DEFEATED.getCounter(),
                 Player.Stats.ITEMS_USED.getCounter(),
                 Player.Stats.ITEMS_COLLECTED.getCounter()));
+
+        final Object lastDamageSource = DungeonAdventure.getInstance().getPlayer().getPlayerHero().getLastDamageSource();
+        if (lastDamageSource instanceof PitTile) {
+            myDefeatedByChar.setText(String.valueOf(new PitTile().getDisplayChar()));
+        } else if (lastDamageSource instanceof final Monster m) {
+            myDefeatedByChar.setText(String.valueOf(m.getDisplayChar()));
+        }
+
+
     }
 
 

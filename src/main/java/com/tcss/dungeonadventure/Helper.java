@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.model.SQLiteDB;
+import com.tcss.dungeonadventure.model.factories.MonsterFactory;
 import com.tcss.dungeonadventure.objects.items.*;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 
@@ -88,7 +89,7 @@ public final class Helper {
 
 
     public static Monster getRandomMonster() {
-        return (Monster) SQLiteDB.getCharacterByName(
+        return MonsterFactory.createCharacter(
                 MONSTER_POOL[Helper.getRandomIntBetween(0, MONSTER_POOL.length)]);
     }
 

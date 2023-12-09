@@ -14,6 +14,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.sqlite.SQLiteDataSource;
 
 /**
@@ -54,14 +57,30 @@ public final class SQLiteDB {
         }
     }
 
+    public enum Keys {
+        NAME,
+        DISPLAY_CHAR,
+        HEALTH,
+        DAMAGE_MIN,
+        DAMAGE_MAX,
+        ATTACK_SPEED,
+        ACCURACY,
+        HEAL_CHANCE,
+        HEAL_MIN,
+        HEAL_MAX,
+        BLOCK_CHANCE
+    }
+
     /**
      * Returns a {@link DungeonCharacter}'s initial statistics based on its name.
      *
      * @param theCharacter the enum of the {@link DungeonCharacter} to be printed
      * @return the queried {@link DungeonCharacter}'s initial statistics
      */
-    public static DungeonCharacter getCharacterByName(final Helper.Characters theCharacter) {
+    public static Map<Keys, Object> getCharacterByName(final Helper.Characters theCharacter) {
         final String querySearch = "SELECT * FROM dungeonCharacters WHERE NAME = ?";
+
+        final Map<Keys, Object> dataMap = new HashMap<>();
 
         try (PreparedStatement stmt = myConn.prepareStatement(querySearch)) {
             stmt.setString(1, theCharacter.toString());
@@ -69,41 +88,21 @@ public final class SQLiteDB {
 
             //Retrieves all relevant stats of both Monster and Hero characters
             if (rs.next()) {
-                final String name = rs.getString("NAME");
-                final char displayChar = rs.getString("DISPLAY_CHAR").charAt(0);
-                final int health = rs.getInt("HEALTH");
-                final int damageMin = rs.getInt("DAMAGE_MIN");
-                final int damageMax = rs.getInt("DAMAGE_MAX");
-                final int attackSpeed = rs.getInt("ATTACK_SPEED");
-                final double accuracy = rs.getDouble("ACCURACY");
-                final double healChance = rs.getDouble("HEAL_CHANCE");
-                final int healMin = rs.getInt("HEAL_MIN");
-                final int healMax = rs.getInt("HEAL_MAX");
-                final double blockChance = rs.getDouble("BLOCK_CHANCE");
+                dataMap.put(Keys.NAME, rs.getString(Keys.NAME.toString()));
+                dataMap.put(Keys.DISPLAY_CHAR, rs.getString(Keys.DISPLAY_CHAR.toString()).charAt(0));
+                dataMap.put(Keys.HEALTH, rs.getInt(Keys.HEALTH.toString()));
+                dataMap.put(Keys.DAMAGE_MIN, rs.getInt(Keys.DAMAGE_MIN.toString()));
+                dataMap.put(Keys.DAMAGE_MAX, rs.getInt(Keys.DAMAGE_MAX.toString()));
+                dataMap.put(Keys.ATTACK_SPEED, rs.getInt(Keys.ATTACK_SPEED.toString()));
+                dataMap.put(Keys.ACCURACY, rs.getDouble(Keys.ACCURACY.toString()));
+                dataMap.put(Keys.HEAL_CHANCE, rs.getDouble(Keys.HEAL_CHANCE.toString()));
+                dataMap.put(Keys.HEAL_MIN, rs.getInt(Keys.HEAL_MIN.toString()));
+                dataMap.put(Keys.HEAL_MAX, rs.getInt(Keys.HEAL_MAX.toString()));
+                dataMap.put(Keys.BLOCK_CHANCE, rs.getDouble(Keys.BLOCK_CHANCE.toString()));
 
                 //Instantiates the appropriate DungeonCharacter object based on its name
-                return switch (theCharacter) {
-                    case WARRIOR -> new Warrior(name, displayChar, health,
-                            damageMin, damageMax, attackSpeed, accuracy, blockChance);
+                return dataMap;
 
-                    case PRIESTESS -> new Priestess(name, displayChar, health,
-                            damageMin, damageMax, attackSpeed, accuracy, blockChance);
-
-                    case THIEF -> new Thief(name, displayChar, health,
-                            damageMin, damageMax, attackSpeed, accuracy, blockChance);
-
-                    case OGRE -> new Ogre(name, displayChar, health,
-                            damageMin, damageMax, attackSpeed, accuracy,
-                            healChance, healMin, healMax);
-
-                    case GREMLIN -> new Gremlin(name, displayChar, health,
-                            damageMin, damageMax, attackSpeed, accuracy,
-                            healChance, healMin, healMax);
-
-                    case SKELETON -> new Skeleton(name, displayChar, health,
-                            damageMin, damageMax, attackSpeed, accuracy,
-                            healChance, healMin, healMax);
-                };
             }
 
         } catch (final SQLException e) {

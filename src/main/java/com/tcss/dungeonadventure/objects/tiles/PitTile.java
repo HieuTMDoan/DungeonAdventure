@@ -19,10 +19,12 @@ public class PitTile extends Tile {
 
     @Override
     public void onInteract() {
-        DungeonAdventure.getInstance().getPlayer().getPlayerHero().changeHealth(-DAMAGE);
+        DungeonAdventure.getInstance().getPlayer().getPlayerHero().changeHealth(this, -DAMAGE);
         PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " heath.");
-
     }
 
-
+    @Override
+    public String getTileColor() {
+        return "orange";
+    }
 }

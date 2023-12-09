@@ -44,13 +44,16 @@ public abstract class Monster extends DungeonCharacter {
     }
 
     @Override
-    public void changeHealth(final int theChangeInHealth) {
-        super.changeHealth(theChangeInHealth);
-
+    public void changeHealth(final Object theSource, final int theChangeInHealth) {
+        super.changeHealth(this, theChangeInHealth);
         if (this.getHealth() > 0) {
             heal();
         }
+    }
 
+    @Override
+    public void changeHealth(final int theChangeInHealth) {
+        changeHealth(null, theChangeInHealth);
     }
 
     private void heal() {

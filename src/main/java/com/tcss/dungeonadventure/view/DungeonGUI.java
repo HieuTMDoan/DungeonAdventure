@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
@@ -45,12 +46,19 @@ public class DungeonGUI implements PropertyChangeListener {
     private final Room[][] myDiscoveredRooms;
 
     /**
+     * The current dungeon.
+     */
+    private final Dungeon myDungeon;
+
+
+    /**
      * Initializes a basic dungeon screen with the game's current
      * discovered rooms and a back button to resume the game.
      */
     public DungeonGUI(final GUIHandler theGUI) {
         this.myGUI = theGUI;
         this.myDiscoveredRooms = DungeonAdventure.getInstance().getDiscoveredRooms();
+        this.myDungeon = DungeonAdventure.getInstance().getDungeon();
 
         PCS.addPropertyListener(this);
 
@@ -87,9 +95,20 @@ public class DungeonGUI implements PropertyChangeListener {
                 hbox.setMaxSize(49, 49);
 
                 if (myDiscoveredRooms[row][col] != null) {
-                    final Text text = new Text("discovered");
+                    final Text text;
+
+                    if (myDungeon.getCurrentRoom().equals(myDiscoveredRooms[row][col])) {
+                        text = new Text("here");
+                    } else if (myDiscoveredRooms[row][col].equals(myDungeon.getStartingRoom())) {
+                        text = new Text("entrance");
+                    } else if (myDungeon.getRoomAt(row, col).isExitRoom()) {
+                        text = new Text("exit");
+                    } else {
+                        text = new Text("found");
+                    }
+
                     text.setBoundsType(TextBoundsType.VISUAL);
-                    text.setStyle("-fx-font-size: 5; " + "-fx-fill: white;");
+                    text.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
                     hbox.getChildren().add(text);
                     myGridPane.add(hbox, row, col);
                 } else {

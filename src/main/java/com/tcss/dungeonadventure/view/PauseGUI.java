@@ -73,12 +73,18 @@ public class PauseGUI {
     private void saveGame() {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("savedGame.ser"))) {
 
+            DungeonAdventureMemento memento = DungeonAdventure.getInstance().createMemento();
+
             // Serialize the game state (DungeonAdventureMemento instance) to the file
-            objectOutputStream.writeObject(DungeonAdventure.getInstance().createMemento());
+            objectOutputStream.writeObject(memento);
 
             System.out.println("Game saved successfully!");
 
-        } catch (final IOException ex) {
+        } catch (FileNotFoundException ex) {
+            System.out.println("Error: File not found when saving the game.");
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            System.out.println("Error: Failed to save the game.");
             ex.printStackTrace();
         }
     }
@@ -106,17 +112,14 @@ public class PauseGUI {
                 // Resume the game or update the GUI accordingly
                 myGUI.resumeGame();
             } else {
-                System.out.println("Invalid saved game file!");
+                System.out.println("Error: Invalid saved game file!");
             }
 
-        } catch (final FileNotFoundException ex) {
-            System.out.println("Saved game file not found!");
+        } catch (FileNotFoundException ex) {
+            System.out.println("Error: Saved game file not found!");
             ex.printStackTrace();
-        } catch (final IOException ex) {
-            System.out.println("Error reading saved game file!");
-            ex.printStackTrace();
-        } catch (final ClassNotFoundException ex) {
-            System.out.println("Class not found during deserialization!");
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println("Error: Failed to load the game.");
             ex.printStackTrace();
         }
     }

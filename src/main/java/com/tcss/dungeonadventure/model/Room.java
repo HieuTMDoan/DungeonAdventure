@@ -9,7 +9,7 @@ import com.tcss.dungeonadventure.objects.tiles.*;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
@@ -103,6 +103,23 @@ public class Room implements Serializable {
      * The current position of the player, or null if the player is not in the room.
      */
     private Point myPlayerPosition;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    // Serialize the non-transient fields
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        // Write additional non-transient fields here if needed
+    }
+
+    // Deserialize the non-transient fields
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // Initialize or read additional non-transient fields here if needed
+    }
+
+
 
 
     /**

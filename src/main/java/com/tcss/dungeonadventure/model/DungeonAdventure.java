@@ -11,8 +11,7 @@ import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 
 import java.awt.Point;
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -291,12 +290,8 @@ public final class DungeonAdventure implements Serializable {
 
 
     public void loadGameState() {
-        try {
-            // Load the memento from the GameStateManager
-            final DungeonAdventureMemento memento =
-                    GameStateManager.getInstance().getMemento();
-
-            // Restore the game state from the loaded memento
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
+            DungeonAdventureMemento memento = (DungeonAdventureMemento) ois.readObject();
             restoreFromMemento(memento);
 
             // Trigger necessary events to update the GUI
@@ -304,12 +299,12 @@ public final class DungeonAdventure implements Serializable {
             PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
             System.out.println("Game loaded successfully!");
-        } catch (final NullPointerException ex) {
-            // Handle the case where the memento is not found
+        } catch (IOException | ClassNotFoundException ex) {
             System.out.println("No saved game state found!");
             ex.printStackTrace();
         }
     }
+
 
 
     // Restore the state from a Memento

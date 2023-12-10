@@ -38,7 +38,7 @@ public class DungeonAdventureMemento implements Serializable {
     /**
      * The list of room mementos to store room states.
      */
-    private transient List<RoomMemento> myRoomMementos;
+    private List<RoomMemento> myRoomMementos;
 
     /**
      * Constructs a DungeonAdventureMemento with the specified player name, hero, and dungeon.
@@ -53,7 +53,6 @@ public class DungeonAdventureMemento implements Serializable {
         this.mySavedHero = theHero;
         this.mySavedDungeon = theDungeon;
         this.myRoomMementos = new ArrayList<>();
-        // Initialize other fields as needed
     }
 
     /**
@@ -71,13 +70,9 @@ public class DungeonAdventureMemento implements Serializable {
      * @return A copy of the list of room mementos.
      */
     public List<RoomMemento> getRoomMementos() {
-        if (myRoomMementos == null) {
-            // Handle the case where myRoomMementos is null, e.g., return an empty list
-            return new ArrayList<>();
-        }
-        // Return a copy of the list to prevent external modifications
         return new ArrayList<>(myRoomMementos);
     }
+
     /**
      * Custom deserialization method to initialize transient fields.
      *
@@ -91,7 +86,6 @@ public class DungeonAdventureMemento implements Serializable {
         // Initialize transient fields here
         this.myRoomMementos = new ArrayList<>();
     }
-
 
     /**
      * Gets the saved player name.

@@ -3,7 +3,7 @@ package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import java.awt.Point;
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Represents a snapshot of the state of a room in the dungeon.
@@ -29,6 +29,19 @@ public class RoomMemento implements Serializable {
      * The saved state of a specific item (pillar) in the room.
      */
     private final Item mySavedPillar;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        // Add additional code to handle non-serializable fields, if any
+    }
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // Add additional code to handle non-serializable fields, if any
+    }
+
 
     /**
      * Constructs a RoomMemento with the specified room data, player position,

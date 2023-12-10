@@ -96,7 +96,13 @@ public class HomeGUI implements PropertyChangeListener {
                 (Hero) SQLiteDB.getCharacterByName(mySelectedClass))
         );
 
-        this.myLoadGameButton.setOnAction(e -> loadGameFromFile());
+        this.myLoadGameButton.setOnAction(e -> {
+            try {
+                loadGameFromFile();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         this.myHelpButton.setOnAction(e -> {
             new HelpGUI(myGUI);
@@ -139,7 +145,7 @@ public class HomeGUI implements PropertyChangeListener {
 
     }
 
-    private void loadGameFromFile() {
+    private void loadGameFromFile() throws IOException {
         try (FileInputStream fileInputStream = new FileInputStream("savedGame.ser");
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
@@ -158,18 +164,17 @@ public class HomeGUI implements PropertyChangeListener {
                 // Resume the game or update the GUI accordingly
                 myGUI.resumeGame();
             } else {
-                System.out.println("Invalid saved game file!");
+                throw new IOException("Invalid saved game file!");
             }
 
         } catch (final FileNotFoundException ex) {
             // file not found
-            System.out.println("Saved game file not found!");
-            ex.printStackTrace();
+            throw new FileNotFoundException("Saved game file not found!");
         } catch (final IOException | ClassNotFoundException ex) {
             // I/O exceptions or loaded class not found
-            System.out.println("Error reading saved game file!");
-            ex.printStackTrace();
+            throw new IOException("Error reading saved game file: " + ex.getMessage());
         }
     }
-
 }
+
+

@@ -8,7 +8,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="TCSS360_Group3_CourseProject" />
         <module name="DungeonAdventure" />
-        <module name="DungeonAdventure-TCSS360Group3" />
       </profile>
     </annotationProcessing>
   </component>

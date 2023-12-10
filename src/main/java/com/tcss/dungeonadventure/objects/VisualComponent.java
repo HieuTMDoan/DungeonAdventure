@@ -9,17 +9,32 @@ package com.tcss.dungeonadventure.objects;
  * @author Hieu Doan
  * @version Fall 2023
  */
-public interface VisualComponent {
+public abstract class VisualComponent {
+
+    private final char myDisplayChar;
+    private String myDescription;
+
+    public VisualComponent(final char theDisplayChar) {
+        this.myDisplayChar = theDisplayChar;
+    }
 
     /**
      * @return The display character of the component.
      */
-    char getDisplayChar();
+    public char getDisplayChar() {
+        return this.myDisplayChar;
+    }
 
     /**
      * @return The description of the component.
      */
-    String getDescription();
+    public String getDescription() {
+        return "NO_DESCRIPTION";
+    }
+
+    public String getTileColor() {
+        return "white";
+    }
 
 }
 

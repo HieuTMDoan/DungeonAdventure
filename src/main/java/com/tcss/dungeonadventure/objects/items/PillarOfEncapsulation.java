@@ -21,5 +21,8 @@ public class PillarOfEncapsulation extends Item {
         // with the same display character and item type
         return new PillarOfEncapsulation();
     }
-
+    @Override
+    public String getTileColor() {
+        return "purple";
+    }
 }

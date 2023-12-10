@@ -2,13 +2,13 @@ package com.tcss.dungeonadventure.objects;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
 
 import java.io.Serializable;
 
 
-public abstract class DungeonCharacter implements VisualComponent, Serializable {
+public abstract class DungeonCharacter extends VisualComponent implements Serializable {
 
-    private final char myDisplayChar;
     private final String myName;
     private final int myMaxHealthPoints;
     private final int myMinDamage;
@@ -16,6 +16,7 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
     private final int myAttackSpeed;
     private final double myAccuracy; // same as hit rate
 
+    private Object myLastDamageSource;
     private int myHealthPoints;
 
     public DungeonCharacter(final String theName,
@@ -26,8 +27,8 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
                             final int theAttackSpeed,
                             final double theAccuracy) {
 
+        super(theDisplayChar);
         this.myName = theName;
-        this.myDisplayChar = theDisplayChar;
         this.myHealthPoints = theDefaultHealth;
         this.myMaxHealthPoints = theDefaultHealth;
         this.myMinDamage = theMinDamage;
@@ -36,14 +37,29 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
         this.myAccuracy = theAccuracy;
     }
 
-    public int attack(final DungeonCharacter theTarget) {
+    /**
+     * Attacks the target, using the specified stats to calculate damage.
+     * If the target is a hero, roll a chance to block the attack. If the attack is blocked,
+     * this will return null. If the damage is 0, that means the attack missed.
+     *
+     * @param theTarget The target to attack.
+     * @return Null if the attack was blocked, 0 if the attack missed, or the damage dealt.
+     */
+    public Integer attack(final DungeonCharacter theTarget) {
         final double randomAccuracy = Helper.getRandomDoubleBetween(0, 1);
         int damageDealth = 0;
 
         if (this.myAccuracy >= randomAccuracy) {
             final int damage = Helper.getRandomIntBetween(myMinDamage, myMaxDamage);
             damageDealth = damage;
-            theTarget.changeHealth(-damage);
+
+            if (theTarget instanceof final Hero hero) {
+                if (Helper.getRandomDoubleBetween(0, 1) < hero.getBlockChance()) {
+                    return null;
+                }
+            }
+
+            theTarget.changeHealth(this, -damage);
         }
         return damageDealth;
     }
@@ -51,11 +67,6 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
 
     public String getName() {
         return this.myName;
-    }
-
-    @Override
-    public char getDisplayChar() {
-        return myDisplayChar;
     }
 
     @Override
@@ -97,6 +108,18 @@ public abstract class DungeonCharacter implements VisualComponent, Serializable 
 
     public void changeHealth(final int theChangeInHealth) {
         this.setHealth(this.myHealthPoints + theChangeInHealth);
+    }
+
+    public void changeHealth(final Object theSource, final int theChangeInHealth) {
+        if (theSource != null) {
+            myLastDamageSource = theSource;
+        }
+
+        changeHealth(theChangeInHealth);
+    }
+
+    public Object getLastDamageSource() {
+        return this.myLastDamageSource;
     }
 
     public int getMinDamage() {

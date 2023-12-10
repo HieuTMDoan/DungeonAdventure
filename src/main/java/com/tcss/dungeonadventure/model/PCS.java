@@ -100,7 +100,13 @@ public enum PCS {
     /**
      * The property of the entire view of the dungeon.
      */
-    CHEAT_CODE;
+    CHEAT_CODE,
+    /**
+     * The property to toggle when the user can do an action during combat.
+     * Should be paired with a boolean, true if the user can attack.
+     */
+    TOGGLE_COMBAT_LOCK
+    ;
 
 
     /**

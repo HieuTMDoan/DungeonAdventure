@@ -22,4 +22,9 @@ public class PillarOfPolymorphism extends Item {
         // with the same display character and item type
         return new PillarOfPolymorphism();
     }
+
+    @Override
+    public String getTileColor() {
+        return "purple";
+    }
 }

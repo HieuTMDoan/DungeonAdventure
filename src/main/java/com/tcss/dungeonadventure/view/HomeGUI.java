@@ -5,6 +5,7 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.DungeonAdventureMemento;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.SQLiteDB;
+import com.tcss.dungeonadventure.model.factories.HeroFactory;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -93,7 +94,7 @@ public class HomeGUI implements PropertyChangeListener {
     private void attachEvents() {
         this.myNewGameButton.setOnAction(e -> myGUI.startNewGame(
                 getHeroName(myHeroNameTextField),
-                (Hero) SQLiteDB.getCharacterByName(mySelectedClass))
+                HeroFactory.createCharacter(mySelectedClass))
         );
 
         this.myLoadGameButton.setOnAction(e -> {

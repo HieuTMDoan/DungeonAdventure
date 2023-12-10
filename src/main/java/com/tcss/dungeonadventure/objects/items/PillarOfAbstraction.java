@@ -23,4 +23,12 @@ public class PillarOfAbstraction extends Item {
         return new PillarOfAbstraction();
     }
 
+    @Override
+    public String getTileColor() {
+        return "purple";
+    }
+
+
+
+
 }

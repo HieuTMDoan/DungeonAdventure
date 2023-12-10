@@ -4,8 +4,10 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import java.beans.PropertyChangeEvent;
@@ -22,6 +24,8 @@ import java.util.Calendar;
 public class CombatGUI implements PropertyChangeListener {
 
     private final GUIHandler myGUI;
+
+    private ScrollPane myLogScroll;
 
     /* Player Action Nodes */
     private Label myAttackButton;
@@ -54,6 +58,8 @@ public class CombatGUI implements PropertyChangeListener {
     }
 
     private void locateNodes() {
+        this.myLogScroll = (ScrollPane) lookup("combatScrollPane");
+
         myPlayerHealthLabel = (Label) lookup("combatPlayerHealthLabel");
         myEnemyLabel = (Label) lookup("combatEnemyLabel");
         myEnemyHealthLabel = (Label) lookup("combatEnemyHealthLabel");
@@ -67,26 +73,30 @@ public class CombatGUI implements PropertyChangeListener {
     }
 
     private void attachEvents() {
+        myMessageBox.heightProperty().addListener(
+                (ChangeListener) (observable, oldValue, newValue)
+                        -> myLogScroll.setVvalue((Double) newValue));
+
+
+
         myAttackButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.ATTACK));
         myUseSkillButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.USE_SKILL));
         myFleeButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.FLEE));
     }
 
     private void syncCombat(final Monster theMonster) {
-        myEnemyHealthLabel.setText(String.format("HP: %s/%s", theMonster.getHealth(), theMonster.getMaxHealth()));
+        myEnemyHealthLabel.setText(String.format("Health: %s/%s", theMonster.getHealth(), theMonster.getMaxHealth()));
+
+        myEnemyLabel.setStyle("-fx-text-fill: " + theMonster.getTileColor() + ";");
         myEnemyLabel.setText(String.valueOf(theMonster.getDisplayChar()));
 
         final Hero player = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
-        myPlayerHealthLabel.setText(String.format("HP: %s/%s", player.getHealth(), player.getMaxHealth()));
+        myPlayerHealthLabel.setText(String.format("Health: %s/%s", player.getHealth(), player.getMaxHealth()));
     }
 
     void startCombat(final Monster theMonster) {
         myMessageBox.getChildren().clear();
-        final Hero player = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
-
-        myPlayerHealthLabel.setText(String.format("HP: %s/%s", player.getHealth(), player.getMaxHealth()));
-        myEnemyLabel.setText(String.valueOf(theMonster.getDisplayChar()));
-        myEnemyHealthLabel.setText(String.format("HP: %s/%s", theMonster.getHealth(), theMonster.getMaxHealth()));
+        syncCombat(theMonster);
 
     }
 
@@ -101,7 +111,7 @@ public class CombatGUI implements PropertyChangeListener {
 
         final Label label = new Label(String.format("[%s] %s", time, theMessage));
         label.setWrapText(true);
-        label.setStyle("-fx-font-fill: white; -fx-font-size: 18");
+        label.setStyle("-fx-font-fill: white; -fx-font-size: 16;");
         myMessageBox.getChildren().add(label);
     }
 
@@ -109,9 +119,20 @@ public class CombatGUI implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
+            case BEGIN_COMBAT -> {
+                myAttackButton.setVisible(true);
+                myUseSkillButton.setVisible(true);
+                myFleeButton.setVisible(true);
+            }
             case SYNC_COMBAT -> syncCombat((Monster) theEvent.getNewValue());
             case END_COMBAT -> GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.ADVENTURING);
             case COMBAT_LOG -> log((String) theEvent.getNewValue());
+            case TOGGLE_COMBAT_LOCK -> {
+                final boolean canDoAction = (boolean) theEvent.getNewValue();
+                myAttackButton.setVisible(canDoAction);
+                myUseSkillButton.setVisible(canDoAction);
+                myFleeButton.setVisible(canDoAction);
+            }
         }
     }
 }

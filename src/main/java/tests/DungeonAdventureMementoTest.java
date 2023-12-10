@@ -1,6 +1,8 @@
-import org.junit.jupiter.api.Test;
+package tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.Test;
+
 
 class DungeonAdventureMementoTest {
 

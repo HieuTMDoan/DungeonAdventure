@@ -37,10 +37,6 @@ class DungeonAdventureTest {
     }
 
     @Test
-    void resetDiscoveredRooms() {
-    }
-
-    @Test
     void changeRoom() {
     }
 

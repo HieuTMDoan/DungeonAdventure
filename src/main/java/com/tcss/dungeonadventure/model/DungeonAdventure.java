@@ -82,7 +82,9 @@ public final class DungeonAdventure implements Serializable {
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         // This is where ALL data needs to be reset, just in case the player
         // is restarting their game.
-        resetDiscoveredRooms();
+        if (myDiscoveredRooms != null) {
+            setDiscoveredRooms(new Room[MAZE_SIZE.height][MAZE_SIZE.width]);
+        }
 
 
 
@@ -232,16 +234,6 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
     }
 
-    /**
-     * Clears all discovered rooms for a new game.
-     */
-    public void resetDiscoveredRooms() {
-        if (myDiscoveredRooms != null) {
-            Arrays.stream(myDiscoveredRooms).forEach(rooms -> Arrays.fill(rooms, null));
-            PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
-        }
-    }
-
     public void changeRoom(final Directions.Cardinal theDirection) {
         final Room room =
                 this.myDungeon.getCurrentRoom().getAdjacentRoomByDirection(theDirection);
@@ -253,6 +245,7 @@ public final class DungeonAdventure implements Serializable {
 
         System.out.println(this.myDungeon);
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
+        PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
     }
 
     public Player getPlayer() {

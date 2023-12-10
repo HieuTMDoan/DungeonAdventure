@@ -7,11 +7,14 @@ import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import com.tcss.dungeonadventure.model.Room;
+import com.tcss.dungeonadventure.objects.Directions;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
@@ -77,23 +80,79 @@ public class CheatCodeGUI implements PropertyChangeListener {
     }
 
     /**
-     * Displays the current map of the dungeon.
+     * Displays the current visible map of the dungeon.
      */
     private void displayMap() {
         for (int row = 0; row < MAZE_SIZE.height; row++) {
             for (int col = 0; col < MAZE_SIZE.width; col++) {
                 final HBox hbox = new HBox();
                 hbox.setAlignment(Pos.CENTER);
-                hbox.setMaxSize(49, 49);
+                hbox.setMaxSize(40, 40);
 
-                final Text text = new Text(myCurrentDungeon.getRoomAt(col, row).toString());
-                text.setBoundsType(TextBoundsType.VISUAL);
-                text.setStyle("-fx-font-size: 5; " + "-fx-fill: white;");
-
-                hbox.getChildren().add(text);
-                myGridPane.add(hbox, row, col);
+                final Room currentRoom = myCurrentDungeon.getRoomAt(row, col);
+                if (currentRoom.equals(myCurrentDungeon.getCurrentRoom())) {
+                    displayRoom(currentRoom, new Text("HERE"), row, col, hbox);
+                } else if (currentRoom.equals(myCurrentDungeon.getStartingRoom())) {
+                    displayRoom(currentRoom, new Text("START"), row, col, hbox);
+                } else if (currentRoom.isExitRoom()) {
+                    displayRoom(currentRoom, new Text("EXIT"), row, col, hbox);
+                } else if (currentRoom.getPillar() != null) {
+                    displayRoom(currentRoom, new Text(String.valueOf(currentRoom.getPillar().getDisplayChar())), row, col, hbox);
+                } else {
+                    displayRoom(currentRoom, new Text(""), row, col, hbox);
+                }
             }
         }
+    }
+
+    /**
+     * Displays the room with their doors and their status in the dungeon.
+     *
+     * @param theRoom     the room to be displayed
+     * @param theText     the text to be displayed in the room
+     * @param theRow      the row position of the box to be added to the {@link GridPane}
+     * @param theColumn   the column position of the box to be added to the {@link GridPane}
+     * @param theBox      the GUI component that displays the room
+     */
+    void displayRoom(final Room theRoom, final Text theText, final int theRow, final int theColumn, final HBox theBox) {
+        final double[] borderWidths = {0, 0, 0, 0};
+        int i = 0;
+
+        for (Directions.Cardinal dir : Directions.Cardinal.values()) {
+            if (theRoom.findDoorOnWall(dir) != null) {
+                borderWidths[i++] = 1;
+            } else {
+                borderWidths[i++] = 0;
+            }
+        }
+
+        theBox.setBorder(createBorder(borderWidths));
+        theText.setBoundsType(TextBoundsType.VISUAL);
+        theText.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
+        theBox.getChildren().add(theText);
+        myGridPane.add(theBox, theColumn, theRow);
+    }
+
+    /**
+     * Creates and returns a colored border with the given border widths.
+     *
+     * @param theBorderWidths the 4 widths of the border
+     * @return Returns a colored border with the given border widths.
+     */
+    Border createBorder(final double[] theBorderWidths) {
+        final BorderStroke borderStroke = new BorderStroke(
+                Color.rgb(255, 127, 80),
+                BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY,
+                new BorderWidths(
+                        theBorderWidths[0],
+                        theBorderWidths[1],
+                        theBorderWidths[2],
+                        theBorderWidths[3]
+                )
+        );
+
+        return new Border(borderStroke);
     }
 
     @Override

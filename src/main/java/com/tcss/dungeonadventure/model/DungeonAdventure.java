@@ -14,6 +14,7 @@ import java.awt.Point;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import javafx.application.Application;
@@ -276,8 +277,10 @@ public final class DungeonAdventure implements Serializable {
 
     public void saveGameState() {
         // Create and save a memento
-        GameStateManager.getInstance().createMemento();
+        DungeonAdventureMemento memento = this.createMemento();
+        GameStateManager.getInstance().setMemento(memento);
     }
+
 
 
     public void loadGameState() {
@@ -307,12 +310,16 @@ public final class DungeonAdventure implements Serializable {
         this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());
         this.myDungeon = theMemento.getSavedDungeon();
 
-        // Restore the current room
-        final RoomMemento roomMemento = theMemento.getRoomMementos().get(0);
-        myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
+        // Check if there are room mementos before accessing the first one
+        List<RoomMemento> roomMementos = theMemento.getRoomMementos();
+        if (!roomMementos.isEmpty()) {
+            final RoomMemento roomMemento = roomMementos.get(0);
+            myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
+        }
 
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
     }
+
 
     /**
      * Enums for combat actions.

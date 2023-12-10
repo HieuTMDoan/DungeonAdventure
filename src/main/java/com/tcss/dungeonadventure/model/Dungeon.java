@@ -8,6 +8,8 @@ import com.tcss.dungeonadventure.objects.tiles.Tile;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.util.Map;
  * @version TCSS 360: Fall 2023
  */
 public class Dungeon implements Serializable {
+
     /**
      * The default dungeon size.
      */
@@ -59,7 +62,7 @@ public class Dungeon implements Serializable {
     /**
      * The room that the player is currently in.
      */
-    private Room myCurrentRoom;
+    private transient Room myCurrentRoom;
 
 
     /**
@@ -482,6 +485,25 @@ public class Dungeon implements Serializable {
     public Room getStartingRoom() {
         return this.myStartingRoom;
     }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+
+        // Initialize transient fields here
+        myCurrentRoom = initializeCurrentRoom();
+    }
+
+    /**
+     * Initializes the current room after deserialization.
+     * This method can be customized based on your specific logic.
+     *
+     * @return The initialized current room.
+     */
+    private Room initializeCurrentRoom() {
+        // Example: Setting the current room to the starting room.
+        return myStartingRoom;
+    }
+
 
     /**
      * Loads the player into the dungeon at a specific XY,

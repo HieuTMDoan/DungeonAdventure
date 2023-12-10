@@ -614,8 +614,7 @@ public class Room implements Serializable {
     }
 
     public RoomMemento createMemento() {
-        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);
-    }
+        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar); }
 
     public RoomMemento saveToMemento() {
         return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);

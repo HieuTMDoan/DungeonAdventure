@@ -95,7 +95,8 @@ public class PauseGUI {
             final Object loadedObject = objectInputStream.readObject();
 
             // Check if the loaded object is an instance of DungeonAdventureMemento
-            if (loadedObject instanceof final DungeonAdventureMemento loadedMemento) {
+            if (loadedObject instanceof DungeonAdventureMemento) {
+                DungeonAdventureMemento loadedMemento = (DungeonAdventureMemento) loadedObject;
 
                 // Restore the game state from the loaded memento
                 DungeonAdventure.getInstance().restoreFromMemento(loadedMemento);

@@ -93,7 +93,7 @@ public class CheatCodeGUI implements PropertyChangeListener {
             for (int col = 0; col < MAZE_SIZE.width; col++) {
                 final HBox hbox = new HBox();
                 hbox.setAlignment(Pos.CENTER);
-                hbox.setMaxSize(40, 40);
+                hbox.setMaxSize(45, 45);
 
                 final Room currentRoom = myCurrentDungeon.getRoomAt(row, col);
                 if (currentRoom.equals(myCurrentDungeon.getCurrentRoom())) {

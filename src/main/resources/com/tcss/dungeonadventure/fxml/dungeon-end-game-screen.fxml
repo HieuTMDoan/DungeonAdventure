@@ -45,17 +45,17 @@
                </Label>
                <VBox alignment="CENTER">
                   <children>
-                     <Label style="-fx-text-fill: red;" text="7">
+                     <Label fx:id="EGdefeatedChar" style="-fx-text-fill: red;" text="7">
                         <font>
                            <Font size="40.0" />
                         </font>
                      </Label>
-                     <Label text="Skeleton">
+                     <Label fx:id="EGdefeatedName" text="Skeleton">
                         <font>
                            <Font size="20.0" />
                         </font>
                      </Label>
-                     <Label text="24/125 Health">
+                     <Label fx:id="EGdefeatedHealth" text="24/125 Health">
                         <font>
                            <Font size="20.0" />
                         </font>

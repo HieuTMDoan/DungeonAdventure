@@ -35,6 +35,11 @@ public class ItemTile extends Tile {
     }
 
     @Override
+    public String getTileColor() {
+        return myItem == null ? super.getTileColor() : myItem.getTileColor();
+    }
+
+    @Override
     public char getDisplayChar() {
         return myItem != null ? myItem.getDisplayChar() : TileChars.Room.EMPTY;
     }

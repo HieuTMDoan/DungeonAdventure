@@ -50,10 +50,6 @@ public class AdventuringGUI implements PropertyChangeListener {
      */
     private final Text[][] myRoomTextBoxes = new Text[10][10];
 
-    /**
-     * The handler to display the players stats.
-     */
-    private final PlayerStatsBox myPlayerStatsBox;  // Added PlayerStatsBox
 
     /**
      * A 2D array of Tiles, which is what the current room looks like.
@@ -87,9 +83,9 @@ public class AdventuringGUI implements PropertyChangeListener {
     private VBox myMessageBox;
 
     /**
-     * The player info box.
+     * The player info label.
      */
-    private VBox myPlayerInfoBox;
+    private Label myPlayerInfoLabel;
 
 
     public AdventuringGUI(final GUIHandler theGUI) {
@@ -101,10 +97,6 @@ public class AdventuringGUI implements PropertyChangeListener {
         createGUI();
 
         myMessageBox.getChildren().clear();
-        myPlayerInfoBox.getChildren().clear();
-
-        myPlayerStatsBox = new PlayerStatsBox();
-        myPlayerInfoBox.getChildren().add(myPlayerStatsBox);
 
         loadRoom(DungeonAdventure.getInstance().getDungeon().getCurrentRoom());
 
@@ -129,13 +121,14 @@ public class AdventuringGUI implements PropertyChangeListener {
         myTileInfoLabel = (Label) this.lookup("tileInfoLabel");
 
         myInventoryPaneHandler = new InventoryPanelHandler(this);
-        myPlayerInfoBox = (VBox) lookup("playerInfoBox");
+        myPlayerInfoLabel = (Label) lookup("playerInfoLabel");
 
 
         myMessageBox = (VBox) lookup("messageBox");
         myMessageScrollPane = (ScrollPane) lookup("messageScrollPane");
-        myMessageBox.heightProperty().addListener((ChangeListener) (observable, oldValue, newValue)
-                -> myMessageScrollPane.setVvalue((Double) newValue));
+        myMessageBox.heightProperty().addListener(
+                (ChangeListener) (observable, oldValue, newValue)
+                        -> myMessageScrollPane.setVvalue((Double) newValue));
 
         // This is to fix a bug where things within a scroll-pane are blurry
         myMessageScrollPane.setCache(false);
@@ -181,7 +174,7 @@ public class AdventuringGUI implements PropertyChangeListener {
      * @param theTile     The new tile.
      */
     private void setTileAt(final int theRowIndex, final int theColIndex, final Tile theTile) {
-        setTileAt(theRowIndex, theColIndex, theTile.getDisplayChar());
+        setTileAt(theRowIndex, theColIndex, theTile.getDisplayChar(), theTile.getTileColor());
     }
 
     /**
@@ -191,7 +184,11 @@ public class AdventuringGUI implements PropertyChangeListener {
      * @param theColIndex The column of the tile.
      * @param theChar     The new tile character.
      */
-    private void setTileAt(final int theRowIndex, final int theColIndex, final char theChar) {
+    private void setTileAt(final int theRowIndex,
+                           final int theColIndex,
+                           final char theChar,
+                           final String theColor) {
+
         if (theRowIndex > myGridPane.getRowCount()
                 || theColIndex > myGridPane.getColumnCount()) {
 
@@ -202,34 +199,10 @@ public class AdventuringGUI implements PropertyChangeListener {
                                     theRowIndex, theColIndex));
         }
 
-        myRoomTextBoxes[theRowIndex][theColIndex].setStyle(BOX_SIZE_CSS + "-fx-fill: "
-                + switch (theChar) {
-                case TileChars.Player.PLAYER -> "green;";
+        final Text text = myRoomTextBoxes[theRowIndex][theColIndex];
 
-                case TileChars.Monster.OGRE,
-                        TileChars.Monster.SKELETON,
-                        TileChars.Monster.GREMLIN -> "red;";
-
-                case TileChars.Items.PILLAR_OF_ABSTRACTION,
-                        TileChars.Items.PILLAR_OF_INHERITANCE,
-                        TileChars.Items.PILLAR_OF_ENCAPSULATION,
-                        TileChars.Items.PILLAR_OF_POLYMORPHISM -> "gold;";
-
-                case TileChars.Items.HEALING_POTION,
-                        TileChars.Items.VISION_POTION -> "blue;";
-
-                case TileChars.Room.HORIZONTAL_DOOR,
-                        TileChars.Room.VERTICAL_DOOR -> "coral;";
-
-                case TileChars.Room.ENTRANCE,
-                        TileChars.Room.EXIT -> "purple;";
-
-                case TileChars.Room.PIT -> "orange;";
-
-                default -> "white;";
-            });
-
-        myRoomTextBoxes[theRowIndex][theColIndex].setText(String.valueOf(theChar));
+        text.setStyle(BOX_SIZE_CSS + "-fx-fill: " + theColor + ";");
+        text.setText(String.valueOf(theChar));
     }
 
 
@@ -244,8 +217,20 @@ public class AdventuringGUI implements PropertyChangeListener {
     private void updatePlayerStats() {
         if (myCurrentRoom != null && DungeonAdventure.getInstance().getPlayer() != null) {
             final Hero playerHero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
-            if (myPlayerStatsBox != null && playerHero != null) {
-                myPlayerStatsBox.updateStats(playerHero);
+
+            if (playerHero != null) {
+                myPlayerInfoLabel.setText(String.format("""
+                                Name: %s
+                                Health: %s/%s
+                                Damage Range: %s-%s
+                                Speed: %s
+                                Accuracy: %s
+                                """,
+                        playerHero.getName(),
+                        playerHero.getHealth(), playerHero.getMaxHealth(),
+                        playerHero.getMinDamage(), playerHero.getMaxDamage(),
+                        playerHero.getAttackSpeed(),
+                        playerHero.getAccuracy()));
             }
         }
     }
@@ -263,7 +248,7 @@ public class AdventuringGUI implements PropertyChangeListener {
                     if (myCurrentRoom.getPlayerXPosition() != null
                             && row == myCurrentRoom.getPlayerXPosition()
                             && col == myCurrentRoom.getPlayerYPosition()) {
-                        setTileAt(row, col, TileChars.Player.PLAYER);
+                        setTileAt(row, col, TileChars.Player.PLAYER, "green");
                     } else {
                         setTileAt(row, col, myCurrentRoom.getRoomTiles()[row][col]);
                     }
@@ -329,7 +314,8 @@ public class AdventuringGUI implements PropertyChangeListener {
                 updatePlayerStats();  // Update PlayerStatsBox when player location changes
             }
             case ITEMS_CHANGED -> {
-                this.myInventoryPaneHandler.syncItems((Map<Item, Integer>) theEvent.getNewValue());
+                this.myInventoryPaneHandler.syncItems(
+                        (Map<Item, Integer>) theEvent.getNewValue());
                 updatePlayerStats();  // Update PlayerStatsBox when items change
             }
             case LOG -> log((String) theEvent.getNewValue());

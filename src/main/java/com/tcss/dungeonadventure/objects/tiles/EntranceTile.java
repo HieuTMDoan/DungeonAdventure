@@ -10,6 +10,11 @@ public class EntranceTile extends Tile {
         super(TileChars.Room.ENTRANCE, true);
     }
 
+    @Override
+    public String getTileColor() {
+        return "hotpink";
+    }
+
 
 
 }

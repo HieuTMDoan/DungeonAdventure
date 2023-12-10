@@ -38,4 +38,9 @@ public abstract class Hero extends DungeonCharacter {
     public boolean useSkill(final DungeonCharacter theTarget) {
         return mySkill.activateSkill(theTarget);
     }
+
+    @Override
+    public String getTileColor() {
+        return "green";
+    }
 }

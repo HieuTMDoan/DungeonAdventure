@@ -61,4 +61,9 @@ public class VisionPotion extends Item {
         // Create a new instance of VisionPotion with the same display character and item type
         return new VisionPotion();
     }
+
+    @Override
+    public String getTileColor() {
+        return "blue";
+    }
 }

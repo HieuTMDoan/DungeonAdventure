@@ -14,12 +14,7 @@ import java.io.Serializable;
  * @author Sunny Ali
  * @version Fall 2023
  */
-public class Tile implements VisualComponent, Serializable {
-
-    /**
-     * The character of the tile.
-     */
-    private final char myTileChar;
+public class Tile extends VisualComponent implements Serializable {
 
     /**
      * Boolean if the tile is traversable by the player.
@@ -27,17 +22,10 @@ public class Tile implements VisualComponent, Serializable {
     private final boolean myDefaultTraversable;
 
     public Tile(final char theTileChar, final boolean theDefaultTraversable) {
-        this.myTileChar = theTileChar;
+        super(theTileChar);
         this.myDefaultTraversable = theDefaultTraversable;
     }
 
-    /**
-     * @return The display character of the tile.
-     */
-    @Override
-    public char getDisplayChar() {
-        return this.myTileChar;
-    }
 
     /**
      * @return The description of the tile.
@@ -73,11 +61,11 @@ public class Tile implements VisualComponent, Serializable {
      */
     public Tile copy() {
         // logic to create a new instance with the same state
-        return new Tile(this.myTileChar, this.myDefaultTraversable);
+        return new Tile(super.getDisplayChar(), this.myDefaultTraversable);
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.myTileChar);
+        return String.valueOf(super.getDisplayChar());
     }
 }

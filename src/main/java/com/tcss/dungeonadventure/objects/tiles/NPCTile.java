@@ -26,6 +26,11 @@ public class NPCTile extends Tile {
     }
 
     @Override
+    public String getTileColor() {
+        return myDungeonCharacter.getTileColor();
+    }
+
+    @Override
     public boolean isTraversable() {
         return this.myDungeonCharacter.getHealth() <= 0;
     }

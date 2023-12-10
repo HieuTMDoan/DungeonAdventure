@@ -2,8 +2,13 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
+
 import java.awt.Point;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * Represents a snapshot of the state of a room in the dungeon.

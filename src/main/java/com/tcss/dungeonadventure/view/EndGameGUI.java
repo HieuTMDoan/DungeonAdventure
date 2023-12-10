@@ -3,10 +3,14 @@ package com.tcss.dungeonadventure.view;
 import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.Player;
+import com.tcss.dungeonadventure.objects.VisualComponent;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.PitTile;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents the GUI of the end screen when the game is over.
@@ -66,6 +70,12 @@ public class EndGameGUI {
     void show(final boolean theVictory) {
         myTitleLabel.setText(theVictory ? "Victory!" : "Game Over");
 
+        long exploredRooms = Arrays.stream(DungeonAdventure.getInstance().getDiscoveredRooms()).
+                flatMap(Arrays::stream).
+                filter(Objects::nonNull).
+                count();
+
+
         myStatsLabel.setText(String.format("""
                         Moves: %s
                         Explored Rooms: %s/%s
@@ -77,7 +87,7 @@ public class EndGameGUI {
                         Items Collected: %s
                         """,
                 Player.Stats.MOVES.getCounter(),
-                Player.Stats.EXPLORED_ROOMS.getCounter(),
+                exploredRooms,
                 Dungeon.MAZE_SIZE.height * Dungeon.MAZE_SIZE.width,
                 Player.Stats.MISSED_ATTACKS.getCounter(),
                 Player.Stats.DAMAGE_DEALT.getCounter(),
@@ -86,11 +96,20 @@ public class EndGameGUI {
                 Player.Stats.ITEMS_USED.getCounter(),
                 Player.Stats.ITEMS_COLLECTED.getCounter()));
 
-        final Object lastDamageSource = DungeonAdventure.getInstance().getPlayer().getPlayerHero().getLastDamageSource();
-        if (lastDamageSource instanceof PitTile) {
-            myDefeatedByChar.setText(String.valueOf(new PitTile().getDisplayChar()));
-        } else if (lastDamageSource instanceof final Monster m) {
-            myDefeatedByChar.setText(String.valueOf(m.getDisplayChar()));
+        final Object lastDamageSource =
+                DungeonAdventure.getInstance().getPlayer().getPlayerHero().getLastDamageSource();
+
+        if (lastDamageSource instanceof final VisualComponent v) {
+            myDefeatedByChar.setStyle("-fx-text-fill: " + v.getTileColor() + ";");
+            myDefeatedByChar.setText(String.valueOf(v.getDisplayChar()));
+        }
+
+        if (lastDamageSource instanceof Monster m) {
+            myDefeatedByName.setText(m.getName());
+            myDefeatedByHealth.setText(String.format("Health: %s/%s", m.getHealth(), m.getMaxHealth()));
+        } else if (lastDamageSource instanceof PitTile) {
+            myDefeatedByName.setText("Pit");
+            myDefeatedByHealth.setText("Really? A pit?");
         }
 
 

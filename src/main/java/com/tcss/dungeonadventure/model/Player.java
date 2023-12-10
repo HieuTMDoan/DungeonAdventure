@@ -95,7 +95,6 @@ public class Player implements Serializable {
 
     public enum Stats {
         MOVES,
-        EXPLORED_ROOMS,
         MISSED_ATTACKS,
         DAMAGE_DEALT,
         MONSTERS_ENCOUNTERED,

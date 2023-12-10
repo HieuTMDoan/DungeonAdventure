@@ -43,23 +43,25 @@ public abstract class Monster extends DungeonCharacter {
         this.myMaxHeal = theMaxHeal;
     }
 
-    @Override
-    public void changeHealth(final Object theSource, final int theChangeInHealth) {
-        super.changeHealth(this, theChangeInHealth);
-        if (this.getHealth() > 0) {
-            heal();
-        }
-    }
 
     @Override
     public void changeHealth(final int theChangeInHealth) {
-        changeHealth(null, theChangeInHealth);
+        super.changeHealth(theChangeInHealth);
+
     }
 
-    private void heal() {
+    public int heal() {
+        int healAmount = 0;
         if (Helper.getRandomDoubleBetween(0, 1) < this.myHealChance) {
-            super.changeHealth(Helper.getRandomIntBetween(myMinHeal, myMaxHeal));
+            healAmount = Helper.getRandomIntBetween(myMinHeal, myMaxHeal);
+            super.changeHealth(healAmount);
         }
+        return healAmount;
+    }
+
+    @Override
+    public String getTileColor() {
+        return "red";
     }
 
 

@@ -4,6 +4,7 @@ package com.tcss.dungeonadventure.objects.tiles;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.TileChars;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
 
 public class PitTile extends Tile {
 
@@ -19,8 +20,15 @@ public class PitTile extends Tile {
 
     @Override
     public void onInteract() {
-        DungeonAdventure.getInstance().getPlayer().getPlayerHero().changeHealth(this, -DAMAGE);
+        final Hero hero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+        hero.changeHealth(this, -DAMAGE);
+
+        if (hero.isDefeated()) {
+            DungeonAdventure.getInstance().handlePlayerDefeat();
+        }
+
         PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " heath.");
+
     }
 
     @Override

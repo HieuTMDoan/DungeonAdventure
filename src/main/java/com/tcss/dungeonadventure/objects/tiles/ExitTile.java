@@ -20,4 +20,9 @@ public class ExitTile extends Tile {
         }
         PCS.firePropertyChanged(PCS.LOG, "Find the rest of the pillars before leaving!");
     }
+
+    @Override
+    public String getTileColor() {
+        return "hotpink";
+    }
 }

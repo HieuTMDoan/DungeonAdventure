@@ -22,4 +22,9 @@ public class PillarOfInheritance extends Item {
         // with the same display character and item type
         return new PillarOfInheritance();
     }
+
+    @Override
+    public String getTileColor() {
+        return "purple";
+    }
 }

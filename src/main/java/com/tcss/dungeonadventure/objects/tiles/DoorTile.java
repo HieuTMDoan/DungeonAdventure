@@ -33,4 +33,9 @@ public class DoorTile extends Tile {
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDestinationRoom);
         // move player to new room
     }
+
+    @Override
+    public String getTileColor() {
+        return "coral";
+    }
 }

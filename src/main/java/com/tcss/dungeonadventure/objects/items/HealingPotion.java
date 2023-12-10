@@ -30,4 +30,9 @@ public class HealingPotion extends Item {
         // Create a new instance of HealingPotion with the same display character and item type
         return new HealingPotion();
     }
+
+    @Override
+    public String getTileColor() {
+        return "blue";
+    }
 }

@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.objects;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.objects.heroes.Hero;
 
 import java.io.Serializable;
 
@@ -36,13 +37,28 @@ public abstract class DungeonCharacter extends VisualComponent implements Serial
         this.myAccuracy = theAccuracy;
     }
 
-    public int attack(final DungeonCharacter theTarget) {
+    /**
+     * Attacks the target, using the specified stats to calculate damage.
+     * If the target is a hero, roll a chance to block the attack. If the attack is blocked,
+     * this will return null. If the damage is 0, that means the attack missed.
+     *
+     * @param theTarget The target to attack.
+     * @return Null if the attack was blocked, 0 if the attack missed, or the damage dealt.
+     */
+    public Integer attack(final DungeonCharacter theTarget) {
         final double randomAccuracy = Helper.getRandomDoubleBetween(0, 1);
         int damageDealth = 0;
 
         if (this.myAccuracy >= randomAccuracy) {
             final int damage = Helper.getRandomIntBetween(myMinDamage, myMaxDamage);
             damageDealth = damage;
+
+            if (theTarget instanceof final Hero hero) {
+                if (Helper.getRandomDoubleBetween(0, 1) < hero.getBlockChance()) {
+                    return null;
+                }
+            }
+
             theTarget.changeHealth(this, -damage);
         }
         return damageDealth;

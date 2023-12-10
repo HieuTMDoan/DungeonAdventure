@@ -1,5 +1,3 @@
-import org.junit.Test;
-
 package com.tcss.dungeonadventure.model;
 
 import org.junit.jupiter.api.Test;

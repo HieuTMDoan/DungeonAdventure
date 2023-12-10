@@ -85,7 +85,7 @@ public enum PCS {
 
     /**
      * The property of when a combat sequence is over.
-     * Should be paired with TODO: nothing? Return to the main screen?
+     * Should be paired with null.
      */
     END_COMBAT,
 

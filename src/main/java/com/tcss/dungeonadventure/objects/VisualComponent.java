@@ -12,7 +12,6 @@ package com.tcss.dungeonadventure.objects;
 public abstract class VisualComponent {
 
     private final char myDisplayChar;
-    private String myDescription;
 
     public VisualComponent(final char theDisplayChar) {
         this.myDisplayChar = theDisplayChar;

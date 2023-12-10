@@ -122,10 +122,6 @@ public class Player implements Serializable {
             theStat.myCounter += theAmount;
         }
 
-        public static int getCounter(final Stats theStat) {
-            return theStat.myCounter;
-        }
-
         static void resetAll() {
             for (final Stats s : values()) {
                 s.myCounter = 0;

@@ -1,13 +1,8 @@
-package tests;
-
 import org.junit.Test;
 
 
 class DungeonAdventureTest {
 
-    @Test
-    void initialize() {
-    }
 
     @Test
     void startNewGame() {

@@ -50,7 +50,6 @@ public class AdventuringGUI implements PropertyChangeListener {
      */
     private final Text[][] myRoomTextBoxes = new Text[10][10];
 
-
     /**
      * A 2D array of Tiles, which is what the current room looks like.
      */

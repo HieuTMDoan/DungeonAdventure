@@ -1,8 +1,5 @@
 package com.tcss.dungeonadventure.model;
 
-import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
-
-import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -10,16 +7,18 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
+import javafx.application.Application;
 
 import java.awt.Point;
-import java.io.*;
-import java.util.Arrays;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import javafx.animation.PauseTransition;
-import javafx.application.Application;
-import javafx.util.Duration;
+import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
 
 public final class DungeonAdventure implements Serializable {
 

@@ -2,12 +2,8 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
-import com.tcss.dungeonadventure.objects.heroes.Priestess;
-import com.tcss.dungeonadventure.objects.heroes.Thief;
-import com.tcss.dungeonadventure.objects.heroes.Warrior;
-import com.tcss.dungeonadventure.objects.monsters.Gremlin;
-import com.tcss.dungeonadventure.objects.monsters.Ogre;
-import com.tcss.dungeonadventure.objects.monsters.Skeleton;
+import org.sqlite.SQLiteDataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,8 +12,6 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.sqlite.SQLiteDataSource;
 
 /**
  * Utility class that uses JDBC API to store and manage the game's SQLite database.

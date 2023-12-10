@@ -1,8 +1,19 @@
 import org.junit.Test;
+package com.tcss.dungeonadventure.model;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class DungeonAdventureTest {
 
+    @Test
+    void getInstance() {
+    }
+
+    @Test
+    void initialize() {
+    }
 
     @Test
     void startNewGame() {
@@ -14,6 +25,10 @@ class DungeonAdventureTest {
 
     @Test
     void doCombatAction() {
+    }
+
+    @Test
+    void handlePlayerDefeat() {
     }
 
     @Test

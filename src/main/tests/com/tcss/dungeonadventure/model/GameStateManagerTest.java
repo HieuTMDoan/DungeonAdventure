@@ -1,4 +1,9 @@
 import org.junit.Test;
+package com.tcss.dungeonadventure.model;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class GameStateManagerTest {
 
@@ -8,14 +13,6 @@ class GameStateManagerTest {
 
     @Test
     void createMemento() {
-    }
-
-    @Test
-    void restoreFromMemento() {
-    }
-
-    @Test
-    void getMemento() {
     }
 
     @Test

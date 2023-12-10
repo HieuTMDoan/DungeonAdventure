@@ -1,5 +1,9 @@
 import org.junit.Test;
+package com.tcss.dungeonadventure.model;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class RoomMementoTest {
 

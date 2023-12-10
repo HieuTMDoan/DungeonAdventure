@@ -79,7 +79,6 @@ public class GUIHandler extends Application implements PropertyChangeListener {
 
         Layouts.swapLayout(Layouts.HOME);
         new HomeGUI(this);
-
     }
 
     /**

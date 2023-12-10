@@ -15,6 +15,9 @@
       <URL value="@../css/colors.css" />
       <URL value="@../css/dungeon-home-screen-styles.css" />
    </stylesheets>
+   <AnchorPane fx:id="adventuringPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <fx:include source="dungeon-adventure.fxml" />
+   </AnchorPane>
    <AnchorPane fx:id="homePane" layoutY="8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <VBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="84.0" prefWidth="900.0" text="Dungeon Adventure" textFill="WHITE">
@@ -56,10 +59,7 @@
             <Font name="Consolas" size="20.0" />
          </font>
       </Button>
-      <Button fx:id="homeHelpButton" layoutX="8.0" layoutY="555.2000122070312" mnemonicParsing="false" text="Help" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" />
-   </AnchorPane>
-   <AnchorPane fx:id="adventuringPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <fx:include source="dungeon-adventure.fxml" />
+      <Button fx:id="homeHelpButton" layoutX="22.0" layoutY="535.0" mnemonicParsing="false" text="Help" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" />
    </AnchorPane>
    <AnchorPane fx:id="pausePane" prefHeight="200.0" prefWidth="663.0" visible="false">
       <fx:include source="dungeon-pause-screen.fxml" />

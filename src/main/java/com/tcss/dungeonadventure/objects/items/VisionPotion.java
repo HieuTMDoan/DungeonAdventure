@@ -41,7 +41,7 @@ public class VisionPotion extends Item {
                 final int visibleRoomCol = adjacentRoomByDirection.getDungeonLocation().x;
 
                 theDiscoveredRooms[visibleRoomRow][visibleRoomCol] = adjacentRoomByDirection;
-            } catch (final ArrayIndexOutOfBoundsException ignored) { }
+            } catch (final NullPointerException ignored) { }
         }
 
         // Adds adjacent rooms by the diagonal directions
@@ -52,7 +52,7 @@ public class VisionPotion extends Item {
                 final int visibleRoomCol = adjacentRoomByDirection.getDungeonLocation().x;
 
                 theDiscoveredRooms[visibleRoomRow][visibleRoomCol] = adjacentRoomByDirection;
-            } catch (final ArrayIndexOutOfBoundsException ignored) { }
+            } catch (final NullPointerException ignored) { }
         }
     }
 

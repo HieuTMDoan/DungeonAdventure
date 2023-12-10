@@ -6,11 +6,13 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import com.tcss.dungeonadventure.objects.Directions;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
@@ -89,33 +91,81 @@ public class DungeonGUI implements PropertyChangeListener {
      */
     private void updateMap() {
         for (int row = 0; row < myDiscoveredRooms.length; row++) {
-            for (int col = 0; col < myDiscoveredRooms[0].length; col++) {
+            for (int col = 0; col < myDiscoveredRooms[row].length; col++) {
                 final HBox hbox = new HBox();
                 hbox.setAlignment(Pos.CENTER);
-                hbox.setMaxSize(49, 49);
+                hbox.setMaxSize(45, 45);
 
                 if (myDiscoveredRooms[row][col] != null) {
-                    final Text text;
+                    final Room currentDiscoveredRoom = myDiscoveredRooms[row][col];
 
-                    if (myDungeon.getCurrentRoom().equals(myDiscoveredRooms[row][col])) {
-                        text = new Text("here");
-                    } else if (myDiscoveredRooms[row][col].equals(myDungeon.getStartingRoom())) {
-                        text = new Text("entrance");
+                    // Adds and displays the room to the grid pane
+                    // based on its internal information
+                    if (currentDiscoveredRoom.equals(myDungeon.getCurrentRoom())) {
+                        displayRoom(currentDiscoveredRoom, new Text("HERE"), row, col, hbox);
+                    } else if (currentDiscoveredRoom.equals(myDungeon.getStartingRoom())) {
+                        displayRoom(currentDiscoveredRoom, new Text("START"), row, col, hbox);
                     } else if (myDungeon.getRoomAt(row, col).isExitRoom()) {
-                        text = new Text("exit");
+                        displayRoom(currentDiscoveredRoom, new Text("EXIT"), row, col, hbox);
                     } else {
-                        text = new Text("found");
+                        displayRoom(currentDiscoveredRoom, new Text("FOUND"), row, col, hbox);
                     }
-
-                    text.setBoundsType(TextBoundsType.VISUAL);
-                    text.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
-                    hbox.getChildren().add(text);
-                    myGridPane.add(hbox, row, col);
                 } else {
+                    // Adds and displays a blank room if it's not discovered yet
                     myGridPane.add(hbox, row, col);
                 }
             }
         }
+    }
+
+    /**
+     * Displays the room with their doors and their status in the dungeon.
+     *
+     * @param theRoom     the room to be displayed
+     * @param theText     the text to be displayed in the room
+     * @param theRow      the row position of the box to be added to the {@link GridPane}
+     * @param theColumn   the column position of the box to be added to the {@link GridPane}
+     * @param theBox      the GUI component that displays the room
+     */
+    void displayRoom(final Room theRoom, final Text theText, final int theRow, final int theColumn, final HBox theBox) {
+        final double[] borderWidths = {0, 0, 0, 0};
+        int i = 0;
+
+        for (Directions.Cardinal dir : Directions.Cardinal.values()) {
+            if (theRoom.findDoorOnWall(dir) != null) {
+                borderWidths[i++] = 1;
+            } else {
+                borderWidths[i++] = 0;
+            }
+        }
+
+        theBox.setBorder(createBorder(borderWidths));
+        theText.setBoundsType(TextBoundsType.VISUAL);
+        theText.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
+        theBox.getChildren().add(theText);
+        myGridPane.add(theBox, theRow, theColumn);
+    }
+
+    /**
+     * Creates and returns a colored border with the given border widths.
+     *
+     * @param theBorderWidths the 4 widths of the border
+     * @return Returns a colored border with the given border widths.
+     */
+    Border createBorder(final double[] theBorderWidths) {
+        final BorderStroke borderStroke = new BorderStroke(
+                Color.rgb(255, 127, 80),
+                BorderStrokeStyle.SOLID,
+                CornerRadii.EMPTY,
+                new BorderWidths(
+                        theBorderWidths[0],
+                        theBorderWidths[1],
+                        theBorderWidths[2],
+                        theBorderWidths[3]
+                )
+        );
+
+        return new Border(borderStroke);
     }
 
     @Override

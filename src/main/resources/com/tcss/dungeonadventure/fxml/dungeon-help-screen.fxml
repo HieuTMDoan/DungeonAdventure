@@ -17,7 +17,7 @@
          <Font size="40.0" />
       </font>
    </Label>
-   <Button fx:id="helpBackButton" layoutX="8.0" layoutY="555.2000122070312" mnemonicParsing="false" text="Back" />
+   <Button fx:id="helpBackButton" layoutX="22.0" layoutY="535.0" mnemonicParsing="false" text="Back" />
    <TextArea editable="false" layoutX="200.0" layoutY="70.0" prefHeight="419.0" prefWidth="500.0" text="This is an adventure game where a hero is randomly placed within dungeon. The adventurer needs to find the four Pillars of OO (Abstraction, Encapsulation, Inheritance, and Polymorphism) and take them to the exit to win the game. Some features of the dungeon will prove a hindrance to the adventurer's task (pits), while some will prove helpful (healing and vision potions).&#10;&#10;Movement: WASD or Arrow keys&#10;" wrapText="true" AnchorPane.bottomAnchor="111.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="70.0">
       <font>
          <Font size="18.0" />

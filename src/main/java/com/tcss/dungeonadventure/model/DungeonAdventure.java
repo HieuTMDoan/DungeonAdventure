@@ -7,6 +7,7 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
+import com.tcss.dungeonadventure.view.HomeGUI;
 import javafx.application.Application;
 
 import java.awt.Point;
@@ -34,7 +35,7 @@ public final class DungeonAdventure implements Serializable {
     /**
      * The current Dungeon.
      */
-    private Dungeon myDungeon;
+    private static Dungeon myDungeon;
 
     /**
      * The current discovered rooms in the dungeon.
@@ -288,6 +289,7 @@ public final class DungeonAdventure implements Serializable {
         theItem.useItem(myPlayer.getPlayerHero());
     }
 
+
     public DungeonAdventureMemento createMemento() {
         final String playerName = this.myPlayer.getPlayerName();
         final Hero hero = this.myPlayer.getPlayerHero();
@@ -300,9 +302,10 @@ public final class DungeonAdventure implements Serializable {
         return memento;
     }
 
-    public void saveGameState() {
+    public static void saveGameState() {
+        DungeonAdventure adventure = DungeonAdventure.getInstance();
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("saved_game.ser"))) {
-            oos.writeObject(createMemento());
+            oos.writeObject(adventure.createMemento());
             System.out.println("Game saved successfully!");
         } catch (IOException ex) {
             System.err.println("Error writing saved game state file: " + ex.getMessage());
@@ -310,13 +313,17 @@ public final class DungeonAdventure implements Serializable {
         }
     }
 
-    public void loadGameState() {
+
+
+    public static void loadGameState() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
             DungeonAdventureMemento memento = (DungeonAdventureMemento) ois.readObject();
-            restoreFromMemento(memento);
+
+            DungeonAdventure adventure = new DungeonAdventure();
+            adventure.restoreFromMemento(memento);
 
             // Trigger necessary events to update the GUI
-            PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
+            PCS.firePropertyChanged(PCS.LOAD_ROOM, adventure.getDungeon().getCurrentRoom());
             PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
             System.out.println("Game loaded successfully!");
@@ -333,6 +340,7 @@ public final class DungeonAdventure implements Serializable {
 
 
 
+
     // Restore the state from a Memento
     public void restoreFromMemento(final DungeonAdventureMemento theMemento) {
         this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());
@@ -342,11 +350,12 @@ public final class DungeonAdventure implements Serializable {
         List<RoomMemento> roomMementos = theMemento.getRoomMementos();
         if (!roomMementos.isEmpty()) {
             final RoomMemento roomMemento = roomMementos.get(0);
-            myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
+            this.myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
         }
 
-        PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
+        PCS.firePropertyChanged(PCS.LOAD_ROOM, this.myDungeon.getCurrentRoom());
     }
+
 
     /**
      * Creates a memento to save the current state of the game.

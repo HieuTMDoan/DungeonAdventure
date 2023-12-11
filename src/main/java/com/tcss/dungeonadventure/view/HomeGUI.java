@@ -1,10 +1,7 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
-import com.tcss.dungeonadventure.model.DungeonAdventure;
-import com.tcss.dungeonadventure.model.DungeonAdventureMemento;
-import com.tcss.dungeonadventure.model.PCS;
-import com.tcss.dungeonadventure.model.SQLiteDB;
+import com.tcss.dungeonadventure.model.*;
 import com.tcss.dungeonadventure.model.factories.HeroFactory;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import java.beans.PropertyChangeEvent;
@@ -19,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+
+import static com.tcss.dungeonadventure.model.DungeonAdventure.loadGameState;
 
 /**
  * Represents the GUI of the home screen
@@ -99,12 +98,7 @@ public class HomeGUI implements PropertyChangeListener {
         });
 
         this.myLoadGameButton.setOnAction(e -> {
-            try {
-                loadGameFromFile();
-            } catch (IOException ex) {
-                // Handle exceptions appropriately
-                ex.printStackTrace();
-            }
+            loadGameState();
         });
 
         this.myHelpButton.setOnAction(e -> {
@@ -148,30 +142,4 @@ public class HomeGUI implements PropertyChangeListener {
 
     }
 
-    private void loadGameFromFile() throws IOException {
-        try (FileInputStream fileInputStream = new FileInputStream("savedGame.ser");
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-
-            final Object loadedObject = objectInputStream.readObject();
-
-            if (loadedObject instanceof DungeonAdventureMemento loadedMemento) {
-                final DungeonAdventure loadedGame = DungeonAdventure.getInstance();
-                loadedGame.restoreFromMemento(loadedMemento);
-
-                System.out.println("Game loaded successfully!");
-
-                // Update the GUI or resume the game
-                myGUI.resumeGame();
-            } else {
-                throw new IOException("Invalid saved game file!");
-            }
-
-        } catch (final FileNotFoundException ex) {
-            // Handle file not found exception
-            ex.printStackTrace();
-        } catch (final IOException | ClassNotFoundException ex) {
-            // Handle other exceptions
-            ex.printStackTrace();
-        }
-    }
 }

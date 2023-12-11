@@ -74,21 +74,7 @@ public class DungeonAdventureMemento implements Serializable {
         return new ArrayList<>(myRoomMementos);
     }
 
-    /**
-     * Custom deserialization method to initialize transient fields.
-     *
-     * @param ois The ObjectInputStream.
-     * @throws IOException            If an I/O error occurs.
-     * @throws ClassNotFoundException If the class of a serialized object cannot be found.
-     */
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject();
-
-        // Initialize transient fields here
-        this.myRoomMementos = new ArrayList<>();
-    }
-
-
+    
     /**
      * Gets the saved player name.
      *

@@ -17,10 +17,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
-import javafx.util.Pair;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
@@ -91,26 +91,41 @@ public class CheatCodeGUI implements PropertyChangeListener {
      * Displays the current visible map of the dungeon.
      */
     private void displayMap() {
-        Room nextRoomToVictory = myCurrentDungeon.getStartingRoom();
-        int pathIndex = 0;
-        Pair<VBox, Room> vBoxRoomPair;
+        // Initializes lists of pre-defined rooms to victory
+        // and directions to victory
+        final List<Room> roomsToVictory = getRoomsToVictory();
+        final List<Cardinal> pathToVictory = myCurrentDungeon.getPath();
 
+
+        // Marks entrance, exit, pillar, and current rooms.
+        // Marks direction to victory if available
         for (int row = 0; row < MAZE_SIZE.height; row++) {
             for (int col = 0; col < MAZE_SIZE.width; col++) {
                 final Room currentRoom = myCurrentDungeon.getRoomAt(row, col);
 
-                VBox vBox = new VBox();  // Create a new VBox for each room
+                final VBox vBox = new VBox();  // Create a new VBox for each room
                 vBox.setAlignment(Pos.CENTER);
                 vBox.setMaxSize(45, 45);
+                vBox.setSpacing(2);
 
-                if (currentRoom.equals(nextRoomToVictory)
-                        && !currentRoom.isExitRoom()) {
-                    vBoxRoomPair =
-                            getBoxWithDirectionAndNewRoomToVictory(pathIndex++, vBox, currentRoom);
-                    vBox = vBoxRoomPair.getKey();
-                    nextRoomToVictory = vBoxRoomPair.getValue();
+                // Marks direction in the room with an arrow if available
+                if (roomsToVictory.contains(currentRoom)) {
+                    final int pathIndex = roomsToVictory.indexOf(currentRoom);
+
+                    final Text directionCharacter = switch (pathToVictory.get(pathIndex)) {
+                        case NORTH ->  new Text("↑");
+                        case EAST -> new Text("→");
+                        case SOUTH -> new Text("↓");
+                        case WEST -> new Text("←");
+                    };
+
+                    directionCharacter.setBoundsType(TextBoundsType.VISUAL);
+                    directionCharacter.setStyle("-fx-font-size: 15; " + "-fx-fill: rgb(255,127,80);");
+                    vBox.getChildren().add(directionCharacter);
                 }
 
+                // Marks entrance, exit, pillar, current rooms,
+                // and all other non-essential rooms.
                 if (currentRoom.equals(myCurrentDungeon.getCurrentRoom())) {
                     displayRoom(currentRoom, new Text("YOU"), row, col, vBox);
 
@@ -130,6 +145,25 @@ public class CheatCodeGUI implements PropertyChangeListener {
                 }
             }
         }
+    }
+
+    /**
+     * Returns a list of rooms that leads to victory.
+     *
+     * @return The list of rooms that leads to victory.
+     */
+    private List<Room> getRoomsToVictory() {
+        final List<Room> roomsToVictory = new ArrayList<>();
+        final List<Cardinal> pathToVictory = myCurrentDungeon.getPath();
+        Room currentRoomToVictory = myCurrentDungeon.getStartingRoom();
+
+        for (Cardinal cardinal : pathToVictory) {
+            roomsToVictory.add(currentRoomToVictory);
+            currentRoomToVictory =
+                    currentRoomToVictory.getAdjacentRoomByDirection(cardinal);
+        }
+
+        return roomsToVictory;
     }
 
     /**
@@ -190,38 +224,6 @@ public class CheatCodeGUI implements PropertyChangeListener {
         theBox.getChildren().add(theText);
 
         myGridPane.add(theBox, theColumn, theRow);
-    }
-
-    /**
-     * Adds a direction character to the room's GUI component,
-     * updates to the next room that the path to victory is pointing to,
-     * and returns both.
-     *
-     * @param thePathIndex the current index of the path to victory's list
-     * @param theBox the GUI component of the room
-     * @param theNextRoom the next room to victory to be updated
-     * @return The room's GUI component with a direction character,
-     * and the next room to victory.
-     */
-    private Pair<VBox, Room> getBoxWithDirectionAndNewRoomToVictory(final int thePathIndex,
-                                                                    final VBox theBox,
-                                                                    final Room theNextRoom) {
-        final List<Cardinal> path = myCurrentDungeon.getPath();
-        final Text directionCharacter = switch (path.get(thePathIndex)) {
-            case NORTH ->  new Text("↑");
-            case EAST -> new Text("→");
-            case SOUTH -> new Text("↓");
-            case WEST -> new Text("←");
-        };
-
-        directionCharacter.setBoundsType(TextBoundsType.VISUAL);
-        directionCharacter.setStyle("-fx-font-size: 15; " + "-fx-fill: rgb(255,127,80);");
-        theBox.getChildren().add(directionCharacter);
-
-        final Room nextRoomByDirection =
-                theNextRoom.getAdjacentRoomByDirection(path.get(thePathIndex));
-
-        return new Pair<>(theBox, nextRoomByDirection);
     }
 
     /**

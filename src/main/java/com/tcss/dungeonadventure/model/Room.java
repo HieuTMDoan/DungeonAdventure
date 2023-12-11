@@ -1,17 +1,22 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import com.tcss.dungeonadventure.objects.tiles.*;
-
+import com.tcss.dungeonadventure.objects.tiles.DoorTile;
+import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
+import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
+import com.tcss.dungeonadventure.objects.tiles.ExitTile;
+import com.tcss.dungeonadventure.objects.tiles.ItemTile;
+import com.tcss.dungeonadventure.objects.tiles.NPCTile;
+import com.tcss.dungeonadventure.objects.tiles.PitTile;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
+import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +24,10 @@ import java.util.Arrays;
 
 
 public class Room implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     /**
      * The maximum size of a room.
      */
@@ -107,23 +116,6 @@ public class Room implements Serializable {
      * The current position of the player, or null if the player is not in the room.
      */
     private Point myPlayerPosition;
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    // Serialize the non-transient fields
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        // Write additional non-transient fields here if needed
-    }
-
-    // Deserialize the non-transient fields
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        // Initialize or read additional non-transient fields here if needed
-    }
-
-
 
 
     /**
@@ -236,26 +228,12 @@ public class Room implements Serializable {
             }
         }
 
-        /*
-            x
-          y [#, #, #, #, #, #, #]
-            [#,  ,  ,  ,  ,  , #]
-            [#,  ,  ,  ,  ,  , #]
-            [#,  ,  ,  ,  ,  , #]
-            [#,  ,  ,  ,  ,  , #]
-            [#, #, #, #, #, #, #]
-
-            Other tiles can only occupy from (1, 1) to (width - 1, height - 1)
-        */
-
-
         // if the room is an exit or entrance, it shouldn't contain anything else.
         if (theIsEntrance || theIsExit) {
             putTileAtValidLocation(theIsEntrance ? new EntranceTile()
                     : new ExitTile(), tiles, false);
             return tiles;
         }
-
 
         if (thePillar != null) {
             try {
@@ -372,7 +350,8 @@ public class Room implements Serializable {
 
     public static void addExtraWalls(final Room theRoom) {
 
-        final int extraWalls = (int) ((theRoom.getRoomWidth() - 1) * (theRoom.getRoomHeight() - 1) * EXTRA_WALL_RATIO);
+        final int extraWalls = (int) ((theRoom.getRoomWidth() - 1)
+                * (theRoom.getRoomHeight() - 1) * EXTRA_WALL_RATIO);
         for (int i = 0; i < extraWalls; i++) {
             putTileAtValidLocation(new WallTile(), theRoom.getRoomTiles(), false);
         }
@@ -446,8 +425,8 @@ public class Room implements Serializable {
             tile = myRoomTiles[(int) tempPoint.getX()][(int) tempPoint.getY()];
         } catch (final ArrayIndexOutOfBoundsException e) {
             // If this is reached, that means the player is in a doorway and attempted to move
-            // in the direction they came in. Doesn't change their location, just interacts with
-            // the tile directly under them again.
+            // in the direction they came in. Doesn't change their location,
+            // just interacts with the tile directly under them again.
 
             tempPoint = new Point(myPlayerPosition);
             tile = myRoomTiles[(int) tempPoint.getX()][(int) tempPoint.getY()];
@@ -455,7 +434,7 @@ public class Room implements Serializable {
 
         if (tile.isTraversable()) {
             myPlayerPosition = tempPoint;
-            tile.onInteract();
+            tile.onInteract(DungeonAdventure.getInstance().getPlayer());
         }
     }
 
@@ -524,7 +503,9 @@ public class Room implements Serializable {
         myPlayerPosition = findDoorOnWall(theOriginalDirection.getOpposite());
 
         if (myPlayerPosition == null) {
-            System.out.println("WARNING: Could not find door on wall: " + theOriginalDirection.getOpposite());
+            System.out.println("WARNING: Could not find door on wall: "
+                    + theOriginalDirection.getOpposite());
+
             System.out.println(this);
         }
 
@@ -633,9 +614,6 @@ public class Room implements Serializable {
             }
         }
     }
-
-    public RoomMemento createMemento() {
-        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar); }
 
     public RoomMemento saveToMemento() {
         return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);

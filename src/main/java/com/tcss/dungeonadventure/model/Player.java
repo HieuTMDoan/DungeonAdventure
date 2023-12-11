@@ -2,8 +2,8 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
-
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,17 +27,6 @@ public class Player implements Serializable {
      * The inventory of the player.
      */
     private final Map<Item, Integer> myInventory = new HashMap<>();
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        // Add additional code to handle non-serializable fields, if any
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        // Add additional code to handle non-serializable fields, if any
-    }
-
 
 
     public Player(final String thePlayerName, final Hero thePlayerHero) {
@@ -104,15 +93,46 @@ public class Player implements Serializable {
     }
 
     public enum Stats {
+
+        /**
+         * The number of steps the player has made.
+         */
         MOVES,
+
+        /**
+         * The number of attacks missed during combat.
+         */
         MISSED_ATTACKS,
+
+        /**
+         * The amount of damage dealt.
+         */
         DAMAGE_DEALT,
+
+        /**
+         * The number of monsters encountered. //TODO
+         */
         MONSTERS_ENCOUNTERED,
+
+        /**
+         * The number of slain monsters.
+         */
         MONSTERS_DEFEATED,
+
+        /**
+         * The number of items used.
+         */
         ITEMS_USED,
+
+        /**
+         * The number of items collected.
+         */
         ITEMS_COLLECTED;
 
-        int myCounter;
+        /**
+         * The counter of the stat.
+         */
+        private int myCounter;
 
         public static void increaseCounter(final Stats theStat) {
             theStat.myCounter++;

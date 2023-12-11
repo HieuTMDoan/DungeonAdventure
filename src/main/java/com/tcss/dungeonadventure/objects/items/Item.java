@@ -1,13 +1,16 @@
 package com.tcss.dungeonadventure.objects.items;
 
-
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.VisualComponent;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class Item extends VisualComponent implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public enum ItemTypes {
 
@@ -23,11 +26,16 @@ public abstract class Item extends VisualComponent implements Serializable {
 
     }
 
-
     /**
      * The type of the item.
      */
     private final ItemTypes myItemType;
+
+
+    /**
+     * The description of the item.
+     */
+    private String myDescription;
 
     public Item(final char theDisplayChar, final ItemTypes theItemType) {
         super(theDisplayChar);
@@ -36,8 +44,10 @@ public abstract class Item extends VisualComponent implements Serializable {
 
     @Override
     public String getDescription() {
-        return "Item: " + getClass().getSimpleName();
+        // Use the stored description or the default if not set
+        return (myDescription != null) ? myDescription : "Item: " + getClass().getSimpleName();
     }
+
 
     public ItemTypes getItemType() {
         return this.myItemType;
@@ -53,7 +63,7 @@ public abstract class Item extends VisualComponent implements Serializable {
      * The Item equals method only compares class.
      *
      * @param theOther The other object to compare.
-     * @return
+     * @return True if the other object is the same item class, false otherwise.
      */
     @Override
     public boolean equals(final Object theOther) {

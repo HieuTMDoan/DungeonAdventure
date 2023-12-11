@@ -6,10 +6,13 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.heroes.Priestess;
 import com.tcss.dungeonadventure.objects.heroes.Thief;
 import com.tcss.dungeonadventure.objects.heroes.Warrior;
-
 import java.util.Map;
 
-public class HeroFactory  {
+public final class HeroFactory  {
+
+    private HeroFactory() {
+
+    }
 
     public static Hero createCharacter(final Helper.Characters theCharacter) {
         final Map<SQLiteDB.Keys, Object> dataMap = SQLiteDB.getCharacterByName(theCharacter);
@@ -50,9 +53,9 @@ public class HeroFactory  {
                         (Double) dataMap.get(SQLiteDB.Keys.BLOCK_CHANCE));
 
             }
-            default -> {
-                throw new IllegalArgumentException("Cannot instantiate non-heroes with HeroFactory");
-            }
+            default ->
+                    throw new IllegalArgumentException(
+                            "Cannot instantiate non-heroes with HeroFactory");
         }
     }
 }

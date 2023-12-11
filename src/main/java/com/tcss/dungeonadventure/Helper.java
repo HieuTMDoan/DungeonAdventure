@@ -1,11 +1,15 @@
 package com.tcss.dungeonadventure;
 
 
-import com.tcss.dungeonadventure.model.SQLiteDB;
 import com.tcss.dungeonadventure.model.factories.MonsterFactory;
-import com.tcss.dungeonadventure.objects.items.*;
+import com.tcss.dungeonadventure.objects.items.HealingPotion;
+import com.tcss.dungeonadventure.objects.items.Item;
+import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
+import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
+import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
+import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
+import com.tcss.dungeonadventure.objects.items.VisionPotion;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
@@ -38,10 +42,10 @@ public final class Helper {
      */
     private static final Class<?>[] PILLARS =
             new Class[]{
-                    PillarOfInheritance.class,
-                    PillarOfAbstraction.class,
-                    PillarOfPolymorphism.class,
-                    PillarOfEncapsulation.class};
+                PillarOfInheritance.class,
+                PillarOfAbstraction.class,
+                PillarOfPolymorphism.class,
+                PillarOfEncapsulation.class};
 
     private Helper() {
 

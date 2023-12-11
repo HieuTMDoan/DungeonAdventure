@@ -1,4 +1,4 @@
-package com.tcss.dungeonadventure.model;
+package com.tcss.dungeonadventure.model.memento;
 
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
@@ -14,12 +14,15 @@ import java.io.Serializable;
  * Represents a snapshot of the state of a room in the dungeon.
  * It includes a copy of the room data, player position,
  * and the state of a specific item (pillar).
+ *
  * @author Sunny, Aaron, Hieu
  * @version Fall 2023
  */
-
-
 public class RoomMemento implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     /**
      * The saved room data, representing the layout of tiles in the room.
      */
@@ -35,29 +38,48 @@ public class RoomMemento implements Serializable {
      */
     private final Item mySavedPillar;
 
+
+
     @Serial
-    private static final long serialVersionUID = 1L;
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        // Add additional code to handle non-serializable fields, if any
+    private void writeObject(final ObjectOutputStream theOut) throws IOException {
+        theOut.defaultWriteObject();
+//        // Additional code to handle non-serializable fields, if any
+//        // Item is not serializable, serialize only necessary properties
+//        if (mySavedPillar != null) {
+//            theOut.writeObject(mySavedPillar.getName());
+//            theOut.writeObject(mySavedPillar.getDescription());
+//            // Add other necessary properties
+//        }
     }
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        // Add additional code to handle non-serializable fields, if any
-    }
 
+    @Serial
+    private void readObject(final ObjectInputStream theIn) throws IOException, ClassNotFoundException {
+        theIn.defaultReadObject();
+
+
+//        // Add additional code to handle non-serializable fields, if any
+//        // Item is not serializable, reconstruct the Item using the serialized properties
+//        if (mySavedPillar != null) {
+//            final String itemName = (String) theIn.readObject();
+//            final String itemDescription = (String) theIn.readObject();
+//
+//            // Reconstruct the Item
+//            mySavedPillar.setName(itemName);
+//            mySavedPillar.setDescription(itemDescription);
+//            // Reconstruct other necessary properties
+//        }
+    }
 
     /**
-     * Constructs a RoomMemento with the specified room data, player position,
-     * and pillar state.
+     * Constructs a RoomMemento with the specified room data, player position, and pillar state.
      *
-     * @param theRoomData      The original room data to be saved.
+     * @param theRoomData       The original room data to be saved.
      * @param thePlayerPosition The original player position to be saved.
      * @param thePillar         The original state of the pillar to be saved.
      */
     public RoomMemento(final Tile[][] theRoomData,
                        final Point thePlayerPosition, final Item thePillar) {
+
         mySavedRoomData = deepCopyRoomData(theRoomData);
         mySavedPlayerPosition = new Point(thePlayerPosition);
         mySavedPillar = (thePillar != null) ? thePillar.copy() : null;
@@ -93,7 +115,6 @@ public class RoomMemento implements Serializable {
             return null;
         }
     }
-
 
     /**
      * Deep copies the original room data.

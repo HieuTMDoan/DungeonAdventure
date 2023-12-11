@@ -112,7 +112,7 @@ public enum PCS {
     /**
      * The Property Change Listener for DungeonAdventure.
      */
-    private static final PropertyChangeSupport PCS = new PropertyChangeSupport(PCS.class);
+    private  static final PropertyChangeSupport PCS = new PropertyChangeSupport(PCS.class);
 
 
     public static void firePropertyChanged(final PCS theProperty,

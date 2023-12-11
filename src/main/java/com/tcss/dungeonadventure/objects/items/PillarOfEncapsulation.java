@@ -15,12 +15,14 @@ public class PillarOfEncapsulation extends Item {
     public void useItem(final DungeonCharacter theTarget) {
         // Do nothing
     }
+
     @Override
     public Item copy() {
         // Create a new instance of PillarOfEncapsulation
         // with the same display character and item type
         return new PillarOfEncapsulation();
     }
+
     @Override
     public String getTileColor() {
         return "purple";

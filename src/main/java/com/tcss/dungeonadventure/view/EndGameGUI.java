@@ -8,7 +8,6 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.PitTile;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -20,14 +19,40 @@ import java.util.Objects;
  */
 public class EndGameGUI {
 
+    /**
+     * The GUI handler.
+     */
     private final GUIHandler myGUI;
 
 
+    /**
+     * The title label, either "Game Over" or "Victory"
+     */
     private Label myTitleLabel;
+
+    /**
+     * The label to return to the main menu.
+     */
     private Label myMainMenuLabel;
+
+    /**
+     * The label to display all stats.
+     */
     private Label myStatsLabel;
+
+    /**
+     * The label of the object that defeated the player.
+     */
     private Label myDefeatedByChar;
+
+    /**
+     * The name of the object that defeated the player.
+     */
     private Label myDefeatedByName;
+
+    /**
+     * The health of the object that defeated the player.
+     */
     private Label myDefeatedByHealth;
 
 
@@ -70,7 +95,8 @@ public class EndGameGUI {
     void show(final boolean theVictory) {
         myTitleLabel.setText(theVictory ? "Victory!" : "Game Over");
 
-        long exploredRooms = Arrays.stream(DungeonAdventure.getInstance().getDiscoveredRooms()).
+        final long exploredRooms =
+                Arrays.stream(DungeonAdventure.getInstance().getDiscoveredRooms()).
                 flatMap(Arrays::stream).
                 filter(Objects::nonNull).
                 count();
@@ -97,7 +123,8 @@ public class EndGameGUI {
                 Player.Stats.ITEMS_COLLECTED.getCounter()));
 
         final Object lastDamageSource =
-                DungeonAdventure.getInstance().getPlayer().getPlayerHero().getLastDamageSource();
+                DungeonAdventure.getInstance().getPlayer().
+                        getPlayerHero().getLastDamageSource();
 
         if (lastDamageSource instanceof final VisualComponent v) {
             myDefeatedByChar.setStyle("-fx-text-fill: " + v.getTileColor() + ";");
@@ -106,7 +133,8 @@ public class EndGameGUI {
 
         if (lastDamageSource instanceof Monster m) {
             myDefeatedByName.setText(m.getName());
-            myDefeatedByHealth.setText(String.format("Health: %s/%s", m.getHealth(), m.getMaxHealth()));
+            myDefeatedByHealth.setText(
+                    String.format("Health: %s/%s", m.getHealth(), m.getMaxHealth()));
         } else if (lastDamageSource instanceof PitTile) {
             myDefeatedByName.setText("Pit");
             myDefeatedByHealth.setText("Really? A pit?");

@@ -1,9 +1,7 @@
-package com.tcss.dungeonadventure.model;
+package com.tcss.dungeonadventure.model.memento;
 
+import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ public class DungeonAdventureMemento implements Serializable {
     /**
      * The list of room mementos to store room states.
      */
-    private List<RoomMemento> myRoomMementos;
+    private final List<RoomMemento> myRoomMementos;
 
     /**
      * Constructs a DungeonAdventureMemento with the specified player name, hero, and dungeon.
@@ -73,20 +71,7 @@ public class DungeonAdventureMemento implements Serializable {
         return new ArrayList<>(myRoomMementos);
     }
 
-    /**
-     * Custom deserialization method to initialize transient fields.
-     *
-     * @param ois The ObjectInputStream.
-     * @throws IOException            If an I/O error occurs.
-     * @throws ClassNotFoundException If the class of a serialized object cannot be found.
-     */
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject();
-
-        // Initialize transient fields here
-        this.myRoomMementos = new ArrayList<>();
-    }
-
+    
     /**
      * Gets the saved player name.
      *

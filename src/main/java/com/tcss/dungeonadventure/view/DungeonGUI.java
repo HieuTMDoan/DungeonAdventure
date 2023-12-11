@@ -6,7 +6,6 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import com.tcss.dungeonadventure.objects.Directions;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -179,7 +178,7 @@ public class DungeonGUI implements PropertyChangeListener {
 
         theBox.setBorder(createBorder(borderWidths));
         theText.setBoundsType(TextBoundsType.VISUAL);
-        theText.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
+        theText.setStyle("-fx-font-size: 10; -fx-fill: white;");
         theBox.getChildren().add(theText);
         myGridPane.add(theBox, theRow, theColumn);
     }

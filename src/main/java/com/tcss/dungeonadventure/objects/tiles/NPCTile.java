@@ -10,12 +10,16 @@ public class NPCTile extends Tile {
     /**
      * The dungeon character occupying this tile.
      */
-    private final DungeonCharacter myDungeonCharacter;
+    private DungeonCharacter myDungeonCharacter;
 
 
     public NPCTile(final DungeonCharacter theDungeonCharacter) {
         super(theDungeonCharacter.getDisplayChar(), false);
         this.myDungeonCharacter = theDungeonCharacter;
+    }
+
+    public NPCTile() {
+
     }
 
     @Override

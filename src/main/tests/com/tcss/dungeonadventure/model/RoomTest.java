@@ -100,6 +100,25 @@ class RoomTest {
 
     @Test
     public void movePlayer() {
+        final Tile[][] tiles = new Tile[][]{
+                {new EmptyTile(), new EmptyTile(), new EmptyTile()},
+                {new EmptyTile(), new EmptyTile(), new EmptyTile()},
+                {new EmptyTile(), new EmptyTile(), new EmptyTile()}
+        };
+
+        final Room room = new Room(tiles);
+
+        for (final Directions.Cardinal direction : Directions.Cardinal.values()) {
+            final Point point = new Point(1, 1);
+            room.setPlayerLocation(point);
+            room.movePlayer(direction);
+            point.translate(direction.getXOffset(), direction.getYOffset());
+
+            assertEquals(point, new Point(room.getPlayerXPosition(), room.getPlayerYPosition()));
+
+        }
+
+
     }
 
     @Test
@@ -122,24 +141,35 @@ class RoomTest {
         assertEquals(p, new Point(room.getPlayerXPosition(), room.getPlayerYPosition()));
     }
 
-    @Test
-    public void testSetPlayerLocation() {
-    }
 
     @Test
     public void getDungeonLocation() {
+        final Room room = new Room(false, false, null);
+        final Point p = new Point(1, 1);
+        room.setDungeonLocation(p);
+
+        assertEquals(p, room.getDungeonLocation());
     }
 
     @Test
     public void setDungeonLocation() {
+        final Room room = new Room(false, false, null);
+        final Point p = new Point(1, 1);
+        room.setDungeonLocation(p);
+
+        assertEquals(p, room.getDungeonLocation());
     }
 
     @Test
     public void getAdjacentRoomByDirection() {
+        fail();
+
     }
 
     @Test
     public void testGetAdjacentRoomByDirection() {
+        fail();
+
     }
 
     @Test
@@ -162,7 +192,7 @@ class RoomTest {
 
     @Test
     public void isExitRoomNonExit() {
-        final Room room = new Room(false, true, null);
+        final Room room = new Room(false, false, null);
         assertFalse(room.isExitRoom());
     }
 
@@ -171,9 +201,9 @@ class RoomTest {
         final int width = Helper.getRandomIntBetween(3, 6);
         final int height = Helper.getRandomIntBetween(3, 6);
 
-        final Tile[][] tiles = new Tile[width][height];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        final Tile[][] tiles = new Tile[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 tiles[i][j] = new EmptyTile();
             }
         }
@@ -188,9 +218,9 @@ class RoomTest {
         final int width = Helper.getRandomIntBetween(3, 6);
         final int height = Helper.getRandomIntBetween(3, 6);
 
-        final Tile[][] tiles = new Tile[width][height];
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        final Tile[][] tiles = new Tile[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 tiles[i][j] = new EmptyTile();
             }
         }
@@ -202,26 +232,44 @@ class RoomTest {
 
     @Test
     public void deepCopyRoomData() {
+        fail();
+
     }
 
     @Test
     public void createMemento() {
+        fail();
+
     }
 
     @Test
     public void saveToMemento() {
+        fail();
+
     }
 
     @Test
     public void restoreFromMemento() {
+        fail();
+
     }
 
     @Test
     public void getPlayerXPosition() {
+        final Room room = new Room(false, false, null);
+        room.setPlayerLocation(new Point(1, 1));
+
+        assertEquals(1, room.getPlayerXPosition());
+
     }
 
     @Test
     public void getPlayerYPosition() {
+        final Room room = new Room(false, false, null);
+        room.setPlayerLocation(new Point(1, 1));
+
+        assertEquals(1, room.getPlayerYPosition());
+
     }
 
     @Test

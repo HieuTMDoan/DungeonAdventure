@@ -6,7 +6,10 @@ import com.tcss.dungeonadventure.objects.TileChars;
 
 public class HealingPotion extends Item {
 
-    private static final int HEAL_AMOUNT = 10;
+    /**
+     * The amount healed when used.
+     */
+    private static final int HEAL_AMOUNT = 35;
 
     public HealingPotion() {
         super(TileChars.Items.HEALING_POTION, ItemTypes.CONSUMABLE);
@@ -14,12 +17,9 @@ public class HealingPotion extends Item {
 
     @Override
     public void useItem(final DungeonCharacter theTarget) {
-        // Check if the target character is a valid DungeonCharacter
         if (theTarget != null) {
-            // Set the new health for the target character
             theTarget.changeHealth(HEAL_AMOUNT);
 
-            // Print a message to inform the player about the healing action
             System.out.println(theTarget.getName()
                     + " used a Healing Potion and healed for "
                     + HEAL_AMOUNT + " hit points.");
@@ -27,7 +27,6 @@ public class HealingPotion extends Item {
     }
     @Override
     public Item copy() {
-        // Create a new instance of HealingPotion with the same display character and item type
         return new HealingPotion();
     }
 

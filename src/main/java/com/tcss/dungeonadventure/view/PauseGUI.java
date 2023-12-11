@@ -1,11 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
-import com.tcss.dungeonadventure.model.DungeonAdventureMemento;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 
@@ -65,29 +60,6 @@ public class PauseGUI {
         this.myHelpButton = (Button) lookup("menuHelpButton");
     }
 
-    /**
-     * Save the game state to a file using serialization.
-     */
-    private void saveGame() {
-        try (ObjectOutputStream objectOutputStream =
-                     new ObjectOutputStream(new FileOutputStream("savedGame.ser"))) {
-
-            final DungeonAdventureMemento memento =
-                    DungeonAdventure.getInstance().createMemento();
-
-            // Serialize the game state (DungeonAdventureMemento instance) to the file
-            objectOutputStream.writeObject(memento);
-
-            System.out.println("Game saved successfully!");
-
-        } catch (final FileNotFoundException ex) {
-            System.out.println("Error: File not found when saving the game.");
-            ex.printStackTrace();
-        } catch (final IOException ex) {
-            System.out.println("Error: Failed to save the game.");
-            ex.printStackTrace();
-        }
-    }
 
     /**
      * Helper method to organize the binding of nodes to variables.
@@ -95,7 +67,7 @@ public class PauseGUI {
     private void attachEvents() {
         this.myResumeButton.setOnAction(e -> myGUI.resumeGame());
 
-        this.mySaveGameButton.setOnAction(e -> saveGame());
+        this.mySaveGameButton.setOnAction(e -> DungeonAdventure.saveGameState());
 
         // Load the game when the "Load Game" button is clicked
         this.myHelpButton.setOnAction(e -> {

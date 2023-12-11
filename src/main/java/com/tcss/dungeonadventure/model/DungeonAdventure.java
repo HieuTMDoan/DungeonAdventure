@@ -1,5 +1,7 @@
 package com.tcss.dungeonadventure.model;
 
+import com.tcss.dungeonadventure.model.memento.DungeonAdventureMemento;
+import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -8,17 +10,17 @@ import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 import javafx.application.Application;
-
 import java.awt.Point;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
 
 public final class DungeonAdventure implements Serializable {
 
@@ -52,6 +54,7 @@ public final class DungeonAdventure implements Serializable {
 
 
     private DungeonAdventure() {
+
     }
 
     /**
@@ -88,13 +91,13 @@ public final class DungeonAdventure implements Serializable {
         // This is where ALL data needs to be reset, just in case the player
         // is restarting their game.
         if (myDiscoveredRooms != null) {
-            setDiscoveredRooms(new Room[MAZE_SIZE.height][MAZE_SIZE.width]);
+            setDiscoveredRooms(new Room[Dungeon.MAZE_SIZE.height][Dungeon.MAZE_SIZE.width]);
         }
 
 
         this.myPlayer = new Player(thePlayerName, theHero);
         this.myDungeon = new Dungeon();
-        this.myDiscoveredRooms = new Room[MAZE_SIZE.height][MAZE_SIZE.width];
+        this.myDiscoveredRooms = new Room[Dungeon.MAZE_SIZE.height][Dungeon.MAZE_SIZE.width];
         System.out.println(myDungeon);
 
         final Room startingRoom = myDungeon.getStartingRoom();
@@ -143,76 +146,84 @@ public final class DungeonAdventure implements Serializable {
         final Integer[] damage = new Integer[]{0};
 
         PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
-        new TimedSequence().
-                afterDo(0, () -> {
-                    switch (theAction) {
-                        case ATTACK -> {
-                            damage[0] = myPlayer.getPlayerHero().attack(myCurrentlyFightingMonster);
+        final TimedSequence s = new TimedSequence();
 
-                            if (damage[0] > 0) {
-                                Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, damage[0]);
-                                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                        "Player attacked, dealing " + damage[0] + " damage.");
-                            } else {
-                                Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
-                                PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
-                            }
-                            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-                        }
+        s.afterDo(0, () -> {
+            switch (theAction) {
+                case ATTACK -> {
+                    damage[0] = myPlayer.getPlayerHero().
+                            attack(myCurrentlyFightingMonster);
 
-                        case USE_SKILL -> myPlayer.getPlayerHero().useSkill(myCurrentlyFightingMonster);
+                    if (damage[0] > 0) {
+                        Player.Stats.
+                                increaseCounter(Player.Stats.DAMAGE_DEALT, damage[0]);
 
-                        case FLEE -> {
-                        }
-
-                        default -> throw new IllegalStateException("Unexpected value: " + theAction);
-                    }
-
-                    // Check for victory
-                    if (myCurrentlyFightingMonster.isDefeated()) {
-                        handleMonsterDefeat(myCurrentlyFightingMonster);
-                        return false;
-                    }
-                    return true;
-
-                }).
-                afterDoIf(1, () -> {
-                    final int healAmount = myCurrentlyFightingMonster.heal();
-                    if (healAmount > 0) {
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "%s healed %s health!".formatted(myCurrentlyFightingMonster.getName(), healAmount));
+                        PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                                "Player attacked, dealing " + damage[0] + " damage.");
                     } else {
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "%s tried to heal, but was unsuccessful!".formatted(myCurrentlyFightingMonster.getName()));
+                        Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
+                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                     }
-                    PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-                    return true;
+                    PCS.firePropertyChanged(PCS.SYNC_COMBAT,
+                            myCurrentlyFightingMonster);
+                }
 
-                }, () -> damage[0] > 0).
-                afterDo(1, () -> {
-                    final Integer damageToPlayer = myCurrentlyFightingMonster.attack(myPlayer.getPlayerHero());
+                case USE_SKILL -> myPlayer.getPlayerHero().
+                        useSkill(myCurrentlyFightingMonster);
 
-                    if (damageToPlayer == null) {
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
-                    } else if (damageToPlayer > 0) {
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, myCurrentlyFightingMonster.getName()
+                case FLEE -> {
+                }
+
+                default -> throw new IllegalStateException(
+                        "Unexpected value: " + theAction);
+            }
+
+            // Check for victory
+            if (myCurrentlyFightingMonster.isDefeated()) {
+                handleMonsterDefeat(myCurrentlyFightingMonster);
+                return false;
+            }
+            return true;
+        }).afterDoIf(1, () -> damage[0] > 0, () -> {
+            final int healAmount = myCurrentlyFightingMonster.heal();
+            if (healAmount > 0) {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                        "%s healed %s health!".
+                                formatted(myCurrentlyFightingMonster.getName(), healAmount));
+            } else {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                        "%s tried to heal, but was unsuccessful!".
+                                formatted(myCurrentlyFightingMonster.getName()));
+            }
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+            return true;
+        }).afterDo(1, () -> {
+            final Integer damageToPlayer = myCurrentlyFightingMonster.
+                    attack(myPlayer.getPlayerHero());
+
+            if (damageToPlayer == null) {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
+            } else if (damageToPlayer > 0) {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                        myCurrentlyFightingMonster.getName()
                                 + " attacked, dealing " + damageToPlayer + " damage.");
-                    } else {
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, myCurrentlyFightingMonster.getName()
-                                + " missed!");
-                    }
-                    PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+            } else {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                        myCurrentlyFightingMonster.getName() + " missed!");
+            }
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
 
-                    // Check for defeat
-                    if (myPlayer.getPlayerHero().isDefeated()) {
-                        // Handle player defeat
-                        handlePlayerDefeat();
-                        return false;
-                    }
+            // Check for defeat
+            if (myPlayer.getPlayerHero().isDefeated()) {
+                // Handle player defeat
+                handlePlayerDefeat();
+                return false;
+            }
 
 
-                    PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
-                    return true;
-
-                }).start();
+            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
+            return true;
+        }).start();
 
 
     }
@@ -292,57 +303,88 @@ public final class DungeonAdventure implements Serializable {
         theItem.useItem(myPlayer.getPlayerHero());
     }
 
-    public DungeonAdventureMemento createMemento() {
-        final String playerName = this.myPlayer.getPlayerName();
-        final Hero hero = this.myPlayer.getPlayerHero();
-        final Dungeon dungeon = this.myDungeon;
 
-        final DungeonAdventureMemento memento;
-        memento = new DungeonAdventureMemento(playerName, hero, dungeon);
-        memento.addRoomMemento(myDungeon.getCurrentRoom().saveToMemento());
+    // Saving
+    public static void saveGameState() {
+        final DungeonAdventure adventure = DungeonAdventure.getInstance();
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(new FileOutputStream("saved_game.ser"))) {
 
-        return memento;
-    }
-
-    public void saveGameState() {
-        // Create and save a memento
-        DungeonAdventureMemento memento = this.createMemento();
-        GameStateManager.getInstance().setMemento(memento);
-    }
-
-
-
-    public void loadGameState() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
-            DungeonAdventureMemento memento = (DungeonAdventureMemento) ois.readObject();
-            restoreFromMemento(memento);
-
-            // Trigger necessary events to update the GUI
-            PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
-            PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
-
-            System.out.println("Game loaded successfully!");
-        } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("No saved game state found!");
+            oos.writeObject(adventure.saveToMemento());
+            System.out.println("Game saved successfully!");
+        } catch (final IOException ex) {
+            System.err.println("Error writing saved game state file: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
+    /**
+     * Creates a memento to save the current state of the game.
+     *
+     * @return A memento representing the current state of the game.
+     */
+    public DungeonAdventureMemento saveToMemento() {
+        if (myPlayer == null || myDungeon == null) {
+            return null; // Handle null case appropriately
+        }
+
+        // Create a new DungeonAdventureMemento
+        final DungeonAdventureMemento memento =
+                new DungeonAdventureMemento(
+                        myPlayer.getPlayerName(),
+                        myPlayer.getPlayerHero(),
+                        myDungeon);
+
+        // Add the memento of the current room to the DungeonAdventureMemento
+        final Room currentRoom = myDungeon.getCurrentRoom();
+        if (currentRoom != null) {
+            final RoomMemento roomMemento = currentRoom.saveToMemento();
+            if (roomMemento != null) {
+                memento.addRoomMemento(roomMemento);
+            }
+        }
+
+        return memento;
+    }
+
+
+    // Loading
+    public static boolean loadGameState() {
+        try (ObjectInputStream ois =
+                     new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
+
+            final DungeonAdventureMemento memento = (DungeonAdventureMemento) ois.readObject();
+
+            final DungeonAdventure adventure = DungeonAdventure.getInstance();
+            adventure.restoreFromMemento(memento);
+
+            // Trigger necessary events to update the GUI
+            PCS.firePropertyChanged(PCS.LOAD_ROOM, adventure.getDungeon().getCurrentRoom());
+            PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
+
+            System.out.println("Game loaded successfully!");
+
+            return true;
+        } catch (final IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 
     // Restore the state from a Memento
-    public void restoreFromMemento(final DungeonAdventureMemento theMemento) {
+    private void restoreFromMemento(final DungeonAdventureMemento theMemento) {
         this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());
         this.myDungeon = theMemento.getSavedDungeon();
 
         // Check if there are room mementos before accessing the first one
-        List<RoomMemento> roomMementos = theMemento.getRoomMementos();
+        final List<RoomMemento> roomMementos = theMemento.getRoomMementos();
         if (!roomMementos.isEmpty()) {
             final RoomMemento roomMemento = roomMementos.get(0);
-            myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
+            this.myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
         }
 
-        PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
+        PCS.firePropertyChanged(PCS.LOAD_ROOM, this.myDungeon.getCurrentRoom());
     }
 
 

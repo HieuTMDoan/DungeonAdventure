@@ -83,7 +83,8 @@ public final class SQLiteDB {
             //Retrieves all relevant stats of both Monster and Hero characters
             if (rs.next()) {
                 dataMap.put(Keys.NAME, rs.getString(Keys.NAME.toString()));
-                dataMap.put(Keys.DISPLAY_CHAR, rs.getString(Keys.DISPLAY_CHAR.toString()).charAt(0));
+                dataMap.put(Keys.DISPLAY_CHAR,
+                        rs.getString(Keys.DISPLAY_CHAR.toString()).charAt(0));
                 dataMap.put(Keys.HEALTH, rs.getInt(Keys.HEALTH.toString()));
                 dataMap.put(Keys.DAMAGE_MIN, rs.getInt(Keys.DAMAGE_MIN.toString()));
                 dataMap.put(Keys.DAMAGE_MAX, rs.getInt(Keys.DAMAGE_MAX.toString()));

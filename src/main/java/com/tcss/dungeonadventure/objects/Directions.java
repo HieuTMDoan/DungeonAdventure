@@ -14,21 +14,6 @@ package com.tcss.dungeonadventure.objects;
 public class Directions {
 
 
-    /**
-     * Enum to represent different axes.
-     */
-    public enum Axis {
-        /**
-         * Represents the horizontal axis.
-         */
-        HORIZONTAL,
-
-        /**
-         * Represents the vertical axes.
-         */
-        VERTICAL
-    }
-
     public enum Cardinal {
         /**
          * Represents North.

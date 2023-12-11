@@ -6,8 +6,19 @@ import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
 public class CrushingBlow extends Skill {
 
+    /**
+     * The minimum damage.
+     */
     private static final int DEFAULT_MIN_DAMAGE = 75;
+
+    /**
+     * The maximum damage.
+     */
     private static final int DEFAULT_MAX_DAMAGE = 175;
+
+    /**
+     * The chance of success.
+     */
     private static final double DEFAULT_SUCCESS_CHANCE = 0.4;
 
 

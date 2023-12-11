@@ -6,10 +6,14 @@ import com.tcss.dungeonadventure.objects.monsters.Gremlin;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.monsters.Ogre;
 import com.tcss.dungeonadventure.objects.monsters.Skeleton;
-
 import java.util.Map;
 
-public class MonsterFactory {
+public final class MonsterFactory {
+
+    private MonsterFactory() {
+
+    }
+
     public static Monster createCharacter(final Helper.Characters theCharacter) {
         final Map<SQLiteDB.Keys, Object> dataMap = SQLiteDB.getCharacterByName(theCharacter);
         switch (theCharacter) {
@@ -54,9 +58,9 @@ public class MonsterFactory {
                         (Integer) dataMap.get(SQLiteDB.Keys.HEAL_MIN),
                         (Integer) dataMap.get(SQLiteDB.Keys.HEAL_MAX));
             }
-            default -> {
-                throw new IllegalArgumentException("Cannot instantiate non-monsters with MonsterFactory");
-            }
+            default ->
+                    throw new IllegalArgumentException(
+                            "Cannot instantiate non-monsters with MonsterFactory");
         }
     }
 }

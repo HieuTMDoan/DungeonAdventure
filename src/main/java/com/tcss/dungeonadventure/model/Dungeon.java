@@ -5,7 +5,6 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.IOException;
@@ -39,6 +38,8 @@ public class Dungeon implements Serializable {
      */
     private static final double DOOR_CHANCE = 0.7;
 
+    private static final int MAX_PATH_GENERATION_CHANCES = 200;
+
     /**
      * The entrance of the {@link Dungeon}.
      */
@@ -52,7 +53,7 @@ public class Dungeon implements Serializable {
     /**
      * The room that contains a pillar of Object-Oriented.
      */
-    private final List<Room> myPillarRooms;
+    private List<Room> myPillarRooms;
 
     /**
      * The 2D representation of the {@link Dungeon}.
@@ -101,6 +102,28 @@ public class Dungeon implements Serializable {
 
         );
     }
+
+    public Dungeon(final Room[][] theRooms) {
+        this.myMaze = theRooms;
+
+
+        Room startingRoom = null;
+        Room exitRoom = null;
+        for (final Room[] row : theRooms) {
+            for (final Room room : row) {
+                if (room.isEntranceRoom()) {
+                    startingRoom = room;
+                } else if (room.isExitRoom()) {
+                    exitRoom = room;
+                }
+            }
+        }
+
+        myStartingRoom = startingRoom;
+        myExitRoom = exitRoom;
+    }
+
+
 
     /**
      * Generates and returns an array of all Pillar rooms.
@@ -251,11 +274,10 @@ public class Dungeon implements Serializable {
         final List<Directions.Cardinal> path = new ArrayList<>();
         final List<Point> pathRoomLocations = new ArrayList<>();
 
-        final int maxAttempts = 200;
         int currentAttempt = 0;
 
         while (!currentLocation.equals(endingLocation)) {
-            if (currentAttempt == maxAttempts) {
+            if (currentAttempt == MAX_PATH_GENERATION_CHANCES) {
                 return false;
             }
             currentAttempt++;
@@ -470,7 +492,7 @@ public class Dungeon implements Serializable {
             }
         }
 
-        return surroundingMonsters.size() == 0
+        return surroundingMonsters.isEmpty()
                 ? null : surroundingMonsters.toArray(new Monster[0]);
     }
 
@@ -509,6 +531,7 @@ public class Dungeon implements Serializable {
         // Initialize transient fields here
         myCurrentRoom = initializeCurrentRoom();
     }
+
 
     /**
      * Initializes the current room after deserialization.

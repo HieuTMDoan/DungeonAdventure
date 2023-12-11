@@ -1,20 +1,14 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.VisualComponent;
-
+import java.io.Serial;
 import java.io.Serializable;
 
-/**
- * Parent class of all Tiles, which represents one square in
- * a room. Can contain a multitude of things, such as the
- * player, item, monsters, or interactables (doors, pits).
- *
- * @author Aaron Burnham
- * @author Hieu Doan
- * @author Sunny Ali
- * @version Fall 2023
- */
 public class Tile extends VisualComponent implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * Boolean if the tile is traversable by the player.
@@ -26,6 +20,12 @@ public class Tile extends VisualComponent implements Serializable {
         this.myDefaultTraversable = theDefaultTraversable;
     }
 
+    /**
+     * No-argument constructor for deserialization.
+     */
+    public Tile() {
+        this(' ', true);
+    }
 
     /**
      * @return The description of the tile.
@@ -38,7 +38,7 @@ public class Tile extends VisualComponent implements Serializable {
 
     /**
      * Returns if the tile can be stepped on. Can be overridden to allow
-     * player to traverse over the tile during a specific state.
+     * the player to traverse over the tile during a specific state.
      */
     public boolean isTraversable() {
         return this.myDefaultTraversable;
@@ -47,7 +47,7 @@ public class Tile extends VisualComponent implements Serializable {
     /**
      * This method should be fired when the user steps on a tile.
      */
-    public void onInteract() {
+    public void onInteract(final Player thePlayer) {
         if (!isTraversable()) {
             throw new RuntimeException(
                     "Target has entered a tile that should not be traversable");
@@ -60,7 +60,6 @@ public class Tile extends VisualComponent implements Serializable {
      * @return A new instance of the Tile with the same state.
      */
     public Tile copy() {
-        // logic to create a new instance with the same state
         return new Tile(super.getDisplayChar(), this.myDefaultTraversable);
     }
 
@@ -68,4 +67,10 @@ public class Tile extends VisualComponent implements Serializable {
     public String toString() {
         return String.valueOf(super.getDisplayChar());
     }
+
+
+
+
 }
+
+

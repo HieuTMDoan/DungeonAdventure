@@ -1,5 +1,8 @@
 package com.tcss.dungeonadventure.objects;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * This interface represents all objects that will have an appearance
  * during the game, and will require a display character and a description.
@@ -9,8 +12,14 @@ package com.tcss.dungeonadventure.objects;
  * @author Hieu Doan
  * @version Fall 2023
  */
-public abstract class VisualComponent {
+public abstract class VisualComponent implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The character of the tile.
+     */
     private final char myDisplayChar;
 
     public VisualComponent(final char theDisplayChar) {

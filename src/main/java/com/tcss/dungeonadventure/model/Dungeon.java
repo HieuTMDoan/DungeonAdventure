@@ -61,6 +61,11 @@ public class Dungeon implements Serializable {
      */
     private transient Room myCurrentRoom;
 
+    /**
+     * The sequence of {@link Directions.Cardinal} to victory.
+     */
+    private List<Directions.Cardinal> myPath;
+
 
     /**
      * Initializes a 6x6 traversable {@link Dungeon}.
@@ -77,6 +82,7 @@ public class Dungeon implements Serializable {
         myExitRoom = theExitRoom;
         myStartingRoom = theStartingRoom;
         myPillarRooms = thePillarRooms;
+        myPath = new ArrayList<>();
 
         generateDungeon();
     }
@@ -334,6 +340,7 @@ public class Dungeon implements Serializable {
             currentRoom = otherRoom;
         }
         System.out.println(path + " \n");
+        myPath = path;
         return true;
     }
 
@@ -464,6 +471,14 @@ public class Dungeon implements Serializable {
                 ? null : surroundingMonsters.toArray(new Monster[0]);
     }
 
+    /**
+     * Returns the sequence of {@link Directions.Cardinal} to victory.
+     *
+     * @return the sequence of {@link Directions.Cardinal} to victory.
+     */
+    public List<Directions.Cardinal> getPath() {
+        return myPath;
+    }
 
     /**
      * Accessor for the room that the player is currently in.
@@ -483,8 +498,10 @@ public class Dungeon implements Serializable {
         return this.myStartingRoom;
     }
 
-    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject();
+    @Serial
+    private void readObject(final ObjectInputStream theOis)
+            throws IOException, ClassNotFoundException {
+        theOis.defaultReadObject();
 
         // Initialize transient fields here
         myCurrentRoom = initializeCurrentRoom();

@@ -92,9 +92,9 @@ public class DungeonGUI implements PropertyChangeListener {
     private void updateMap() {
         for (int row = 0; row < myDiscoveredRooms.length; row++) {
             for (int col = 0; col < myDiscoveredRooms[row].length; col++) {
-                final HBox hbox = new HBox();
-                hbox.setAlignment(Pos.CENTER);
-                hbox.setMaxSize(45, 45);
+                final VBox vBox = new VBox();
+                vBox.setAlignment(Pos.CENTER);
+                vBox.setMaxSize(45, 45);
 
                 if (myDiscoveredRooms[row][col] != null) {
                     final Room currentDiscoveredRoom = myDiscoveredRooms[row][col];
@@ -102,17 +102,17 @@ public class DungeonGUI implements PropertyChangeListener {
                     // Adds and displays the room to the grid pane
                     // based on its internal information
                     if (currentDiscoveredRoom.equals(myDungeon.getCurrentRoom())) {
-                        displayRoom(currentDiscoveredRoom, new Text("HERE"), row, col, hbox);
+                        displayRoom(currentDiscoveredRoom, new Text("YOU"), row, col, vBox);
                     } else if (currentDiscoveredRoom.equals(myDungeon.getStartingRoom())) {
-                        displayRoom(currentDiscoveredRoom, new Text("START"), row, col, hbox);
+                        displayRoom(currentDiscoveredRoom, new Text("START"), row, col, vBox);
                     } else if (myDungeon.getRoomAt(row, col).isExitRoom()) {
-                        displayRoom(currentDiscoveredRoom, new Text("EXIT"), row, col, hbox);
+                        displayRoom(currentDiscoveredRoom, new Text("EXIT"), row, col, vBox);
                     } else {
-                        displayRoom(currentDiscoveredRoom, new Text("FOUND"), row, col, hbox);
+                        displayRoom(currentDiscoveredRoom, new Text(""), row, col, vBox);
                     }
                 } else {
                     // Adds and displays a blank room if it's not discovered yet
-                    myGridPane.add(hbox, row, col);
+                    myGridPane.add(vBox, row, col);
                 }
             }
         }
@@ -127,7 +127,7 @@ public class DungeonGUI implements PropertyChangeListener {
      * @param theColumn   the column position of the box to be added to the {@link GridPane}
      * @param theBox      the GUI component that displays the room
      */
-    void displayRoom(final Room theRoom, final Text theText, final int theRow, final int theColumn, final HBox theBox) {
+    void displayRoom(final Room theRoom, final Text theText, final int theRow, final int theColumn, final VBox theBox) {
         final double[] borderWidths = {0, 0, 0, 0};
         int i = 0;
 

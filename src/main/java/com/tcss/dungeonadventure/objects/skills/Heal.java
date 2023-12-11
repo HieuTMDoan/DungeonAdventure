@@ -11,10 +11,6 @@ public class Heal extends Skill {
      */
     private static final int HEAL_AMOUNT = 50;
 
-//    TODO: Decide how much to heal
-//    private static final int DEFAULT_MIN_HEAL = 75;
-//    private static final int DEFAULT_MAX_HEAL = 175;
-
     public Heal() {
 
     }

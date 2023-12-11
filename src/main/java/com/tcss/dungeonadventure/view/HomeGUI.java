@@ -89,13 +89,12 @@ public class HomeGUI implements PropertyChangeListener {
         this.myNewGameButton.setOnAction(e -> {
             // Start a new game and save the state to a file
             final String name = myHeroNameTextField.getText();
-            DungeonAdventure.getInstance().saveToMemento();
             myGUI.startNewGame(name.isEmpty() ? "nameless" : name,
                     HeroFactory.createCharacter(mySelectedClass));
         });
 
         this.myLoadGameButton.setOnAction(e -> {
-            if (DungeonAdventure.loadGameState()) {
+            if (DungeonAdventure.getInstance().loadGameState()) {
                 myGUI.loadGame();
             }
         });

@@ -148,7 +148,7 @@ public class DungeonGUI implements PropertyChangeListener {
         }
         theBox.setBorder(createBorder(borderWidths));
 
-        myGridPane.add(theBox, theColumn, theRow);
+        myGridPane.add(theBox, theRow, theColumn);
     }
 
     /**

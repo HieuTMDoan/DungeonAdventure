@@ -1,7 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.Directions;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -105,22 +104,33 @@ public enum PCS {
      * The property to toggle when the user can do an action during combat.
      * Should be paired with a boolean, true if the user can attack.
      */
-    TOGGLE_COMBAT_LOCK
-    ;
-
+    TOGGLE_COMBAT_LOCK;
 
     /**
      * The Property Change Listener for DungeonAdventure.
      */
     private  static final PropertyChangeSupport PCS = new PropertyChangeSupport(PCS.class);
 
-
+    /**
+     * Fires a change of property to the listeners with the new value.
+     *
+     * @param theProperty the changed property
+     * @param theNewValue the new value of that property
+     */
     public static void firePropertyChanged(final PCS theProperty,
                                            final Object theNewValue) {
 
         firePropertyChanged(theProperty, null, theNewValue);
     }
 
+    /**
+     * Fires a change of property to the listeners
+     * with the current and old value.
+     *
+     * @param theProperty the changed property
+     * @param theOldValue the old value of that property
+     * @param theNewValue the new value of that property
+     */
     public static void firePropertyChanged(final PCS theProperty,
                                            final Object theOldValue,
                                            final Object theNewValue) {
@@ -128,10 +138,14 @@ public enum PCS {
         PCS.firePropertyChange(theProperty.name(), theOldValue, theNewValue);
     }
 
+    /**
+     * Adds a listener to the list of listeners
+     * such that it has only one occurrence in the list.
+     *
+     * @param theListener the listener to be added
+     */
     public static void addPropertyListener(final PropertyChangeListener theListener) {
         PCS.removePropertyChangeListener(theListener);
         PCS.addPropertyChangeListener(theListener);
     }
-
-
 }

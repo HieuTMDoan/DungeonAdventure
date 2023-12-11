@@ -9,7 +9,6 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
-import javafx.application.Application;
 import java.awt.Point;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,8 +19,16 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.IntStream;
+import javafx.application.Application;
 
 
+/**
+ * Represents the game's logic and functionalities.
+ * This object communicates with the listener classes via MVC pattern.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public final class DungeonAdventure implements Serializable {
 
     @Serial
@@ -52,10 +59,12 @@ public final class DungeonAdventure implements Serializable {
      */
     private Monster myCurrentlyFightingMonster;
 
-
-    private DungeonAdventure() {
-
-    }
+    /**
+     * Default empty constructor.
+     * Should only be used for one-time instantiations
+     * to preserve the singularity of the class.
+     */
+    private DungeonAdventure() { }
 
     /**
      * Lazy singleton accessor.
@@ -69,6 +78,9 @@ public final class DungeonAdventure implements Serializable {
         return INSTANCE;
     }
 
+    /**
+     * Launches the front-end of this program.
+     */
     public void initialize() {
         /*
          * I have absolutely no clue why I couldn't throw this in the
@@ -76,8 +88,6 @@ public final class DungeonAdventure implements Serializable {
          * to stay here.
          * */
         Application.launch(GUIHandler.class);
-
-
     }
 
 
@@ -129,6 +139,12 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
     }
 
+    /**
+     * Moves the player to a new tile
+     * in the given {@link Directions.Cardinal}.
+     *
+     * @param theDirection the given {@link Directions.Cardinal}
+     */
     public void movePlayer(final Directions.Cardinal theDirection) {
         Player.Stats.increaseCounter(Player.Stats.MOVES);
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
@@ -142,6 +158,13 @@ public final class DungeonAdventure implements Serializable {
         startCombat(surroundingMonsters);
     }
 
+    /**
+     * Processes the given combat action.
+     * Updates the status of the battle with messages
+     * and the stats of the player and monster.
+     *
+     * @param theAction the action to take by the player
+     */
     public void doCombatAction(final CombatActions theAction) {
         final Integer[] damage = new Integer[]{0};
 
@@ -220,19 +243,27 @@ public final class DungeonAdventure implements Serializable {
                 return false;
             }
 
-
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
             return true;
         }).start();
-
-
     }
 
+    /**
+     * Starts engaging in combat with a monster
+     * from the list of monsters.
+     *
+     * @param theSurroundingMonsters the list of monsters
+     *                               to engage in combat with.
+     */
     private void startCombat(final Monster[] theSurroundingMonsters) {
         this.myCurrentlyFightingMonster = theSurroundingMonsters[0];
         PCS.firePropertyChanged(PCS.BEGIN_COMBAT, theSurroundingMonsters[0]);
     }
 
+    /**
+     * Updates the game's status
+     * and displays a game-over in the event of losing.
+     */
     public void handlePlayerDefeat() {
         // Handle player defeat, --> display message and reset the game
         PCS.firePropertyChanged(PCS.GAME_END, false);
@@ -242,6 +273,9 @@ public final class DungeonAdventure implements Serializable {
                 + " defeated! Game over.");
     }
 
+    /**
+     * Updates the game's status for a monster's defeat.
+     */
     private void handleMonsterDefeat(final Monster theDefeatedMonster) {
         // Handle monster defeat
         Player.Stats.increaseCounter(Player.Stats.MONSTERS_DEFEATED);
@@ -275,6 +309,12 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
     }
 
+    /**
+     * Moves the player's current location in the dungeon
+     * in the given {@link Directions.Cardinal}.
+     *
+     * @param theDirection the given {@link Directions.Cardinal}
+     */
     public void changeRoom(final Directions.Cardinal theDirection) {
         final Room room =
                 this.myDungeon.getCurrentRoom().getAdjacentRoomByDirection(theDirection);
@@ -289,10 +329,21 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
     }
 
+    /**
+     * Returns the current {@link Player}.
+     *
+     * @return The current {@link Player}.
+     */
     public Player getPlayer() {
         return this.myPlayer;
     }
 
+    /**
+     * Uses the chosen {@link Item} from the inventory
+     * and updates the game's status based on the {@link Item}'s type.
+     *
+     * @param theItem the chosen {@link Item}
+     */
     public void useItem(final Item theItem) {
         if (theItem.getItemType() == Item.ItemTypes.PILLAR) {
             return;
@@ -305,6 +356,11 @@ public final class DungeonAdventure implements Serializable {
 
 
     // Saving
+    /**
+     * Saves the game's current state to a file.
+     * Throws an {@link IOException} error
+     * if the game can't be saved.
+     */
     public static void saveGameState() {
         final DungeonAdventure adventure = DungeonAdventure.getInstance();
         try (ObjectOutputStream oos =
@@ -319,9 +375,11 @@ public final class DungeonAdventure implements Serializable {
     }
 
     /**
-     * Creates a memento to save the current state of the game.
+     * Creates a {@link DungeonAdventureMemento memento}
+     * to save the current state of the game.
      *
-     * @return A memento representing the current state of the game.
+     * @return A {@link DungeonAdventureMemento memento}
+     * representing the current state of the game.
      */
     public DungeonAdventureMemento saveToMemento() {
         if (myPlayer == null || myDungeon == null) {
@@ -349,6 +407,11 @@ public final class DungeonAdventure implements Serializable {
 
 
     // Loading
+    /**
+     * Loads the game's current state from a file.
+     * Throws an {@link IOException} or {@link ClassNotFoundException} error
+     * if the game can't be loaded.
+     */
     public static boolean loadGameState() {
         try (ObjectInputStream ois =
                      new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
@@ -373,6 +436,13 @@ public final class DungeonAdventure implements Serializable {
 
 
     // Restore the state from a Memento
+    /**
+     * Restores a {@link DungeonAdventureMemento memento}
+     * to load the previous state of the game.
+     *
+     * @param theMemento the {@link DungeonAdventureMemento memento}
+     *                   to restore from
+     */
     private void restoreFromMemento(final DungeonAdventureMemento theMemento) {
         this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());
         this.myDungeon = theMemento.getSavedDungeon();

@@ -38,6 +38,10 @@ public class Dungeon implements Serializable {
      */
     private static final double DOOR_CHANCE = 0.7;
 
+    /**
+     * The maximum amount of attempts
+     * to generate a randomized path to victory.
+     */
     private static final int MAX_PATH_GENERATION_CHANCES = 200;
 
     /**
@@ -478,7 +482,23 @@ public class Dungeon implements Serializable {
         final int x = myCurrentRoom.getPlayerXPosition();
         final int y = myCurrentRoom.getPlayerYPosition();
 
+        // Checks for every conventional direction
         for (final Directions.Cardinal d : Directions.Cardinal.values()) {
+            try {
+                final Tile tile = roomTiles[x + d.getXOffset()][y + d.getYOffset()];
+                if (!(tile instanceof final NPCTile npcTile)) {
+                    continue;
+                }
+
+                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
+                    surroundingMonsters.add((Monster) npcTile.getNPC());
+                }
+            } catch (final ArrayIndexOutOfBoundsException ignored) {
+            }
+        }
+
+        // Checks for every diagonal direction
+        for (final Directions.Diagonal d : Directions.Diagonal.values()) {
             try {
                 final Tile tile = roomTiles[x + d.getXOffset()][y + d.getYOffset()];
                 if (!(tile instanceof final NPCTile npcTile)) {
@@ -557,6 +577,11 @@ public class Dungeon implements Serializable {
         this.myCurrentRoom = theRoom;
     }
 
+    /**
+     *
+     * @param theRoom
+     * @param theOriginalDirection
+     */
     public void loadPlayerTo(final Room theRoom,
                              final Directions.Cardinal theOriginalDirection) {
 
@@ -580,8 +605,6 @@ public class Dungeon implements Serializable {
             return null;
         }
     }
-
-
 
     @Override
     public String toString() {
@@ -618,16 +641,6 @@ public class Dungeon implements Serializable {
                             : " ";
                     stringBuilder.append(north).append(south).append(east).append(west);
                 }
-//                } else if (room.getPillar() != null) {
-//                    stringBuilder.append(" ").
-//                            append(room.getPillar().getDisplayChar()).
-//                            append("  ");
-//                } else {
-//                    stringBuilder.append("|").
-//                            append(room.getDungeonLocation().x).
-//                            append(room.getDungeonLocation().y).
-//                            append("|");
-//                }
 
                 stringBuilder.append("| ");
             }

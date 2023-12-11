@@ -1,0 +1,21 @@
+/**
+ * Represents a randomly generated maze of type {@link Room}.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
+
+ //////////////////////from Dungeon toString()////////////////////////////////////
+ //
+ //                } else if (room.getPillar() != null) {
+ //                    stringBuilder.append(" ").
+ //                            append(room.getPillar().getDisplayChar()).
+ //                            append("  ");
+ //                } else {
+ //                    stringBuilder.append("|").
+ //                            append(room.getDungeonLocation().x).
+ //                            append(room.getDungeonLocation().y).
+ //                            append("|");
+ //                }
+
+ ////////////////////// ////////////////////////////////////

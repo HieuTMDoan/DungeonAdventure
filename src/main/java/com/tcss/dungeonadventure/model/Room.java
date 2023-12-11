@@ -22,7 +22,14 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
-
+/**
+ * Represents a room in the dungeon.
+ * A room is made up of tiles of multiple types
+ * and contains monsters and items to pick and use.
+ *
+ * @author Aaron, Sunny, Hieu
+ * @version TCSS 360: Fall 2023
+ */
 public class Room implements Serializable {
 
     @Serial
@@ -154,7 +161,9 @@ public class Room implements Serializable {
 
     }
 
-
+    /**
+     * Empty constructor to creating a non-essential room.
+     */
     public Room() {
         myIsEntranceRoom = false;
         myIsExitRoom = false;
@@ -297,14 +306,14 @@ public class Room implements Serializable {
     private static void putTileAtValidLocation(final Tile theTile,
                                                final Tile[][] theTiles,
                                                final boolean theNextToDoors) {
-
         final Dimension size = new Dimension(theTiles.length, theTiles[0].length);
 
         int attempts = 0;
         while (true) {
             if (attempts > MAX_TILE_PLACEMENT_ATTEMPTS) {
-                return;
+                break;
             }
+
             attempts++;
             final int x = Helper.getRandomIntBetween(1, (int) (size.getWidth() - 1));
             final int y = Helper.getRandomIntBetween(1, (int) (size.getHeight() - 1));
@@ -344,10 +353,15 @@ public class Room implements Serializable {
             }
 
             theTiles[x][y] = theTile;
-            return;
+            break;
         }
     }
 
+    /**
+     * Adds extra randomized walls to a room.
+     *
+     * @param theRoom the room to be added with extra walls
+     */
     public static void addExtraWalls(final Room theRoom) {
 
         final int extraWalls = (int) ((theRoom.getRoomWidth() - 1)
@@ -357,6 +371,13 @@ public class Room implements Serializable {
         }
     }
 
+    /**
+     * Adds a door to the wall in a room
+     * in the given {@link Directions.Cardinal Cardinal}.
+     *
+     * @param theWallLocation the direction for door to be added
+     * @param theOtherRoom the room whose wall is to be added with
+     */
     public void addDoorToWall(final Directions.Cardinal theWallLocation,
                               final Room theOtherRoom) {
 
@@ -383,9 +404,7 @@ public class Room implements Serializable {
             default -> {
             }
         }
-
     }
-
 
     /**
      * Checks if a specific character exists in the tile set.
@@ -438,6 +457,15 @@ public class Room implements Serializable {
         }
     }
 
+    /**
+     * Returns the location of a door on the wall in the given
+     * {@link Directions.Cardinal Cardinal}.
+     *
+     * @param theDirection the {@link Directions.Cardinal Cardinal}
+     *                     of the door to look for
+     * @return The location of the door on the wall in the given
+     * {@link Directions.Cardinal Cardinal}.
+     */
     public Point findDoorOnWall(final Directions.Cardinal theDirection) {
         final Tile[][] tiles = this.getRoomTiles();
 
@@ -450,7 +478,6 @@ public class Room implements Serializable {
                         returnPoint = new Point(0, i);
                     }
                 }
-
             }
             case SOUTH -> { //find door on bottom wall
                 for (int i = 0; i < myRoomTiles[this.getRoomHeight() - 1].length; i++) {
@@ -467,7 +494,6 @@ public class Room implements Serializable {
                         returnPoint = new Point(i, this.getRoomWidth() - 1);
                     }
                 }
-
             }
             case WEST -> { // find door on right wall
                 for (int i = 0; i < tiles.length; i++) {

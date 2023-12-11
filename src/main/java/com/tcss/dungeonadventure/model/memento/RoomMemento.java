@@ -2,7 +2,6 @@ package com.tcss.dungeonadventure.model.memento;
 
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-
 import java.awt.Point;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -39,6 +38,21 @@ public class RoomMemento implements Serializable {
     private final Item mySavedPillar;
 
 
+    /**
+     * Constructs a RoomMemento
+     * with the specified room data, player position, and pillar state.
+     *
+     * @param theRoomData       The original room data to be saved.
+     * @param thePlayerPosition The original player position to be saved.
+     * @param thePillar         The original state of the pillar to be saved.
+     */
+    public RoomMemento(final Tile[][] theRoomData,
+                       final Point thePlayerPosition, final Item thePillar) {
+
+        mySavedRoomData = deepCopyRoomData(theRoomData);
+        mySavedPlayerPosition = new Point(thePlayerPosition);
+        mySavedPillar = (thePillar != null) ? thePillar.copy() : null;
+    }
 
     @Serial
     private void writeObject(final ObjectOutputStream theOut) throws IOException {
@@ -53,7 +67,8 @@ public class RoomMemento implements Serializable {
     }
 
     @Serial
-    private void readObject(final ObjectInputStream theIn) throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream theIn)
+            throws IOException, ClassNotFoundException {
         theIn.defaultReadObject();
 
 
@@ -68,21 +83,6 @@ public class RoomMemento implements Serializable {
 //            mySavedPillar.setDescription(itemDescription);
 //            // Reconstruct other necessary properties
 //        }
-    }
-
-    /**
-     * Constructs a RoomMemento with the specified room data, player position, and pillar state.
-     *
-     * @param theRoomData       The original room data to be saved.
-     * @param thePlayerPosition The original player position to be saved.
-     * @param thePillar         The original state of the pillar to be saved.
-     */
-    public RoomMemento(final Tile[][] theRoomData,
-                       final Point thePlayerPosition, final Item thePillar) {
-
-        mySavedRoomData = deepCopyRoomData(theRoomData);
-        mySavedPlayerPosition = new Point(thePlayerPosition);
-        mySavedPillar = (thePillar != null) ? thePillar.copy() : null;
     }
 
     /**

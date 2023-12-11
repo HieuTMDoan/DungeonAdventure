@@ -1,6 +1,5 @@
 package com.tcss.dungeonadventure.objects.items;
 
-
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.VisualComponent;
 
@@ -23,11 +22,14 @@ public abstract class Item extends VisualComponent implements Serializable {
 
     }
 
-
     /**
      * The type of the item.
      */
     private final ItemTypes myItemType;
+
+    // Add fields for name and description
+    private String name;
+    private String description;
 
     public Item(final char theDisplayChar, final ItemTypes theItemType) {
         super(theDisplayChar);
@@ -36,7 +38,13 @@ public abstract class Item extends VisualComponent implements Serializable {
 
     @Override
     public String getDescription() {
-        return "Item: " + getClass().getSimpleName();
+        // Use the stored description or the default if not set
+        return (description != null) ? description : "Item: " + getClass().getSimpleName();
+    }
+
+    public String getName() {
+        // Use the stored name or the default if not set
+        return (name != null) ? name : getClass().getSimpleName();
     }
 
     public ItemTypes getItemType() {
@@ -48,6 +56,14 @@ public abstract class Item extends VisualComponent implements Serializable {
     // Add a copy method to create a copy of the Item
     public abstract Item copy();
 
+    // Implement setName, getName, setDescription
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     /**
      * The Item equals method only compares class.

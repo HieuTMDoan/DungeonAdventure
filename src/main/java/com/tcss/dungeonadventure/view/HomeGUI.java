@@ -92,16 +92,18 @@ public class HomeGUI implements PropertyChangeListener {
      * Helper method to attach mouse events to certain nodes.
      */
     private void attachEvents() {
-        this.myNewGameButton.setOnAction(e -> myGUI.startNewGame(
-                getHeroName(myHeroNameTextField),
-                HeroFactory.createCharacter(mySelectedClass))
-        );
+        this.myNewGameButton.setOnAction(e -> {
+            // Start a new game and save the state to a file
+            DungeonAdventure.getInstance().saveToMemento();  // Assuming DungeonAdventure has a saveToMemento() method
+            myGUI.startNewGame(getHeroName(myHeroNameTextField), HeroFactory.createCharacter(mySelectedClass));
+        });
 
         this.myLoadGameButton.setOnAction(e -> {
             try {
                 loadGameFromFile();
             } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                // Handle exceptions appropriately
+                ex.printStackTrace();
             }
         });
 
@@ -150,32 +152,26 @@ public class HomeGUI implements PropertyChangeListener {
         try (FileInputStream fileInputStream = new FileInputStream("savedGame.ser");
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
-            // Deserialize game state from the file
             final Object loadedObject = objectInputStream.readObject();
 
-            // Check if the loaded object is an instance of DungeonAdventureMemento
             if (loadedObject instanceof DungeonAdventureMemento loadedMemento) {
-
-                // Create a new instance of DungeonAdventure and restore from the loaded memento
                 final DungeonAdventure loadedGame = DungeonAdventure.getInstance();
                 loadedGame.restoreFromMemento(loadedMemento);
 
                 System.out.println("Game loaded successfully!");
 
-                // Resume the game or update the GUI accordingly
+                // Update the GUI or resume the game
                 myGUI.resumeGame();
             } else {
                 throw new IOException("Invalid saved game file!");
             }
 
         } catch (final FileNotFoundException ex) {
-            // file not found
-            throw new FileNotFoundException("Saved game file not found!");
+            // Handle file not found exception
+            ex.printStackTrace();
         } catch (final IOException | ClassNotFoundException ex) {
-            // I/O exceptions or loaded class not found
-            throw new IOException("Error reading saved game file: " + ex.getMessage());
+            // Handle other exceptions
+            ex.printStackTrace();
         }
     }
 }
-
-

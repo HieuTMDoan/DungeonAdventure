@@ -1,9 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 
 /**
  * Manages the game state using the Memento pattern.
@@ -22,8 +19,15 @@ public final class GameStateManager implements Serializable {
         return INSTANCE;
     }
 
-    public void createMemento() {
-        myMemento = DungeonAdventure.getInstance().createMemento();
+    public void createMemento() throws IOException {
+        DungeonAdventure dungeonAdventure = DungeonAdventure.getInstance();
+        if (dungeonAdventure == null) {
+            // Initialize DungeonAdventure if not already initialized
+            dungeonAdventure = DungeonAdventure.getInstance();
+            dungeonAdventure.initialize();
+        }
+
+        myMemento = dungeonAdventure.createMemento();
         saveToFile("saved_game.ser");
     }
 
@@ -36,7 +40,25 @@ public final class GameStateManager implements Serializable {
             oos.writeObject(myMemento);
             System.out.println("Game saved successfully!");
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // Log the exception or throw a custom exception
+        }
+    }
+
+    public DungeonAdventureMemento loadFromFile(String filePath) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
+            DungeonAdventureMemento loadedMemento = (DungeonAdventureMemento) ois.readObject();
+            System.out.println("Game loaded successfully!");
+            return loadedMemento;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace(); // Log the exception or throw a custom exception
+            return null;
+        }
+    }
+
+    public void loadGame(String filePath) {
+        DungeonAdventureMemento loadedMemento = loadFromFile(filePath);
+        if (loadedMemento != null) {
+            setMemento(loadedMemento);
         }
     }
 }

@@ -8,10 +8,7 @@ import com.tcss.dungeonadventure.objects.tiles.Tile;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -492,6 +489,31 @@ public class Dungeon implements Serializable {
         // Initialize transient fields here
         myCurrentRoom = initializeCurrentRoom();
     }
+
+//    /**
+//     * Saves the game state to a file.
+//     *
+//     * @param fileName The name of the file to save to.
+//     * @throws IOException If an I/O error occurs while saving.
+//     */
+//    public void saveGame(String fileName) throws IOException {
+//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+//            oos.writeObject(this);
+//        }
+//    }
+//
+//    /**
+//     * Loads the game state from a file.
+//     *
+//     * @param fileName The name of the file to load from.
+//     * @throws IOException            If an I/O error occurs while loading.
+//     * @throws ClassNotFoundException If the class of the serialized object cannot be found.
+//     */
+//    public static Dungeon loadGame(String fileName) throws IOException, ClassNotFoundException {
+//        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+//            return (Dungeon) ois.readObject();
+//        }
+//    }
 
     /**
      * Initializes the current room after deserialization.

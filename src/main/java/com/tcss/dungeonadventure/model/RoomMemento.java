@@ -17,8 +17,6 @@ import java.io.Serializable;
  * @author Sunny, Aaron, Hieu
  * @version Fall 2023
  */
-
-
 public class RoomMemento implements Serializable {
     /**
      * The saved room data, representing the layout of tiles in the room.
@@ -40,17 +38,31 @@ public class RoomMemento implements Serializable {
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        // Add additional code to handle non-serializable fields, if any
+        // Additional code to handle non-serializable fields, if any
+        // Item is not serializable, serialize only necessary properties
+        if (mySavedPillar != null) {
+            out.writeObject(mySavedPillar.getName());
+            out.writeObject(mySavedPillar.getDescription());
+            // Add other necessary properties
+        }
     }
+
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         // Add additional code to handle non-serializable fields, if any
+        // Item is not serializable, reconstruct the Item using the serialized properties
+        if (mySavedPillar != null) {
+            String itemName = (String) in.readObject();
+            String itemDescription = (String) in.readObject();
+            // Reconstruct the Item
+            mySavedPillar.setName(itemName);
+            mySavedPillar.setDescription(itemDescription);
+            // Reconstruct other necessary properties
+        }
     }
 
-
     /**
-     * Constructs a RoomMemento with the specified room data, player position,
-     * and pillar state.
+     * Constructs a RoomMemento with the specified room data, player position, and pillar state.
      *
      * @param theRoomData      The original room data to be saved.
      * @param thePlayerPosition The original player position to be saved.
@@ -93,7 +105,6 @@ public class RoomMemento implements Serializable {
             return null;
         }
     }
-
 
     /**
      * Deep copies the original room data.

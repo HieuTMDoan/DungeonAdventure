@@ -2,19 +2,12 @@ package com.tcss.dungeonadventure.objects.tiles;
 
 import com.tcss.dungeonadventure.objects.VisualComponent;
 
-import java.io.Serializable;
+import java.io.*;
 
-/**
- * Parent class of all Tiles, which represents one square in
- * a room. Can contain a multitude of things, such as the
- * player, item, monsters, or interactables (doors, pits).
- *
- * @author Aaron Burnham
- * @author Hieu Doan
- * @author Sunny Ali
- * @version Fall 2023
- */
 public class Tile extends VisualComponent implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * Boolean if the tile is traversable by the player.
@@ -26,6 +19,13 @@ public class Tile extends VisualComponent implements Serializable {
         this.myDefaultTraversable = theDefaultTraversable;
     }
 
+    /**
+     * No-argument constructor for deserialization.
+     */
+    public Tile() {
+        super(' '); // Set default values
+        this.myDefaultTraversable = true;
+    }
 
     /**
      * @return The description of the tile.
@@ -38,7 +38,7 @@ public class Tile extends VisualComponent implements Serializable {
 
     /**
      * Returns if the tile can be stepped on. Can be overridden to allow
-     * player to traverse over the tile during a specific state.
+     * the player to traverse over the tile during a specific state.
      */
     public boolean isTraversable() {
         return this.myDefaultTraversable;
@@ -49,8 +49,7 @@ public class Tile extends VisualComponent implements Serializable {
      */
     public void onInteract() {
         if (!isTraversable()) {
-            throw new RuntimeException(
-                    "Target has entered a tile that should not be traversable");
+            throw new RuntimeException("Target has entered a tile that should not be traversable");
         }
     }
 
@@ -60,12 +59,19 @@ public class Tile extends VisualComponent implements Serializable {
      * @return A new instance of the Tile with the same state.
      */
     public Tile copy() {
-        // logic to create a new instance with the same state
         return new Tile(super.getDisplayChar(), this.myDefaultTraversable);
     }
 
     @Override
     public String toString() {
         return String.valueOf(super.getDisplayChar());
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
     }
 }

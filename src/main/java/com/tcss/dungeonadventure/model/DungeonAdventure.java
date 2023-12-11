@@ -10,11 +10,7 @@ import com.tcss.dungeonadventure.view.GUIHandler;
 import javafx.application.Application;
 
 import java.awt.Point;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -305,12 +301,14 @@ public final class DungeonAdventure implements Serializable {
     }
 
     public void saveGameState() {
-        // Create and save a memento
-        DungeonAdventureMemento memento = this.createMemento();
-        GameStateManager.getInstance().setMemento(memento);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("saved_game.ser"))) {
+            oos.writeObject(createMemento());
+            System.out.println("Game saved successfully!");
+        } catch (IOException ex) {
+            System.err.println("Error writing saved game state file: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
-
-
 
     public void loadGameState() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
@@ -322,11 +320,16 @@ public final class DungeonAdventure implements Serializable {
             PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
             System.out.println("Game loaded successfully!");
-        } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("No saved game state found!");
-            ex.printStackTrace();
+        } catch (IOException ex) {
+            // Handle IOException
+        } catch (ClassNotFoundException ex) {
+            // Handle ClassNotFoundException
+        } catch (Exception ex) {
+            // Handle other exceptions
         }
     }
+
+
 
 
 
@@ -344,6 +347,36 @@ public final class DungeonAdventure implements Serializable {
 
         PCS.firePropertyChanged(PCS.LOAD_ROOM, myDungeon.getCurrentRoom());
     }
+
+    /**
+     * Creates a memento to save the current state of the game.
+     *
+     * @return A memento representing the current state of the game.
+     */
+    public DungeonAdventureMemento saveToMemento() {
+        if (myPlayer == null || myDungeon == null) {
+            return null; // Handle null case appropriately
+        }
+
+        final String playerName = this.myPlayer.getPlayerName();
+        final Hero hero = this.myPlayer.getPlayerHero();
+        final Dungeon dungeon = this.myDungeon;
+
+        // Create a new DungeonAdventureMemento
+        final DungeonAdventureMemento memento = new DungeonAdventureMemento(playerName, hero, dungeon);
+
+        // Add the memento of the current room to the DungeonAdventureMemento
+        final Room currentRoom = myDungeon.getCurrentRoom();
+        if (currentRoom != null) {
+            RoomMemento roomMemento = currentRoom.saveToMemento();
+            if (roomMemento != null) {
+                memento.addRoomMemento(roomMemento);
+            }
+        }
+
+        return memento;
+    }
+
 
 
     /**

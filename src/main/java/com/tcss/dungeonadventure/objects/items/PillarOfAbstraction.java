@@ -4,7 +4,12 @@ package com.tcss.dungeonadventure.objects.items;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
-public class PillarOfAbstraction extends Item {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class PillarOfAbstraction extends Item implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
 
 

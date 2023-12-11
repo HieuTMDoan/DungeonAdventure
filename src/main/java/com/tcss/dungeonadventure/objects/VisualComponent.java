@@ -17,6 +17,9 @@ public abstract class VisualComponent implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The character of the tile.
+     */
     private final char myDisplayChar;
 
     public VisualComponent(final char theDisplayChar) {

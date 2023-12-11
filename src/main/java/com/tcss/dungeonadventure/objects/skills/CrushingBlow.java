@@ -31,7 +31,7 @@ public class CrushingBlow extends Skill {
 
 
         theTarget.changeHealth(-damage);
-        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Crushing Blow dealt " + damage + ".");
+        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Crushing Blow dealt " + damage + " damage.");
 
         return damage;
     }

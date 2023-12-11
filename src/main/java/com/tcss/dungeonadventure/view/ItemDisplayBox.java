@@ -5,6 +5,8 @@ import com.tcss.dungeonadventure.objects.items.Item;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 
 public class ItemDisplayBox extends HBox {
 
@@ -28,20 +30,17 @@ public class ItemDisplayBox extends HBox {
         this.myItem = theItem;
 
         this.setAlignment(Pos.CENTER_LEFT);
-        final Label itemDisplayCharacter = new Label(String.valueOf(theItem.getDisplayChar()));
-        itemDisplayCharacter.setStyle("-fx-font-size: 18; -fx-text-fill: white;");
+        final Text itemDisplayCharacter = new Text(String.valueOf(theItem.getDisplayChar()));
+        itemDisplayCharacter.setBoundsType(TextBoundsType.VISUAL);
+        itemDisplayCharacter.setStyle("-fx-font-size: 24; -fx-fill: %s;".formatted(theItem.getTileColor()));
 
         this.getChildren().add(itemDisplayCharacter);
 
         myNameDisplayLabel = new Label();
         myNameDisplayLabel.setWrapText(true);
-        updateCount(theCount);
-        myNameDisplayLabel.setStyle("-fx-font-size: 15; -fx-text-fill: white;");
+        myNameDisplayLabel.setText(Helper.camelToSpaced(myItem.getClass().getSimpleName()) + " x" + theCount);
+        myNameDisplayLabel.setStyle("-fx-font-size: 16; -fx-text-fill: white;");
         this.getChildren().add(myNameDisplayLabel);
-    }
-
-    void updateCount(final int theNewCount) {
-        myNameDisplayLabel.setText(Helper.camelToSpaced(myItem.getClass().getSimpleName()) + " x" + theNewCount);
     }
 
 

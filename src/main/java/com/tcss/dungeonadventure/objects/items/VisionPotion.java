@@ -58,10 +58,10 @@ public class VisionPotion extends Item {
     }
 
     @Override
-    public Item copy() {
-        // Create a new instance of VisionPotion with the same display character and item type
-        return new VisionPotion();
+    public String getDescription() {
+        return "Reveals the 8 surrounding rooms on the map!";
     }
+
 
     @Override
     public String getTileColor() {

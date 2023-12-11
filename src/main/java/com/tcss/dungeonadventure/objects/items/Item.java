@@ -2,7 +2,6 @@ package com.tcss.dungeonadventure.objects.items;
 
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.VisualComponent;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -22,7 +21,8 @@ public abstract class Item extends VisualComponent implements Serializable {
         /**
          * This item type is for all pillars.
          */
-        PILLAR
+        PILLAR,
+
 
     }
 
@@ -56,7 +56,6 @@ public abstract class Item extends VisualComponent implements Serializable {
     public abstract void useItem(DungeonCharacter theTarget);
 
     // Add a copy method to create a copy of the Item
-    public abstract Item copy();
 
 
     /**

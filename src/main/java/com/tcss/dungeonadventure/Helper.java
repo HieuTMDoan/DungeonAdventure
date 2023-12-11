@@ -2,13 +2,7 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.model.factories.MonsterFactory;
-import com.tcss.dungeonadventure.objects.items.HealingPotion;
-import com.tcss.dungeonadventure.objects.items.Item;
-import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
-import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
-import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
-import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
-import com.tcss.dungeonadventure.objects.items.VisionPotion;
+import com.tcss.dungeonadventure.objects.items.*;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
@@ -21,6 +15,8 @@ import java.util.Random;
  */
 public final class Helper {
 
+
+
     /**
      * Random object to generate random numbers.
      */
@@ -30,7 +26,7 @@ public final class Helper {
      * can randomly generate in rooms.
      */
     private static final Class<?>[] ITEM_POOL =
-            new Class[]{HealingPotion.class, VisionPotion.class};
+            new Class[]{HealingPotion.class, VisionPotion.class, SkillOrb.class};
     /**
      * Contains all the class declarations of the monsters
      * that can randomly generate in rooms.

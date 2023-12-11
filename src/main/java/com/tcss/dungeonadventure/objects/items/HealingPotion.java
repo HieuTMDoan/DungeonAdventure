@@ -19,16 +19,14 @@ public class HealingPotion extends Item {
     public void useItem(final DungeonCharacter theTarget) {
         if (theTarget != null) {
             theTarget.changeHealth(HEAL_AMOUNT);
-
-            System.out.println(theTarget.getName()
-                    + " used a Healing Potion and healed for "
-                    + HEAL_AMOUNT + " hit points.");
         }
     }
+
     @Override
-    public Item copy() {
-        return new HealingPotion();
+    public String getDescription() {
+        return "Heals " + HEAL_AMOUNT + ". Consumed upon use.";
     }
+
 
     @Override
     public String getTileColor() {

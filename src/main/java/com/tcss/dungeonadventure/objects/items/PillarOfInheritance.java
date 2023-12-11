@@ -19,11 +19,10 @@ public class PillarOfInheritance extends Item {
     }
 
     @Override
-    public Item copy() {
-        // Create a new instance of PillarOfInheritance
-        // with the same display character and item type
-        return new PillarOfInheritance();
+    public String getDescription() {
+        return "Key item to unlocking the exit.";
     }
+
 
     @Override
     public String getTileColor() {

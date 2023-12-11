@@ -38,9 +38,11 @@ public class RoomMemento implements Serializable {
     private final Item mySavedPillar;
 
 
+
+
     /**
-     * Constructs a RoomMemento
-     * with the specified room data, player position, and pillar state.
+    /**
+     * Constructs a RoomMemento with the specified room data, player position, and pillar state.
      *
      * @param theRoomData       The original room data to be saved.
      * @param thePlayerPosition The original player position to be saved.
@@ -51,38 +53,7 @@ public class RoomMemento implements Serializable {
 
         mySavedRoomData = deepCopyRoomData(theRoomData);
         mySavedPlayerPosition = new Point(thePlayerPosition);
-        mySavedPillar = (thePillar != null) ? thePillar.copy() : null;
-    }
-
-    @Serial
-    private void writeObject(final ObjectOutputStream theOut) throws IOException {
-        theOut.defaultWriteObject();
-//        // Additional code to handle non-serializable fields, if any
-//        // Item is not serializable, serialize only necessary properties
-//        if (mySavedPillar != null) {
-//            theOut.writeObject(mySavedPillar.getName());
-//            theOut.writeObject(mySavedPillar.getDescription());
-//            // Add other necessary properties
-//        }
-    }
-
-    @Serial
-    private void readObject(final ObjectInputStream theIn)
-            throws IOException, ClassNotFoundException {
-        theIn.defaultReadObject();
-
-
-//        // Add additional code to handle non-serializable fields, if any
-//        // Item is not serializable, reconstruct the Item using the serialized properties
-//        if (mySavedPillar != null) {
-//            final String itemName = (String) theIn.readObject();
-//            final String itemDescription = (String) theIn.readObject();
-//
-//            // Reconstruct the Item
-//            mySavedPillar.setName(itemName);
-//            mySavedPillar.setDescription(itemDescription);
-//            // Reconstruct other necessary properties
-//        }
+        mySavedPillar = thePillar;
     }
 
     /**
@@ -109,11 +80,8 @@ public class RoomMemento implements Serializable {
      * @return A copy of the saved pillar state, or null if there is no pillar.
      */
     public Item getSavedPillar() {
-        if (mySavedPillar != null) {
-            return mySavedPillar.copy();
-        } else {
-            return null;
-        }
+        return mySavedPillar;
+
     }
 
     /**

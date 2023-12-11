@@ -41,7 +41,6 @@ public final class MonsterFactory {
             case GREMLIN -> {
                 return new Gremlin(
                         (String) dataMap.get(SQLiteDB.Keys.NAME),
-                        (Character) dataMap.get(SQLiteDB.Keys.DISPLAY_CHAR),
                         (Integer) dataMap.get(SQLiteDB.Keys.HEALTH),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MIN),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MAX),
@@ -55,7 +54,6 @@ public final class MonsterFactory {
             case SKELETON -> {
                 return new Skeleton(
                         (String) dataMap.get(SQLiteDB.Keys.NAME),
-                        (Character) dataMap.get(SQLiteDB.Keys.DISPLAY_CHAR),
                         (Integer) dataMap.get(SQLiteDB.Keys.HEALTH),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MIN),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MAX),
@@ -69,7 +67,6 @@ public final class MonsterFactory {
             case OGRE -> {
                 return new Ogre(
                         (String) dataMap.get(SQLiteDB.Keys.NAME),
-                        (Character) dataMap.get(SQLiteDB.Keys.DISPLAY_CHAR),
                         (Integer) dataMap.get(SQLiteDB.Keys.HEALTH),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MIN),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MAX),

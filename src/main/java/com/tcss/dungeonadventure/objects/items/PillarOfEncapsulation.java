@@ -17,10 +17,8 @@ public class PillarOfEncapsulation extends Item {
     }
 
     @Override
-    public Item copy() {
-        // Create a new instance of PillarOfEncapsulation
-        // with the same display character and item type
-        return new PillarOfEncapsulation();
+    public String getDescription() {
+        return "Key item to unlocking the exit.";
     }
 
     @Override

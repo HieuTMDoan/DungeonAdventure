@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
+import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.skills.CrushingBlow;
 import com.tcss.dungeonadventure.objects.skills.Skill;
 
@@ -28,7 +29,6 @@ public class Warrior extends Hero {
      * @param theBlockChance chance to block of Warrior characters
      */
     public Warrior(final String theName,
-                     final char theDisplayChar,
                      final int theDefaultHealth,
                      final int theMinDamage,
                      final int theMaxDamage,
@@ -36,7 +36,7 @@ public class Warrior extends Hero {
                      final double theAccuracy,
                      final double theBlockChance) {
         super(theName,
-                theDisplayChar,
+                TileChars.Player.PLAYER,
                 theDefaultHealth,
                 theMinDamage,
                 theMaxDamage,

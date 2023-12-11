@@ -1,8 +1,9 @@
 package com.tcss.dungeonadventure.objects.monsters;
 
+import com.tcss.dungeonadventure.objects.TileChars;
+
 public class Skeleton extends Monster {
     public Skeleton(final String theName,
-                   final char theDisplayChar,
                    final int theHealth,
                    final int theDamageMin,
                    final int theDamageMax,
@@ -12,7 +13,7 @@ public class Skeleton extends Monster {
                    final int theHealMin,
                    final int theHealMax) {
         super(theName,
-                theDisplayChar,
+                TileChars.Monster.SKELETON,
                 theHealth,
                 theDamageMin,
                 theDamageMax,

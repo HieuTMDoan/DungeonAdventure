@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
+import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.skills.Heal;
 import com.tcss.dungeonadventure.objects.skills.Skill;
 
@@ -20,7 +21,6 @@ public class Priestess extends Hero {
      * Constructor for Priestess characters.
      *
      * @param theName class name of Priestess characters
-     * @param theDisplayChar display character of Priestess characters
      * @param theDefaultHealth starting health of Priestess characters
      * @param theMinDamage minimum damage dealt by Priestess characters
      * @param theMaxDamage maximum damage dealt by Priestess characters
@@ -29,7 +29,6 @@ public class Priestess extends Hero {
      * @param theBlockChance chance to block of Priestess characters
      */
     public Priestess(final String theName,
-                     final char theDisplayChar,
                      final int theDefaultHealth,
                      final int theMinDamage,
                      final int theMaxDamage,
@@ -37,7 +36,7 @@ public class Priestess extends Hero {
                      final double theAccuracy,
                      final double theBlockChance) {
         super(theName,
-                theDisplayChar,
+                TileChars.Player.PLAYER,
                 theDefaultHealth,
                 theMinDamage,
                 theMaxDamage,
@@ -54,7 +53,7 @@ public class Priestess extends Hero {
      * @return True if the skill was successful.
      */
     @Override
-    public boolean useSkill(final DungeonCharacter theTarget) {
+    public Integer useSkill(final DungeonCharacter theTarget) {
         return super.useSkill(this);
     }
 

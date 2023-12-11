@@ -12,9 +12,9 @@ package com.tcss.dungeonadventure.objects;
 public final class TileChars {
 
     public static class Monster {
-        public static final char OGRE = '7';
-        public static final char SKELETON = '8';
-        public static final char GREMLIN = '9';
+        public static final char OGRE = '⍡';
+        public static final char SKELETON = '⍥';
+        public static final char GREMLIN = '⍾';
 
     }
 
@@ -38,6 +38,7 @@ public final class TileChars {
         public static final char PILLAR_OF_ABSTRACTION = 'A';
         public static final char PILLAR_OF_POLYMORPHISM = 'P';
         public static final char PILLAR_OF_INHERITANCE = 'I';
+        public static final char SKILL_ORB = '¤';
     }
 
 

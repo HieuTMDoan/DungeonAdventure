@@ -42,8 +42,12 @@ public abstract class Hero extends DungeonCharacter {
         return (int) myBlockChance;
     }
 
-    public boolean useSkill(final DungeonCharacter theTarget) {
+    public Integer useSkill(final DungeonCharacter theTarget) {
         return mySkill.activateSkill(theTarget);
+    }
+
+    public Skill getSkill() {
+        return mySkill;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
+import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.skills.Skill;
 import com.tcss.dungeonadventure.objects.skills.SurpriseAttack;
 
@@ -10,6 +11,7 @@ import com.tcss.dungeonadventure.objects.skills.SurpriseAttack;
  * @version TCSS 360: Fall 2023
  */
 public class Thief extends Hero {
+
     /**
      * Innate skill of Thief characters.
      */
@@ -19,7 +21,6 @@ public class Thief extends Hero {
      * Constructor for Thief characters.
      *
      * @param theName class name of Thief characters
-     * @param theDisplayChar display character of Thief characters
      * @param theDefaultHealth starting health of Thief characters
      * @param theMinDamage minimum damage dealt by Thief characters
      * @param theMaxDamage maximum damage dealt by Thief characters
@@ -28,7 +29,6 @@ public class Thief extends Hero {
      * @param theBlockChance chance to block of Thief characters
      */
     public Thief(final String theName,
-                 final char theDisplayChar,
                  final int theDefaultHealth,
                  final int theMinDamage,
                  final int theMaxDamage,
@@ -36,7 +36,7 @@ public class Thief extends Hero {
                  final double theAccuracy,
                  final double theBlockChance) {
         super(theName,
-                theDisplayChar,
+                TileChars.Player.PLAYER,
                 theDefaultHealth,
                 theMinDamage,
                 theMaxDamage,

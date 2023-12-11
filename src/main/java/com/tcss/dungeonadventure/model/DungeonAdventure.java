@@ -5,10 +5,13 @@ import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
+import com.tcss.dungeonadventure.objects.items.SkillOrb;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
+import com.tcss.dungeonadventure.objects.skills.SurpriseAttack;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
+import javafx.application.Application;
 import java.awt.Point;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,7 +22,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.IntStream;
-import javafx.application.Application;
 
 
 /**
@@ -106,6 +108,7 @@ public final class DungeonAdventure implements Serializable {
 
 
         this.myPlayer = new Player(thePlayerName, theHero);
+
         this.myDungeon = new Dungeon();
         this.myDiscoveredRooms = new Room[Dungeon.MAZE_SIZE.height][Dungeon.MAZE_SIZE.width];
         System.out.println(myDungeon);
@@ -137,6 +140,9 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.LOAD_ROOM, startingRoom);
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
         PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
+
+        this.myPlayer.addItemToInventory(new SkillOrb());
+
     }
 
     /**
@@ -168,18 +174,16 @@ public final class DungeonAdventure implements Serializable {
     public void doCombatAction(final CombatActions theAction) {
         final Integer[] damage = new Integer[]{0};
 
-        PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
         final TimedSequence s = new TimedSequence();
 
+        final Hero hero = myPlayer.getPlayerHero();
         s.afterDo(0, () -> {
             switch (theAction) {
                 case ATTACK -> {
-                    damage[0] = myPlayer.getPlayerHero().
-                            attack(myCurrentlyFightingMonster);
+                    damage[0] = hero.attack(myCurrentlyFightingMonster);
 
                     if (damage[0] > 0) {
-                        Player.Stats.
-                                increaseCounter(Player.Stats.DAMAGE_DEALT, damage[0]);
+                        Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, damage[0]);
 
                         PCS.firePropertyChanged(PCS.COMBAT_LOG,
                                 "Player attacked, dealing " + damage[0] + " damage.");
@@ -187,12 +191,62 @@ public final class DungeonAdventure implements Serializable {
                         Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
                         PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                     }
-                    PCS.firePropertyChanged(PCS.SYNC_COMBAT,
-                            myCurrentlyFightingMonster);
+                    PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
                 }
 
-                case USE_SKILL -> myPlayer.getPlayerHero().
-                        useSkill(myCurrentlyFightingMonster);
+                case USE_SKILL -> {
+                    if (!myPlayer.containsItem(new SkillOrb())) {
+                        PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                                "You need a Skill Orb to use your skill!");
+                        return false;
+                    }
+
+                    myPlayer.removeItemFromInventory(new SkillOrb());
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                            "Used a Skill Orb to use " + hero.getSkill().getClass().getSimpleName());
+
+                    if (!(hero.getSkill() instanceof SurpriseAttack)) {
+                        hero.useSkill(myCurrentlyFightingMonster);
+                        PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+                    } else {
+                        final Integer result = hero.useSkill(myCurrentlyFightingMonster);
+                        if (result == null) {
+                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Surprise Attack was unsuccessful!");
+
+                        } else if (result == 1) { // Extra attack
+                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Surprise Attack was successful!");
+                            for (int i = 0; i < 2; i++) {
+                                final int d = hero.attack(myCurrentlyFightingMonster);
+
+                                if (d > 0) {
+                                    Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, damage[0]);
+                                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                                            "Player attacked, dealing " + damage[0] + " damage.");
+                                } else {
+                                    Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
+                                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
+                                }
+                                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+
+                            }
+
+
+                        } else if (result == 0) { // normal attack
+                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Surprise Attack was somewhat successful.");
+
+                            final int d = hero.attack(myCurrentlyFightingMonster);
+                            if (d > 0) {
+                                Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, d);
+                                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                                        "Player attacked, dealing " + d + " damage.");
+                            } else {
+                                Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
+                                PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
+                            }
+                            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+                        }
+                    }
+                }
 
                 case FLEE -> {
                 }
@@ -201,12 +255,21 @@ public final class DungeonAdventure implements Serializable {
                         "Unexpected value: " + theAction);
             }
 
+
+            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
+
+
             // Check for victory
             if (myCurrentlyFightingMonster.isDefeated()) {
-                handleMonsterDefeat(myCurrentlyFightingMonster);
+                Player.Stats.increaseCounter(Player.Stats.MONSTERS_DEFEATED);
+                PCS.firePropertyChanged(PCS.END_COMBAT, null);
+                PCS.firePropertyChanged(PCS.LOG,
+                        "Defeated " + myCurrentlyFightingMonster.getName() + "!");
+                myCurrentlyFightingMonster = null;
                 return false;
             }
             return true;
+
         }).afterDoIf(1, () -> damage[0] > 0, () -> {
             final int healAmount = myCurrentlyFightingMonster.heal();
             if (healAmount > 0) {
@@ -220,9 +283,9 @@ public final class DungeonAdventure implements Serializable {
             }
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             return true;
+
         }).afterDo(1, () -> {
-            final Integer damageToPlayer = myCurrentlyFightingMonster.
-                    attack(myPlayer.getPlayerHero());
+            final Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
 
             if (damageToPlayer == null) {
                 PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
@@ -237,7 +300,7 @@ public final class DungeonAdventure implements Serializable {
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
 
             // Check for defeat
-            if (myPlayer.getPlayerHero().isDefeated()) {
+            if (hero.isDefeated()) {
                 // Handle player defeat
                 handlePlayerDefeat();
                 return false;
@@ -246,6 +309,7 @@ public final class DungeonAdventure implements Serializable {
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
             return true;
         }).start();
+
     }
 
     /**
@@ -265,7 +329,6 @@ public final class DungeonAdventure implements Serializable {
      * and displays a game-over in the event of losing.
      */
     public void handlePlayerDefeat() {
-        // Handle player defeat, --> display message and reset the game
         PCS.firePropertyChanged(PCS.GAME_END, false);
 
         PCS.firePropertyChanged(PCS.LOG, myPlayer.getPlayerHero().getName()
@@ -345,7 +408,7 @@ public final class DungeonAdventure implements Serializable {
      * @param theItem the chosen {@link Item}
      */
     public void useItem(final Item theItem) {
-        if (theItem.getItemType() == Item.ItemTypes.PILLAR) {
+        if (theItem.getItemType() == Item.ItemTypes.PILLAR || theItem instanceof SkillOrb) {
             return;
         }
 

@@ -1,8 +1,9 @@
 package com.tcss.dungeonadventure.objects.monsters;
 
+import com.tcss.dungeonadventure.objects.TileChars;
+
 public class Ogre extends Monster {
     public Ogre(final String theName,
-                   final char theDisplayChar,
                    final int theHealth,
                    final int theDamageMin,
                    final int theDamageMax,
@@ -12,7 +13,7 @@ public class Ogre extends Monster {
                    final int theHealMin,
                    final int theHealMax) {
         super(theName,
-                theDisplayChar,
+                TileChars.Monster.OGRE,
                 theHealth,
                 theDamageMin,
                 theDamageMax,

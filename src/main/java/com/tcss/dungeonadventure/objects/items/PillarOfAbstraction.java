@@ -16,11 +16,12 @@ public class PillarOfAbstraction extends Item {
     public void useItem(final DungeonCharacter theTarget) {
         // Do nothing
     }
-    public Item copy() {
-        // Create a new instance of PillarOfAbstraction
-        // with the same display character and item type
-        return new PillarOfAbstraction();
+
+    @Override
+    public String getDescription() {
+        return "Key item to unlocking the exit.";
     }
+
 
     @Override
     public String getTileColor() {

@@ -182,14 +182,10 @@ public class Room implements Serializable {
         myIsExitRoom = theOriginalRoom.myIsExitRoom;
         myDungeonLocation = theOriginalRoom.myDungeonLocation;
         myRoomDimensions = new Dimension(theOriginalRoom.myRoomDimensions);
-        myPillar = (theOriginalRoom.myPillar != null) ? theOriginalRoom.myPillar.copy() : null;
+        myPillar = theOriginalRoom.myPillar;
         myPlayerPosition =
                 (theOriginalRoom.myPlayerPosition != null)
                         ? new Point(theOriginalRoom.myPlayerPosition)
-                        : null;
-        myDungeonLocation =
-                (theOriginalRoom.myDungeonLocation != null)
-                        ? new Point(theOriginalRoom.myDungeonLocation)
                         : null;
         deepCopyRoomData(theOriginalRoom.myRoomTiles);
     }

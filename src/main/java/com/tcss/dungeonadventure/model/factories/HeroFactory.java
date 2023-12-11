@@ -39,7 +39,6 @@ public final class HeroFactory  {
             case WARRIOR -> {
                 return new Warrior(
                         (String) dataMap.get(SQLiteDB.Keys.NAME),
-                        (Character) dataMap.get(SQLiteDB.Keys.DISPLAY_CHAR),
                         (Integer) dataMap.get(SQLiteDB.Keys.HEALTH),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MIN),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MAX),
@@ -51,7 +50,6 @@ public final class HeroFactory  {
             case PRIESTESS -> {
                 return new Priestess(
                         (String) dataMap.get(SQLiteDB.Keys.NAME),
-                        (Character) dataMap.get(SQLiteDB.Keys.DISPLAY_CHAR),
                         (Integer) dataMap.get(SQLiteDB.Keys.HEALTH),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MIN),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MAX),
@@ -63,7 +61,6 @@ public final class HeroFactory  {
             case THIEF -> {
                 return new Thief(
                         (String) dataMap.get(SQLiteDB.Keys.NAME),
-                        (Character) dataMap.get(SQLiteDB.Keys.DISPLAY_CHAR),
                         (Integer) dataMap.get(SQLiteDB.Keys.HEALTH),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MIN),
                         (Integer) dataMap.get(SQLiteDB.Keys.DAMAGE_MAX),

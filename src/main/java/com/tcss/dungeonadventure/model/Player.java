@@ -91,6 +91,11 @@ public class Player implements Serializable {
         PCS.firePropertyChanged(PCS.LOG, "Picked up " + theItem.getClass().getSimpleName());
     }
 
+
+    public boolean containsItem(final Item theItem) {
+        return myInventory.containsKey(theItem) && myInventory.get(theItem) > 0;
+    }
+
     /**
      * Removes an {@link Item} to the inventory.
      *

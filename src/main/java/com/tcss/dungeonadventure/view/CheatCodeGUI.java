@@ -91,8 +91,6 @@ public class CheatCodeGUI implements PropertyChangeListener {
      * Displays the current visible map of the dungeon.
      */
     private void displayMap() {
-        myGridPane.getChildren().clear();  // Clear existing children to avoid duplicates
-
         Room nextRoomToVictory = myCurrentDungeon.getStartingRoom();
         int pathIndex = 0;
         Pair<VBox, Room> vBoxRoomPair;
@@ -117,10 +115,10 @@ public class CheatCodeGUI implements PropertyChangeListener {
                     displayRoom(currentRoom, new Text("YOU"), row, col, vBox);
 
                 } else if (currentRoom.equals(myCurrentDungeon.getStartingRoom())) {
-                    displayRoom(currentRoom, new Text("EN"), row, col, vBox);
+                    displayRoom(currentRoom, new Text("START"), row, col, vBox);
 
                 } else if (currentRoom.isExitRoom()) {
-                    displayRoom(currentRoom, new Text("EX"), row, col, vBox);
+                    displayRoom(currentRoom, new Text("EXIT"), row, col, vBox);
 
                 } else if (currentRoom.getPillar() != null) {
                     final String pillarCharacter =
@@ -134,7 +132,18 @@ public class CheatCodeGUI implements PropertyChangeListener {
         }
     }
 
-    private void displayRoom(Room theRoom, int theRow, int theColumn, VBox theBox) {
+    /**
+     * Displays the room with only their doors in the dungeon.
+     *
+     * @param theRoom     the room to be displayed
+     * @param theRow      the row position of the box to be added to the {@link GridPane}
+     * @param theColumn   the column position of the box to be added to the {@link GridPane}
+     * @param theBox      the GUI component that displays the room
+     */
+    private void displayRoom(final Room theRoom,
+                             final int theRow,
+                             final int theColumn,
+                             final VBox theBox) {
         final double[] borderWidths = {0, 0, 0, 0};
         int i = 0;
 
@@ -176,11 +185,9 @@ public class CheatCodeGUI implements PropertyChangeListener {
         }
         theBox.setBorder(createBorder(borderWidths));
 
-        if (theText != null) {
-            theText.setBoundsType(TextBoundsType.VISUAL);
-            theText.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
-            theBox.getChildren().add(theText);
-        }
+        theText.setBoundsType(TextBoundsType.VISUAL);
+        theText.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
+        theBox.getChildren().add(theText);
 
         myGridPane.add(theBox, theColumn, theRow);
     }
@@ -196,11 +203,9 @@ public class CheatCodeGUI implements PropertyChangeListener {
      * @return The room's GUI component with a direction character,
      * and the next room to victory.
      */
-    private Pair<VBox, Room> getBoxWithDirectionAndNewRoomToVictory(
-            final int thePathIndex,
-            final VBox theBox,
-            final Room theNextRoom
-    ) {
+    private Pair<VBox, Room> getBoxWithDirectionAndNewRoomToVictory(final int thePathIndex,
+                                                                    final VBox theBox,
+                                                                    final Room theNextRoom) {
         final List<Cardinal> path = myCurrentDungeon.getPath();
         final Text directionCharacter = switch (path.get(thePathIndex)) {
             case NORTH ->  new Text("↑");

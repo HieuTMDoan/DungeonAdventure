@@ -108,7 +108,7 @@ public class DungeonGUI implements PropertyChangeListener {
                     } else if (myDungeon.getRoomAt(row, col).isExitRoom()) {
                         displayRoom(currentDiscoveredRoom, new Text("EXIT"), row, col, vBox);
                     } else {
-                        displayRoom(currentDiscoveredRoom, new Text(""), row, col, vBox);
+                        displayRoom(currentDiscoveredRoom, row, col, vBox);
                     }
                 } else {
                     // Adds and displays a blank room if it's not discovered yet
@@ -116,6 +116,33 @@ public class DungeonGUI implements PropertyChangeListener {
                 }
             }
         }
+    }
+
+    /**
+     * Displays the room with only their doors in the dungeon.
+     *
+     * @param theRoom     the room to be displayed
+     * @param theRow      the row position of the box to be added to the {@link GridPane}
+     * @param theColumn   the column position of the box to be added to the {@link GridPane}
+     * @param theBox      the GUI component that displays the room
+     */
+    private void displayRoom(final Room theRoom,
+                             final int theRow,
+                             final int theColumn,
+                             final VBox theBox) {
+        final double[] borderWidths = {0, 0, 0, 0};
+        int i = 0;
+
+        for (Directions.Cardinal dir : Directions.Cardinal.values()) {
+            if (theRoom.findDoorOnWall(dir) != null) {
+                borderWidths[i++] = 1;
+            } else {
+                borderWidths[i++] = 0;
+            }
+        }
+        theBox.setBorder(createBorder(borderWidths));
+
+        myGridPane.add(theBox, theColumn, theRow);
     }
 
     /**

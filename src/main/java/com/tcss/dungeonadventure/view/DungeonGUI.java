@@ -11,7 +11,13 @@ import com.tcss.dungeonadventure.objects.Directions;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
@@ -154,7 +160,12 @@ public class DungeonGUI implements PropertyChangeListener {
      * @param theColumn   the column position of the box to be added to the {@link GridPane}
      * @param theBox      the GUI component that displays the room
      */
-    void displayRoom(final Room theRoom, final Text theText, final int theRow, final int theColumn, final VBox theBox) {
+    void displayRoom(
+            final Room theRoom,
+            final Text theText,
+            final int theRow,
+            final int theColumn,
+            final VBox theBox) {
         final double[] borderWidths = {0, 0, 0, 0};
         int i = 0;
 

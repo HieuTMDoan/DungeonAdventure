@@ -8,7 +8,7 @@ public class SandBox {
 
     public static void main(final String[] theArgs) {
 
-
+        System.out.println(Helper.camelToSpaced("CrushingBlow"));
 
     }
 }

@@ -2,8 +2,16 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.model.factories.MonsterFactory;
-import com.tcss.dungeonadventure.objects.items.*;
+import com.tcss.dungeonadventure.objects.items.HealingPotion;
+import com.tcss.dungeonadventure.objects.items.Item;
+import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
+import com.tcss.dungeonadventure.objects.items.PillarOfEncapsulation;
+import com.tcss.dungeonadventure.objects.items.PillarOfInheritance;
+import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
+import com.tcss.dungeonadventure.objects.items.SkillOrb;
+import com.tcss.dungeonadventure.objects.items.VisionPotion;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
@@ -16,17 +24,18 @@ import java.util.Random;
 public final class Helper {
 
 
-
     /**
      * Random object to generate random numbers.
      */
     private static final Random RANDOM = new Random();
+
     /**
      * Contains all the class declaration of items that
      * can randomly generate in rooms.
      */
     private static final Class<?>[] ITEM_POOL =
             new Class[]{HealingPotion.class, VisionPotion.class, SkillOrb.class};
+
     /**
      * Contains all the class declarations of the monsters
      * that can randomly generate in rooms.
@@ -38,10 +47,10 @@ public final class Helper {
      */
     private static final Class<?>[] PILLARS =
             new Class[]{
-                PillarOfInheritance.class,
-                PillarOfAbstraction.class,
-                PillarOfPolymorphism.class,
-                PillarOfEncapsulation.class};
+                    PillarOfInheritance.class,
+                    PillarOfAbstraction.class,
+                    PillarOfPolymorphism.class,
+                    PillarOfEncapsulation.class};
 
     private Helper() {
 
@@ -87,7 +96,6 @@ public final class Helper {
     }
 
 
-
     public static Monster getRandomMonster() {
         return MonsterFactory.createCharacter(
                 MONSTER_POOL[Helper.getRandomIntBetween(0, MONSTER_POOL.length)]);
@@ -95,6 +103,25 @@ public final class Helper {
 
     public static Class<?>[] getPillarList() {
         return PILLARS;
+    }
+
+    /**
+     * Converts an upper camel-cased string to sentence case.
+     * <p>
+     * e.g. CrushingBlow -> Crushing Blow
+     *
+     * @param theString The input string.
+     * @return The formatted string.
+     */
+    public static String camelToSpaced(final String theString) {
+        return theString.replaceAll(
+                String.format("%s|%s|%s",
+                        "(?<=[A-Z])(?=[A-Z][a-z])",
+                        "(?<=[^A-Z])(?=[A-Z])",
+                        "(?<=[A-Za-z])(?=[^A-Za-z])"
+                ),
+                " "
+        );
     }
 
 

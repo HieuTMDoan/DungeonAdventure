@@ -23,6 +23,7 @@ public class InventoryPanelHandler {
         this.myGUI = theGUI;
         myInventoryPanel = (VBox) theGUI.lookup("inventoryPanel");
         myInventoryPanel.getChildren().clear();
+        syncItems(DungeonAdventure.getInstance().getPlayer().getInventory());
     }
 
     public void syncItems(final Map<Item, Integer> theItems) {

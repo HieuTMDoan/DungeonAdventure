@@ -498,19 +498,19 @@ public class Dungeon implements Serializable {
         }
 
         // Checks for every diagonal direction
-        for (final Directions.Diagonal d : Directions.Diagonal.values()) {
-            try {
-                final Tile tile = roomTiles[x + d.getXOffset()][y + d.getYOffset()];
-                if (!(tile instanceof final NPCTile npcTile)) {
-                    continue;
-                }
-
-                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
-                    surroundingMonsters.add((Monster) npcTile.getNPC());
-                }
-            } catch (final ArrayIndexOutOfBoundsException ignored) {
-            }
-        }
+//        for (final Directions.Diagonal d : Directions.Diagonal.values()) {
+//            try {
+//                final Tile tile = roomTiles[x + d.getXOffset()][y + d.getYOffset()];
+//                if (!(tile instanceof final NPCTile npcTile)) {
+//                    continue;
+//                }
+//
+//                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
+//                    surroundingMonsters.add((Monster) npcTile.getNPC());
+//                }
+//            } catch (final ArrayIndexOutOfBoundsException ignored) {
+//            }
+//        }
 
         return surroundingMonsters.isEmpty()
                 ? null : surroundingMonsters.toArray(new Monster[0]);

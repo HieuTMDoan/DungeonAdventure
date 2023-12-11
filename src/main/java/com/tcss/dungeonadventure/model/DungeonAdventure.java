@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.memento.DungeonAdventureMemento;
 import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
@@ -7,11 +8,11 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.items.SkillOrb;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import com.tcss.dungeonadventure.objects.skills.SurpriseAttack;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 import javafx.application.Application;
+
 import java.awt.Point;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,13 +34,20 @@ import java.util.stream.IntStream;
  */
 public final class DungeonAdventure implements Serializable {
 
+    /**
+     * The chance to flee in combat.
+     */
+    public static final double FLEE_CHANCE = 0.45;
+
     @Serial
     private static final long serialVersionUID = 1L;
+
 
     /**
      * Singleton instance for DungeonAdventure.
      */
     private static DungeonAdventure INSTANCE;
+
 
     /**
      * The current player.
@@ -66,7 +74,8 @@ public final class DungeonAdventure implements Serializable {
      * Should only be used for one-time instantiations
      * to preserve the singularity of the class.
      */
-    private DungeonAdventure() { }
+    private DungeonAdventure() {
+    }
 
     /**
      * Lazy singleton accessor.
@@ -115,6 +124,8 @@ public final class DungeonAdventure implements Serializable {
 
         final Room startingRoom = myDungeon.getStartingRoom();
         final Tile[][] roomTiles = startingRoom.getRoomTiles();
+
+
 
         // This locates the entrance tile in the entrance room.
         final Point entranceTileLocation =
@@ -173,11 +184,11 @@ public final class DungeonAdventure implements Serializable {
      */
     public void doCombatAction(final CombatActions theAction) {
         final Integer[] damage = new Integer[]{0};
+        final Hero hero = myPlayer.getPlayerHero();
 
         final TimedSequence s = new TimedSequence();
 
-        final Hero hero = myPlayer.getPlayerHero();
-        s.afterDo(0, () -> {
+        s.afterDo(0, () -> { // player action phase
             switch (theAction) {
                 case ATTACK -> {
                     damage[0] = hero.attack(myCurrentlyFightingMonster);
@@ -191,7 +202,6 @@ public final class DungeonAdventure implements Serializable {
                         Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
                         PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                     }
-                    PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
                 }
 
                 case USE_SKILL -> {
@@ -203,59 +213,30 @@ public final class DungeonAdventure implements Serializable {
 
                     myPlayer.removeItemFromInventory(new SkillOrb());
                     PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                            "Used a Skill Orb to use " + hero.getSkill().getClass().getSimpleName());
+                            "Used a Skill Orb to activate "
+                                    + Helper.camelToSpaced(hero.getSkill().getClass().getSimpleName()));
 
-                    if (!(hero.getSkill() instanceof SurpriseAttack)) {
-                        hero.useSkill(myCurrentlyFightingMonster);
-                        PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-                    } else {
-                        final Integer result = hero.useSkill(myCurrentlyFightingMonster);
-                        if (result == null) {
-                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Surprise Attack was unsuccessful!");
-
-                        } else if (result == 1) { // Extra attack
-                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Surprise Attack was successful!");
-                            for (int i = 0; i < 2; i++) {
-                                final int d = hero.attack(myCurrentlyFightingMonster);
-
-                                if (d > 0) {
-                                    Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, damage[0]);
-                                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                            "Player attacked, dealing " + damage[0] + " damage.");
-                                } else {
-                                    Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
-                                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
-                                }
-                                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-
-                            }
-
-
-                        } else if (result == 0) { // normal attack
-                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Surprise Attack was somewhat successful.");
-
-                            final int d = hero.attack(myCurrentlyFightingMonster);
-                            if (d > 0) {
-                                Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, d);
-                                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                        "Player attacked, dealing " + d + " damage.");
-                            } else {
-                                Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
-                                PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
-                            }
-                            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-                        }
-                    }
+                    hero.useSkill(myCurrentlyFightingMonster);
                 }
 
                 case FLEE -> {
+                    if (Helper.getRandomDoubleBetween(0, 1) > FLEE_CHANCE) {
+                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Couldn't flee!");
+                    } else {
+                        PCS.firePropertyChanged(PCS.END_COMBAT, null);
+                        PCS.firePropertyChanged(PCS.LOG, "Fled from combat!");
+                        return false;
+                    }
+
+
+
                 }
 
                 default -> throw new IllegalStateException(
                         "Unexpected value: " + theAction);
             }
 
-
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
 
 
@@ -270,7 +251,7 @@ public final class DungeonAdventure implements Serializable {
             }
             return true;
 
-        }).afterDoIf(1, () -> damage[0] > 0, () -> {
+        }).afterDoIf(1, () -> damage[0] > 0, () -> { // Monster heal phase
             final int healAmount = myCurrentlyFightingMonster.heal();
             if (healAmount > 0) {
                 PCS.firePropertyChanged(PCS.COMBAT_LOG,
@@ -284,7 +265,7 @@ public final class DungeonAdventure implements Serializable {
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             return true;
 
-        }).afterDo(1, () -> {
+        }).afterDo(1, () -> { // monster attack phase
             final Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
 
             if (damageToPlayer == null) {
@@ -336,15 +317,6 @@ public final class DungeonAdventure implements Serializable {
                 + " defeated! Game over.");
     }
 
-    /**
-     * Updates the game's status for a monster's defeat.
-     */
-    private void handleMonsterDefeat(final Monster theDefeatedMonster) {
-        // Handle monster defeat
-        Player.Stats.increaseCounter(Player.Stats.MONSTERS_DEFEATED);
-        PCS.firePropertyChanged(PCS.END_COMBAT, null);
-        PCS.firePropertyChanged(PCS.LOG, "Defeated " + theDefeatedMonster.getName() + "!");
-    }
 
     /**
      * @return The current dungeon.
@@ -419,6 +391,7 @@ public final class DungeonAdventure implements Serializable {
 
 
     // Saving
+
     /**
      * Saves the game's current state to a file.
      * Throws an {@link IOException} error
@@ -470,6 +443,7 @@ public final class DungeonAdventure implements Serializable {
 
 
     // Loading
+
     /**
      * Loads the game's current state from a file.
      * Throws an {@link IOException} or {@link ClassNotFoundException} error
@@ -499,6 +473,7 @@ public final class DungeonAdventure implements Serializable {
 
 
     // Restore the state from a Memento
+
     /**
      * Restores a {@link DungeonAdventureMemento memento}
      * to load the previous state of the game.

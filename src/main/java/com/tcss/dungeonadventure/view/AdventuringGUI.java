@@ -267,7 +267,7 @@ public class AdventuringGUI implements PropertyChangeListener {
 
         final Label label = new Label(String.format("[%s] %s", time, theMessage));
         label.setWrapText(true);
-        label.setStyle("-fx-font-fill: white; -fx-font-size: 12");
+        label.setStyle("-fx-font-fill: white; -fx-font-size: 15");
         myMessageBox.getChildren().add(label);
     }
 

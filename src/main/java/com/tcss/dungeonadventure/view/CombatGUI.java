@@ -1,13 +1,17 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import com.tcss.dungeonadventure.objects.items.SkillOrb;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
@@ -36,6 +40,7 @@ public class CombatGUI implements PropertyChangeListener {
      */
     private VBox myMessageBox;
 
+    private Label myDescriptionLabel;
 
     /* Player Action Nodes */
 
@@ -69,7 +74,6 @@ public class CombatGUI implements PropertyChangeListener {
     private Label myEnemyHealthLabel;
 
 
-
     public CombatGUI(final GUIHandler theGUIHandler) {
         PCS.addPropertyListener(this);
         this.myGUI = theGUIHandler;
@@ -91,6 +95,7 @@ public class CombatGUI implements PropertyChangeListener {
 
     private void locateNodes() {
         this.myLogScroll = (ScrollPane) lookup("combatScrollPane");
+        this.myDescriptionLabel = (Label) lookup("combatDescriptionLabel");
 
         myPlayerHealthLabel = (Label) lookup("combatPlayerHealthLabel");
         myEnemyLabel = (Label) lookup("combatEnemyLabel");
@@ -108,18 +113,46 @@ public class CombatGUI implements PropertyChangeListener {
         myMessageBox.heightProperty().addListener((observable, oldValue, newValue)
                 -> myLogScroll.setVvalue((Double) newValue));
 
-
+        myAttackButton.setOnMouseEntered(e -> {
+            final Hero hero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+            myDescriptionLabel.setText(
+                    ("Attack:\nSwing your weapon, dealing %s - %s damage to the enemy. "
+                            + "Has a %s%% chance of hitting").
+                            formatted(hero.getMinDamage(), hero.getMaxDamage(), hero.getAccuracy() * 100));
+        });
+        myAttackButton.setOnMouseExited(e -> myDescriptionLabel.setText(""));
         myAttackButton.setOnMouseClicked(e ->
                 DungeonAdventure.getInstance().
                         doCombatAction(DungeonAdventure.CombatActions.ATTACK));
 
+        myUseSkillButton.setOnMouseEntered(e -> {
+            final Player hero = DungeonAdventure.getInstance().getPlayer();
+            final Integer skillCount = hero.getInventory().get(new SkillOrb());
+
+            myDescriptionLabel.setText("Skill: %s\n%s\n\nSkill Orbs remaining: %s".
+                    formatted(
+                            Helper.camelToSpaced(hero.getPlayerHero().getSkill().getClass().getSimpleName()),
+                            hero.getPlayerHero().getSkill().getDescription(),
+                            skillCount == null ? 0 : skillCount));
+        });
+
+        myUseSkillButton.setOnMouseExited(e -> myDescriptionLabel.setText(""));
         myUseSkillButton.setOnMouseClicked(e ->
                 DungeonAdventure.getInstance().
                         doCombatAction(DungeonAdventure.CombatActions.USE_SKILL));
 
+
+        myFleeButton.setOnMouseExited(e -> myDescriptionLabel.setText(""));
+        myFleeButton.setOnMouseEntered(e ->
+                myDescriptionLabel.setText(("Flee:\nFlee from combat! %s chance of success, "
+                        + "but if failed, your turn will be skipped.").
+                        formatted(DungeonAdventure.FLEE_CHANCE)));
+
         myFleeButton.setOnMouseClicked(e ->
                 DungeonAdventure.getInstance().
                         doCombatAction(DungeonAdventure.CombatActions.FLEE));
+
+
     }
 
     private void syncCombat(final Monster theMonster) {

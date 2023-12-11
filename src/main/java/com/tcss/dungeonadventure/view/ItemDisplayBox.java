@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.view;
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.items.Item;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -33,13 +34,14 @@ public class ItemDisplayBox extends HBox {
         this.getChildren().add(itemDisplayCharacter);
 
         myNameDisplayLabel = new Label();
+        myNameDisplayLabel.setWrapText(true);
         updateCount(theCount);
-        myNameDisplayLabel.setStyle("-fx-font-size: 12; -fx-text-fill: white;");
+        myNameDisplayLabel.setStyle("-fx-font-size: 15; -fx-text-fill: white;");
         this.getChildren().add(myNameDisplayLabel);
     }
 
     void updateCount(final int theNewCount) {
-        myNameDisplayLabel.setText(myItem.getClass().getSimpleName() + " x" + theNewCount);
+        myNameDisplayLabel.setText(Helper.camelToSpaced(myItem.getClass().getSimpleName()) + " x" + theNewCount);
     }
 
 

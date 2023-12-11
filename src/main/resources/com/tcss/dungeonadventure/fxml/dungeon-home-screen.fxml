@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
       <URL value="@../css/colors.css" />
       <URL value="@../css/dungeon-home-screen-styles.css" />
@@ -38,15 +38,24 @@
                <Font size="20.0" />
             </font>
          </Label>
-         <TextField fx:id="homeHeroNameTextField" prefHeight="40.0" prefWidth="310.0" promptText="hero name..." styleClass="text-input">
+         <TextField fx:id="homeHeroNameTextField" prefHeight="40.0" prefWidth="310.0" promptText="hero name..." style="-fx-font-size: 16;" styleClass="text-input">
             <font>
-               <Font size="15.0" />
+               <Font size="16.0" />
             </font>
          </TextField>
          <HBox alignment="CENTER" spacing="16.0">
-            <RadioButton fx:id="homeWarriorRadioButton" mnemonicParsing="false" text="Warrior" textFill="WHITE" />
-            <RadioButton fx:id="homePriestessRadioButton" mnemonicParsing="false" text="Priestess" textFill="WHITE" />
-            <RadioButton fx:id="homeThiefRadioButton" mnemonicParsing="false" text="Thief" textFill="WHITE" />
+            <RadioButton fx:id="homeWarriorRadioButton" mnemonicParsing="false" style="-fx-font-size: 16;" text="Warrior" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font></RadioButton>
+            <RadioButton fx:id="homePriestessRadioButton" mnemonicParsing="false" style="-fx-font-size: 16;" text="Priestess" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font></RadioButton>
+            <RadioButton fx:id="homeThiefRadioButton" mnemonicParsing="false" style="-fx-font-size: 16;" text="Thief" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font></RadioButton>
          </HBox>
       </VBox>
       <Button fx:id="homeNewGameButton" layoutX="294.0" layoutY="356.0" mnemonicParsing="false" text="New Game">
@@ -64,20 +73,20 @@
    <AnchorPane fx:id="pausePane" prefHeight="200.0" prefWidth="663.0" visible="false">
       <fx:include source="dungeon-pause-screen.fxml" />
    </AnchorPane>
-   <AnchorPane fx:id="helpPane" prefHeight="200.0" prefWidth="200.0">
+   <AnchorPane fx:id="helpPane" prefHeight="200.0" prefWidth="200.0" visible="false">
       <fx:include source="dungeon-help-screen.fxml" />
    </AnchorPane>
-   <AnchorPane fx:id="combatPane" prefHeight="200.0" prefWidth="200.0">
+   <AnchorPane fx:id="combatPane" prefHeight="200.0" prefWidth="200.0" visible="false">
       <fx:include source="dungeon-combat-screen.fxml" />
    </AnchorPane>
-   <AnchorPane fx:id="endPane" prefHeight="200.0" prefWidth="200.0">
+   <AnchorPane fx:id="endPane" prefHeight="200.0" prefWidth="200.0" visible="false">
       <AnchorPane prefHeight="200.0" prefWidth="200.0" />
       <fx:include source="dungeon-end-game-screen.fxml" />
    </AnchorPane>
-   <AnchorPane fx:id="dungeonPane" prefHeight="200.0" prefWidth="200.0">
+   <AnchorPane fx:id="dungeonPane" prefHeight="200.0" prefWidth="200.0" visible="false">
       <fx:include source="dungeon-maze-screen.fxml" />
    </AnchorPane>
-   <AnchorPane fx:id="cheatPane" prefHeight="200.0" prefWidth="200.0">
+   <AnchorPane fx:id="cheatPane" prefHeight="200.0" prefWidth="200.0" visible="false">
       <children>
          <fx:include source="dungeon-cheat-screen.fxml" />
       </children>

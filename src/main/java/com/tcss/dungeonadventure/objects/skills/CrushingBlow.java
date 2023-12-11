@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.objects.skills;
 
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
 public class CrushingBlow extends Skill {
@@ -22,12 +23,22 @@ public class CrushingBlow extends Skill {
     }
 
     @Override
-    public Integer activateSkill(final DungeonCharacter theTarget) {
+    public Integer activateSkill(final DungeonCharacter theSource, final DungeonCharacter theTarget) {
+
+
         final int damage =
                 Helper.getRandomIntBetween(DEFAULT_MIN_DAMAGE, DEFAULT_MAX_DAMAGE);
+
+
         theTarget.changeHealth(-damage);
+        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Crushing Blow dealt " + damage + ".");
 
         return damage;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Damages the enemy for %s - %s damage.".formatted(DEFAULT_MIN_DAMAGE, DEFAULT_MAX_DAMAGE);
     }
 }
 

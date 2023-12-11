@@ -43,7 +43,7 @@ public abstract class Hero extends DungeonCharacter {
     }
 
     public Integer useSkill(final DungeonCharacter theTarget) {
-        return mySkill.activateSkill(theTarget);
+        return mySkill.activateSkill(this, theTarget);
     }
 
     public Skill getSkill() {

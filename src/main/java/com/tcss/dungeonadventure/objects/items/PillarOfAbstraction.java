@@ -8,10 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 
 public class PillarOfAbstraction extends Item implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
-
-
 
     public PillarOfAbstraction() {
         super(TileChars.Items.PILLAR_OF_ABSTRACTION, ItemTypes.PILLAR);

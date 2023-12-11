@@ -23,8 +23,7 @@ public class Tile extends VisualComponent implements Serializable {
      * No-argument constructor for deserialization.
      */
     public Tile() {
-        super(' '); // Set default values
-        this.myDefaultTraversable = true;
+        this(' ', true);
     }
 
     /**
@@ -67,11 +66,9 @@ public class Tile extends VisualComponent implements Serializable {
         return String.valueOf(super.getDisplayChar());
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-    }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-    }
+
+
 }
+
+

@@ -1,15 +1,11 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
-import com.tcss.dungeonadventure.model.*;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.factories.HeroFactory;
-import com.tcss.dungeonadventure.objects.heroes.Hero;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -17,7 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
-import static com.tcss.dungeonadventure.model.DungeonAdventure.loadGameState;
 
 /**
  * Represents the GUI of the home screen
@@ -93,12 +88,17 @@ public class HomeGUI implements PropertyChangeListener {
     private void attachEvents() {
         this.myNewGameButton.setOnAction(e -> {
             // Start a new game and save the state to a file
-            DungeonAdventure.getInstance().saveToMemento();  // Assuming DungeonAdventure has a saveToMemento() method
-            myGUI.startNewGame(getHeroName(myHeroNameTextField), HeroFactory.createCharacter(mySelectedClass));
+            final String name = myHeroNameTextField.getText();
+            DungeonAdventure.getInstance().saveToMemento();
+            myGUI.startNewGame(name.isEmpty() ? "nameless" : name,
+                    HeroFactory.createCharacter(mySelectedClass));
         });
 
         this.myLoadGameButton.setOnAction(e -> {
-            loadGameState();
+            if (DungeonAdventure.loadGameState()) {
+                myGUI.loadGame();
+
+            }
         });
 
         this.myHelpButton.setOnAction(e -> {
@@ -125,17 +125,6 @@ public class HomeGUI implements PropertyChangeListener {
         thiefRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.THIEF);
     }
 
-    /**
-     * Returns the hero name inputted in the text field as-is,
-     * or "nameless" if there's no input.
-     *
-     * @param theTextField the text field containing the hero name
-     * @return Hero name.
-     */
-    private String getHeroName(final TextField theTextField) {
-        final String heroName = theTextField.getText();
-        return heroName.isEmpty() ? "nameless" : heroName;
-    }
 
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {

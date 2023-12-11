@@ -105,10 +105,17 @@ public class GUIHandler extends Application implements PropertyChangeListener {
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         DungeonAdventure.getInstance().startNewGame(thePlayerName, theHero);
 
-
         new AdventuringGUI(this);
         Layouts.swapLayout(Layouts.ADVENTURING);
     }
+
+    public void loadGame() {
+        new AdventuringGUI(this);
+        Layouts.swapLayout(Layouts.ADVENTURING);
+    }
+
+
+
 
     /**
      * Resumes the current game.
@@ -117,19 +124,6 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         Layouts.swapLayout(Layouts.ADVENTURING);
     }
 
-    /**
-     * Saves the current game.
-     */
-    public void saveGame() {
-        DungeonAdventure.getInstance().saveGameState();
-    }
-
-    /**
-     * Loads the most recent saved game.
-     */
-    public void loadGame() {
-        DungeonAdventure.getInstance().loadGameState();
-    }
 
     /**
      * Handles a key press event.

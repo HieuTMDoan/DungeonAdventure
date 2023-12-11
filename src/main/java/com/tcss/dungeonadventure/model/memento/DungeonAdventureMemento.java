@@ -1,10 +1,8 @@
-package com.tcss.dungeonadventure.model;
+package com.tcss.dungeonadventure.model.memento;
 
+import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class DungeonAdventureMemento implements Serializable {
     /**
      * The list of room mementos to store room states.
      */
-    private List<RoomMemento> myRoomMementos;
+    private final List<RoomMemento> myRoomMementos;
 
     /**
      * Constructs a DungeonAdventureMemento with the specified player name, hero, and dungeon.

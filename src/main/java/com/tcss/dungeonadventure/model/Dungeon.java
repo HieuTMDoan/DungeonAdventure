@@ -49,7 +49,7 @@ public class Dungeon implements Serializable {
     /**
      * The room that contains a pillar of Object-Oriented.
      */
-    private final List<Room> myPillarRooms;
+    private List<Room> myPillarRooms;
 
     /**
      * The 2D representation of the {@link Dungeon}.
@@ -98,6 +98,28 @@ public class Dungeon implements Serializable {
 
         );
     }
+
+    public Dungeon(final Room[][] theRooms) {
+        this.myMaze = theRooms;
+
+
+        Room startingRoom = null;
+        Room exitRoom = null;
+        for (final Room[] row : theRooms) {
+            for (final Room room : row) {
+                if (room.isEntranceRoom()) {
+                    startingRoom = room;
+                } else if (room.isExitRoom()) {
+                    exitRoom = room;
+                }
+            }
+        }
+
+        myStartingRoom = startingRoom;
+        myExitRoom = exitRoom;
+    }
+
+
 
     /**
      * Generates and returns an array of all Pillar rooms.

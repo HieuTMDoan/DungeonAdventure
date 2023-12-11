@@ -1,5 +1,7 @@
 package com.tcss.dungeonadventure.model;
 
+import com.tcss.dungeonadventure.model.memento.DungeonAdventureMemento;
+import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -7,7 +9,6 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
-import com.tcss.dungeonadventure.view.HomeGUI;
 import javafx.application.Application;
 
 import java.awt.Point;
@@ -35,7 +36,7 @@ public final class DungeonAdventure implements Serializable {
     /**
      * The current Dungeon.
      */
-    private static Dungeon myDungeon;
+    private Dungeon myDungeon;
 
     /**
      * The current discovered rooms in the dungeon.
@@ -49,6 +50,7 @@ public final class DungeonAdventure implements Serializable {
 
 
     private DungeonAdventure() {
+
     }
 
     /**
@@ -290,72 +292,17 @@ public final class DungeonAdventure implements Serializable {
     }
 
 
-    public DungeonAdventureMemento createMemento() {
-        final String playerName = this.myPlayer.getPlayerName();
-        final Hero hero = this.myPlayer.getPlayerHero();
-        final Dungeon dungeon = this.myDungeon;
-
-        final DungeonAdventureMemento memento;
-        memento = new DungeonAdventureMemento(playerName, hero, dungeon);
-        memento.addRoomMemento(myDungeon.getCurrentRoom().saveToMemento());
-
-        return memento;
-    }
-
+    // Saving
     public static void saveGameState() {
-        DungeonAdventure adventure = DungeonAdventure.getInstance();
+        final DungeonAdventure adventure = DungeonAdventure.getInstance();
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("saved_game.ser"))) {
-            oos.writeObject(adventure.createMemento());
+            oos.writeObject(adventure.saveToMemento());
             System.out.println("Game saved successfully!");
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             System.err.println("Error writing saved game state file: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
-
-
-
-    public static void loadGameState() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
-            DungeonAdventureMemento memento = (DungeonAdventureMemento) ois.readObject();
-
-            DungeonAdventure adventure = new DungeonAdventure();
-            adventure.restoreFromMemento(memento);
-
-            // Trigger necessary events to update the GUI
-            PCS.firePropertyChanged(PCS.LOAD_ROOM, adventure.getDungeon().getCurrentRoom());
-            PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
-
-            System.out.println("Game loaded successfully!");
-        } catch (IOException ex) {
-            // Handle IOException
-        } catch (ClassNotFoundException ex) {
-            // Handle ClassNotFoundException
-        } catch (Exception ex) {
-            // Handle other exceptions
-        }
-    }
-
-
-
-
-
-
-    // Restore the state from a Memento
-    public void restoreFromMemento(final DungeonAdventureMemento theMemento) {
-        this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());
-        this.myDungeon = theMemento.getSavedDungeon();
-
-        // Check if there are room mementos before accessing the first one
-        List<RoomMemento> roomMementos = theMemento.getRoomMementos();
-        if (!roomMementos.isEmpty()) {
-            final RoomMemento roomMemento = roomMementos.get(0);
-            this.myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
-        }
-
-        PCS.firePropertyChanged(PCS.LOAD_ROOM, this.myDungeon.getCurrentRoom());
-    }
-
 
     /**
      * Creates a memento to save the current state of the game.
@@ -377,7 +324,7 @@ public final class DungeonAdventure implements Serializable {
         // Add the memento of the current room to the DungeonAdventureMemento
         final Room currentRoom = myDungeon.getCurrentRoom();
         if (currentRoom != null) {
-            RoomMemento roomMemento = currentRoom.saveToMemento();
+            final RoomMemento roomMemento = currentRoom.saveToMemento();
             if (roomMemento != null) {
                 memento.addRoomMemento(roomMemento);
             }
@@ -386,6 +333,47 @@ public final class DungeonAdventure implements Serializable {
         return memento;
     }
 
+
+    // Loading
+    public static boolean loadGameState() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("saved_game.ser"))) {
+            final DungeonAdventureMemento memento = (DungeonAdventureMemento) ois.readObject();
+
+            final DungeonAdventure adventure = DungeonAdventure.getInstance();
+            adventure.restoreFromMemento(memento);
+
+            // Trigger necessary events to update the GUI
+            PCS.firePropertyChanged(PCS.LOAD_ROOM, adventure.getDungeon().getCurrentRoom());
+            PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
+
+
+            System.out.println("Game loaded successfully!");
+
+            System.out.println(adventure.getDungeon());
+            System.out.println(adventure.getDungeon().getCurrentRoom());
+
+            return true;
+        } catch (final IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    // Restore the state from a Memento
+    private void restoreFromMemento(final DungeonAdventureMemento theMemento) {
+        this.myPlayer = new Player(theMemento.getSavedPlayerName(), theMemento.getSavedHero());
+        this.myDungeon = theMemento.getSavedDungeon();
+
+        // Check if there are room mementos before accessing the first one
+        final List<RoomMemento> roomMementos = theMemento.getRoomMementos();
+        if (!roomMementos.isEmpty()) {
+            final RoomMemento roomMemento = roomMementos.get(0);
+            this.myDungeon.getCurrentRoom().restoreFromMemento(roomMemento);
+        }
+
+        PCS.firePropertyChanged(PCS.LOAD_ROOM, this.myDungeon.getCurrentRoom());
+    }
 
 
     /**

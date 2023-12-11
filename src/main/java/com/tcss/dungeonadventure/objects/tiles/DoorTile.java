@@ -7,11 +7,23 @@ import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 
-public class DoorTile extends Tile {
+import java.io.Serial;
+import java.io.Serializable;
 
-    private final Directions.Cardinal myDoorDirection;
+public class DoorTile extends Tile implements Serializable {
 
-    private final Room myDestinationRoom;
+    @Serial
+    private static final long serialVersionUID = 1;
+
+    /**
+     * The direction of the door.
+     */
+    private Directions.Cardinal myDoorDirection;
+
+    /**
+     * The room that the door leads to.
+     */
+    private Room myDestinationRoom;
 
 
     public DoorTile(final Directions.Cardinal theDoorDirection,
@@ -25,6 +37,10 @@ public class DoorTile extends Tile {
 
         this.myDestinationRoom = theDestinationRoom;
         this.myDoorDirection = theDoorDirection;
+    }
+
+    public DoorTile() {
+
     }
 
     @Override

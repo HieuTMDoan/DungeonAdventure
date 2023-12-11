@@ -24,6 +24,10 @@ public class ItemTile extends Tile {
         this.myItem = theItem;
     }
 
+    public ItemTile() {
+
+    }
+
     @Override
     public void onInteract() {
         if (myItem == null) {

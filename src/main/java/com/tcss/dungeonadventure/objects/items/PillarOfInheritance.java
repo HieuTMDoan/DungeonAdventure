@@ -4,7 +4,13 @@ package com.tcss.dungeonadventure.objects.items;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
-public class PillarOfInheritance extends Item {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class PillarOfInheritance extends Item implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public PillarOfInheritance() {
         super(TileChars.Items.PILLAR_OF_INHERITANCE, ItemTypes.PILLAR);

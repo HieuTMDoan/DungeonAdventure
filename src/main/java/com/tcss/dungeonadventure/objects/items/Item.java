@@ -3,10 +3,14 @@ package com.tcss.dungeonadventure.objects.items;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.VisualComponent;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class Item extends VisualComponent implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public enum ItemTypes {
 
@@ -27,9 +31,15 @@ public abstract class Item extends VisualComponent implements Serializable {
      */
     private final ItemTypes myItemType;
 
-    // Add fields for name and description
-    private String name;
-    private String description;
+    /**
+     * The name of the item.
+     */
+    private String myName;
+
+    /**
+     * The description of the item.
+     */
+    private String myDescription;
 
     public Item(final char theDisplayChar, final ItemTypes theItemType) {
         super(theDisplayChar);
@@ -39,12 +49,12 @@ public abstract class Item extends VisualComponent implements Serializable {
     @Override
     public String getDescription() {
         // Use the stored description or the default if not set
-        return (description != null) ? description : "Item: " + getClass().getSimpleName();
+        return (myDescription != null) ? myDescription : "Item: " + getClass().getSimpleName();
     }
 
     public String getName() {
         // Use the stored name or the default if not set
-        return (name != null) ? name : getClass().getSimpleName();
+        return (myName != null) ? myName : getClass().getSimpleName();
     }
 
     public ItemTypes getItemType() {
@@ -57,12 +67,12 @@ public abstract class Item extends VisualComponent implements Serializable {
     public abstract Item copy();
 
     // Implement setName, getName, setDescription
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String theName) {
+        this.myName = theName;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(final String theDesc) {
+        this.myDescription = theDesc;
     }
 
     /**

@@ -6,9 +6,6 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class VisionPotion extends Item {
 

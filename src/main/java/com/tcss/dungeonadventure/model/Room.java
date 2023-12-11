@@ -1,6 +1,7 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -112,14 +113,16 @@ public class Room implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Serialize the non-transient fields
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
+    @Serial
+    private void writeObject(final ObjectOutputStream theOut) throws IOException {
+        theOut.defaultWriteObject();
         // Write additional non-transient fields here if needed
     }
 
     // Deserialize the non-transient fields
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
+    @Serial
+    private void readObject(final ObjectInputStream theIn) throws IOException, ClassNotFoundException {
+        theIn.defaultReadObject();
         // Initialize or read additional non-transient fields here if needed
     }
 

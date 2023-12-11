@@ -3,7 +3,11 @@ package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -28,16 +32,17 @@ public class Player implements Serializable {
      */
     private final Map<Item, Integer> myInventory = new HashMap<>();
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
+    @Serial
+    private void writeObject(final ObjectOutputStream theOut) throws IOException {
+        theOut.defaultWriteObject();
         // Add additional code to handle non-serializable fields, if any
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
+    @Serial
+    private void readObject(final ObjectInputStream theIn) throws IOException, ClassNotFoundException {
+        theIn.defaultReadObject();
         // Add additional code to handle non-serializable fields, if any
     }
-
 
 
     public Player(final String thePlayerName, final Hero thePlayerHero) {

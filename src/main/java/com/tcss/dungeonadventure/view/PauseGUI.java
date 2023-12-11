@@ -67,7 +67,7 @@ public class PauseGUI {
     private void attachEvents() {
         this.myResumeButton.setOnAction(e -> myGUI.resumeGame());
 
-        this.mySaveGameButton.setOnAction(e -> DungeonAdventure.saveGameState());
+        this.mySaveGameButton.setOnAction(e -> DungeonAdventure.getInstance().saveGameState());
 
         // Load the game when the "Load Game" button is clicked
         this.myHelpButton.setOnAction(e -> {

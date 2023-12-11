@@ -6,7 +6,11 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 
+import java.io.Serial;
+
 public class ExitTile extends Tile {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public ExitTile() {
         super(TileChars.Room.EXIT, true);

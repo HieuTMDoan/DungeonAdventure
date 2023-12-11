@@ -8,7 +8,12 @@ import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 
+import java.io.Serial;
+
 public class DoorTile extends Tile {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * The direction of the door.

@@ -172,25 +172,6 @@ public class Room implements Serializable {
 
 
     /**
-     * Copy constructor for creating a deep copy of the Room.
-     *
-     * @param theOriginalRoom The Room to copy.
-     */
-    public Room(final Room theOriginalRoom) {
-        myDoorNumber = theOriginalRoom.myDoorNumber;
-        myIsEntranceRoom = theOriginalRoom.myIsEntranceRoom;
-        myIsExitRoom = theOriginalRoom.myIsExitRoom;
-        myDungeonLocation = theOriginalRoom.myDungeonLocation;
-        myRoomDimensions = new Dimension(theOriginalRoom.myRoomDimensions);
-        myPillar = theOriginalRoom.myPillar;
-        myPlayerPosition =
-                (theOriginalRoom.myPlayerPosition != null)
-                        ? new Point(theOriginalRoom.myPlayerPosition)
-                        : null;
-        deepCopyRoomData(theOriginalRoom.myRoomTiles);
-    }
-
-    /**
      * Generates the tile data of a random room based on a set of parameters.
      *
      * @param theIsEntrance If the room is the entrance room.
@@ -610,42 +591,6 @@ public class Room implements Serializable {
         return this.myRoomDimensions == null ? null : (int) this.myRoomDimensions.getHeight();
     }
 
-
-    public void deepCopyRoomData(final Tile[][] theOriginalRoomData) {
-        myRoomTiles = new Tile[theOriginalRoomData.length][];
-        for (int i = 0; i < theOriginalRoomData.length; i++) {
-            myRoomTiles[i] = Arrays.copyOf(theOriginalRoomData[i],
-                    theOriginalRoomData[i].length);
-
-            for (int j = 0; j < theOriginalRoomData[i].length; j++) {
-                if (theOriginalRoomData[i][j] != null) {
-                    final char displayChar = theOriginalRoomData[i][j].getDisplayChar();
-                    final Tile newTile;
-                    if (theOriginalRoomData[i][j] instanceof ItemTile) {
-                        final Item item = ((ItemTile) theOriginalRoomData[i][j]).getItem();
-                        newTile = new ItemTile(item);
-                    } else {
-                        final boolean isTraversable =
-                                theOriginalRoomData[i][j].isTraversable();
-                        newTile = new Tile(displayChar, isTraversable);
-                    }
-                    myRoomTiles[i][j] = newTile;
-                } else {
-                    myRoomTiles[i][j] = null;
-                }
-            }
-        }
-    }
-
-    public RoomMemento saveToMemento() {
-        return new RoomMemento(myRoomTiles, myPlayerPosition, myPillar);
-    }
-
-    public void restoreFromMemento(final RoomMemento theMemento) {
-        myRoomTiles = theMemento.getSavedRoomData();
-        myPlayerPosition = theMemento.getSavedPlayerPosition();
-        myPillar = theMemento.getSavedPillar();
-    }
 
 
     /**

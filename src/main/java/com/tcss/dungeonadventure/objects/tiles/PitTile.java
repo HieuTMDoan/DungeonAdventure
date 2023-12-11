@@ -7,7 +7,12 @@ import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 
+import java.io.Serial;
+
 public class PitTile extends Tile {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * The damage dealt when the pit is stepped on.

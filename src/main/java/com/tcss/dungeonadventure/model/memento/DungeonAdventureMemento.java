@@ -1,7 +1,12 @@
 package com.tcss.dungeonadventure.model.memento;
 
 import com.tcss.dungeonadventure.model.Dungeon;
+import com.tcss.dungeonadventure.model.Player;
+import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
+import javafx.util.Pair;
+
+import java.awt.Point;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,77 +23,40 @@ public class DungeonAdventureMemento implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The saved player name.
-     */
-    private final String mySavedPlayerName;
-
-    /**
-     * The saved hero instance.
-     */
-    private final Hero mySavedHero;
+    private final Player myPlayer;
 
     /**
      * The saved dungeon instance.
      */
     private final Dungeon mySavedDungeon;
 
-    /**
-     * The list of room mementos to store room states.
-     */
-    private final List<RoomMemento> myRoomMementos;
+    private final Room[][] myDiscoveredRooms;
+
+
 
     /**
      * Constructs a DungeonAdventureMemento with the specified player name, hero, and dungeon.
      *
-     * @param thePlayerName The name of the player.
-     * @param theHero       The hero instance.
      * @param theDungeon    The dungeon instance.
      */
-    public DungeonAdventureMemento(final String thePlayerName,
-                                   final Hero theHero, final Dungeon theDungeon) {
-        this.mySavedPlayerName = thePlayerName;
-        this.mySavedHero = theHero;
+    public DungeonAdventureMemento(final Player thePlayer,
+                                   final Dungeon theDungeon,
+                                   final Room[][] theDiscoveredRooms) {
+        this.myPlayer = thePlayer;
         this.mySavedDungeon = theDungeon;
-        this.myRoomMementos = new ArrayList<>();
+        this.myDiscoveredRooms = theDiscoveredRooms;
+
+
     }
 
-    /**
-     * Adds a room memento to the list of room mementos.
-     *
-     * @param theRoomMemento The room memento to add.
-     */
-    public void addRoomMemento(final RoomMemento theRoomMemento) {
-        this.myRoomMementos.add(theRoomMemento);
+    public Player getSavedPlayer() {
+        return this.myPlayer;
     }
 
-    /**
-     * Gets a copy of the list of room mementos.
-     *
-     * @return A copy of the list of room mementos.
-     */
-    public List<RoomMemento> getRoomMementos() {
-        return new ArrayList<>(myRoomMementos);
+    public Room[][] getSavedDiscoveredRooms() {
+        return this.myDiscoveredRooms;
     }
 
-    
-    /**
-     * Gets the saved player name.
-     *
-     * @return The saved player name.
-     */
-    public String getSavedPlayerName() {
-        return mySavedPlayerName;
-    }
-
-    /**
-     * Gets the saved hero instance.
-     *
-     * @return The saved hero instance.
-     */
-    public Hero getSavedHero() {
-        return mySavedHero;
-    }
 
     /**
      * Gets the saved dungeon instance.
@@ -98,4 +66,5 @@ public class DungeonAdventureMemento implements Serializable {
     public Dungeon getSavedDungeon() {
         return mySavedDungeon;
     }
+
 }

@@ -5,6 +5,7 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class Dungeon implements Serializable {
     /**
      * The room that the player is currently in.
      */
-    private transient Room myCurrentRoom;
+    private Room myCurrentRoom;
 
     /**
      * The sequence of {@link Directions.Cardinal} to victory.
@@ -126,7 +127,6 @@ public class Dungeon implements Serializable {
         myStartingRoom = startingRoom;
         myExitRoom = exitRoom;
     }
-
 
 
     /**
@@ -534,6 +534,10 @@ public class Dungeon implements Serializable {
         return this.myCurrentRoom;
     }
 
+    public Room[][] getMaze() {
+        return this.myMaze;
+    }
+
     /**
      * Accessor for the starting room.
      *
@@ -578,7 +582,6 @@ public class Dungeon implements Serializable {
     }
 
     /**
-     *
      * @param theRoom
      * @param theOriginalDirection
      */

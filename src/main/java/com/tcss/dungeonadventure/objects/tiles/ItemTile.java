@@ -5,7 +5,12 @@ import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
 
+import java.io.Serial;
+
 public class ItemTile extends Tile {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * The item occupying this tile.

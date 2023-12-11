@@ -3,6 +3,7 @@ package com.tcss.dungeonadventure.objects.tiles;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 
@@ -19,8 +20,8 @@ public class PitTile extends Tile {
     }
 
     @Override
-    public void onInteract() {
-        final Hero hero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+    public void onInteract(final Player thePlayer) {
+        final Hero hero = thePlayer.getPlayerHero();
         hero.changeHealth(this, -DAMAGE);
 
         if (hero.isDefeated()) {

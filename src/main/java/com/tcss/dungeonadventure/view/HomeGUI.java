@@ -97,7 +97,6 @@ public class HomeGUI implements PropertyChangeListener {
         this.myLoadGameButton.setOnAction(e -> {
             if (DungeonAdventure.loadGameState()) {
                 myGUI.loadGame();
-
             }
         });
 

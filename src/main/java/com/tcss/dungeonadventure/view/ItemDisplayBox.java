@@ -7,10 +7,19 @@ import javafx.scene.layout.HBox;
 
 public class ItemDisplayBox extends HBox {
 
+    /**
+     * Default spacing in-between items.
+     */
     private static final int SPACING = 16;
 
+    /**
+     * The item to display.
+     */
     private final Item myItem;
 
+    /**
+     * The name of the item.
+     */
     private final Label myNameDisplayLabel;
 
     ItemDisplayBox(final Item theItem, final int theCount) {

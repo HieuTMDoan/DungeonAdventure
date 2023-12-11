@@ -31,10 +31,6 @@ public abstract class Item extends VisualComponent implements Serializable {
      */
     private final ItemTypes myItemType;
 
-    /**
-     * The name of the item.
-     */
-    private String myName;
 
     /**
      * The description of the item.
@@ -52,10 +48,6 @@ public abstract class Item extends VisualComponent implements Serializable {
         return (myDescription != null) ? myDescription : "Item: " + getClass().getSimpleName();
     }
 
-    public String getName() {
-        // Use the stored name or the default if not set
-        return (myName != null) ? myName : getClass().getSimpleName();
-    }
 
     public ItemTypes getItemType() {
         return this.myItemType;
@@ -66,20 +58,12 @@ public abstract class Item extends VisualComponent implements Serializable {
     // Add a copy method to create a copy of the Item
     public abstract Item copy();
 
-    // Implement setName, getName, setDescription
-    public void setName(final String theName) {
-        this.myName = theName;
-    }
-
-    public void setDescription(final String theDesc) {
-        this.myDescription = theDesc;
-    }
 
     /**
      * The Item equals method only compares class.
      *
      * @param theOther The other object to compare.
-     * @return
+     * @return True if the other object is the same item class, false otherwise.
      */
     @Override
     public boolean equals(final Object theOther) {

@@ -4,12 +4,10 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
@@ -23,19 +21,54 @@ import java.util.Calendar;
  */
 public class CombatGUI implements PropertyChangeListener {
 
+    /**
+     * The GUI Handler.
+     */
     private final GUIHandler myGUI;
 
+    /**
+     * The scroll pane for the logger.
+     */
     private ScrollPane myLogScroll;
 
-    /* Player Action Nodes */
-    private Label myAttackButton;
-    private Label myUseSkillButton;
-    private Label myFleeButton;
-    
-    private Label myPlayerHealthLabel;
-    private Label myEnemyLabel;
-    private Label myEnemyHealthLabel;
+    /**
+     * The combat log box.
+     */
     private VBox myMessageBox;
+
+
+    /* Player Action Nodes */
+
+    /**
+     * The button to fire the Attack command.
+     */
+    private Label myAttackButton;
+
+    /**
+     * The button to fire the Skill command.
+     */
+    private Label myUseSkillButton;
+
+    /**
+     * The button to fire the Flee command.
+     */
+    private Label myFleeButton;
+
+    /**
+     * The label of the players' health.
+     */
+    private Label myPlayerHealthLabel;
+
+    /**
+     * The label of the enemies' name.
+     */
+    private Label myEnemyLabel;
+    /**
+     * The label of the enemies' health.
+     */
+    private Label myEnemyHealthLabel;
+
+
 
     public CombatGUI(final GUIHandler theGUIHandler) {
         PCS.addPropertyListener(this);
@@ -44,7 +77,6 @@ public class CombatGUI implements PropertyChangeListener {
         locateNodes();
         attachEvents();
     }
-
 
 
     /**
@@ -73,25 +105,34 @@ public class CombatGUI implements PropertyChangeListener {
     }
 
     private void attachEvents() {
-        myMessageBox.heightProperty().addListener(
-                (ChangeListener) (observable, oldValue, newValue)
-                        -> myLogScroll.setVvalue((Double) newValue));
+        myMessageBox.heightProperty().addListener((observable, oldValue, newValue)
+                -> myLogScroll.setVvalue((Double) newValue));
 
 
+        myAttackButton.setOnMouseClicked(e ->
+                DungeonAdventure.getInstance().
+                        doCombatAction(DungeonAdventure.CombatActions.ATTACK));
 
-        myAttackButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.ATTACK));
-        myUseSkillButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.USE_SKILL));
-        myFleeButton.setOnMouseClicked(e -> DungeonAdventure.getInstance().doCombatAction(DungeonAdventure.CombatActions.FLEE));
+        myUseSkillButton.setOnMouseClicked(e ->
+                DungeonAdventure.getInstance().
+                        doCombatAction(DungeonAdventure.CombatActions.USE_SKILL));
+
+        myFleeButton.setOnMouseClicked(e ->
+                DungeonAdventure.getInstance().
+                        doCombatAction(DungeonAdventure.CombatActions.FLEE));
     }
 
     private void syncCombat(final Monster theMonster) {
-        myEnemyHealthLabel.setText(String.format("Health: %s/%s", theMonster.getHealth(), theMonster.getMaxHealth()));
+        myEnemyHealthLabel.setText(
+                String.format("Health: %s/%s",
+                        theMonster.getHealth(), theMonster.getMaxHealth()));
 
         myEnemyLabel.setStyle("-fx-text-fill: " + theMonster.getTileColor() + ";");
         myEnemyLabel.setText(String.valueOf(theMonster.getDisplayChar()));
 
         final Hero player = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
-        myPlayerHealthLabel.setText(String.format("Health: %s/%s", player.getHealth(), player.getMaxHealth()));
+        myPlayerHealthLabel.setText(
+                String.format("Health: %s/%s", player.getHealth(), player.getMaxHealth()));
     }
 
     void startCombat(final Monster theMonster) {

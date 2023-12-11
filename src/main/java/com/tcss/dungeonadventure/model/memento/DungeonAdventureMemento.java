@@ -2,7 +2,6 @@ package com.tcss.dungeonadventure.model.memento;
 
 import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;

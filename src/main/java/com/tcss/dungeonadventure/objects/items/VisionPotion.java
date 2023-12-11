@@ -29,11 +29,14 @@ public class VisionPotion extends Item {
      * @param theDiscoveredRooms the current discovered rooms.
      * @param theCurrentRoom the current room.
      */
-    private static void addsAllAdjacentRooms(final Room[][] theDiscoveredRooms, final Room theCurrentRoom) {
+    private static void addsAllAdjacentRooms(final Room[][] theDiscoveredRooms,
+                                             final Room theCurrentRoom) {
+
         // Adds adjacent rooms by the cardinal directions
         for (Directions.Cardinal dir : Directions.Cardinal.values()) {
             try {
-                final Room adjacentRoomByDirection = theCurrentRoom.getAdjacentRoomByDirection(dir);
+                final Room adjacentRoomByDirection
+                        = theCurrentRoom.getAdjacentRoomByDirection(dir);
                 final int visibleRoomRow = adjacentRoomByDirection.getDungeonLocation().y;
                 final int visibleRoomCol = adjacentRoomByDirection.getDungeonLocation().x;
 
@@ -44,7 +47,8 @@ public class VisionPotion extends Item {
         // Adds adjacent rooms by the diagonal directions
         for (Directions.Diagonal dir : Directions.Diagonal.values()) {
             try {
-                final Room adjacentRoomByDirection = theCurrentRoom.getAdjacentRoomByDirection(dir);
+                final Room adjacentRoomByDirection
+                        = theCurrentRoom.getAdjacentRoomByDirection(dir);
                 final int visibleRoomRow = adjacentRoomByDirection.getDungeonLocation().y;
                 final int visibleRoomCol = adjacentRoomByDirection.getDungeonLocation().x;
 

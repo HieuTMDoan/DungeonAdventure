@@ -1,22 +1,48 @@
 package com.tcss.dungeonadventure.objects;
 
 import com.tcss.dungeonadventure.Helper;
-import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-
 import java.io.Serializable;
 
 
 public abstract class DungeonCharacter extends VisualComponent implements Serializable {
 
+    /**
+     * The name of the character.
+     */
     private final String myName;
+    /**
+     * The max health of the character.
+     */
     private final int myMaxHealthPoints;
+    /**
+     * The minimum attack-damage of the character.
+     */
     private final int myMinDamage;
-    private final int myMaxDamage;
-    private final int myAttackSpeed;
-    private final double myAccuracy; // same as hit rate
 
+    /**
+     * The maximum attack-damage of the character.
+     */
+    private final int myMaxDamage;
+
+    /**
+     * The attack speed of the character.
+     */
+    private final int myAttackSpeed;
+
+    /**
+     * The accuracy of the character.
+     */
+    private final double myAccuracy;
+
+    /**
+     * The last object that damaged the character.
+     */
     private Object myLastDamageSource;
+
+    /**
+     * The current health points of the character.
+     */
     private int myHealthPoints;
 
     public DungeonCharacter(final String theName,

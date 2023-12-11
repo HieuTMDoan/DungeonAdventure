@@ -18,7 +18,8 @@ public class TimedSequence {
     /**
      * The list of all stored events.
      */
-    private final List<Pair<Pair<Integer, TimedEvent>, Conditional>> myQueuedEvents = new ArrayList<>();
+    private final List<Pair<Pair<Integer, TimedEvent>, Conditional>> myQueuedEvents
+            = new ArrayList<>();
 
     public TimedSequence() {
 
@@ -33,7 +34,7 @@ public class TimedSequence {
      * @return itself.
      */
     public TimedSequence afterDo(final int theSecondsDelay, final TimedEvent theEvent) {
-        return afterDoIf(theSecondsDelay, theEvent, null);
+        return afterDoIf(theSecondsDelay, null, theEvent);
     }
 
     /**
@@ -46,8 +47,8 @@ public class TimedSequence {
      * @return itself.
      */
     public TimedSequence afterDoIf(final int theSecondsDelay,
-                                   final TimedEvent theEvent,
-                                   final Conditional theCondition) {
+                                   final Conditional theCondition,
+                                   final TimedEvent theEvent) {
 
         myQueuedEvents.add(new Pair<>(new Pair<>(theSecondsDelay, theEvent), theCondition));
         return this;
@@ -72,11 +73,13 @@ public class TimedSequence {
      */
     private void doAction(final int theIndex) {
         try {
-            final Pair<Pair<Integer, TimedEvent>, Conditional> sequence = myQueuedEvents.get(theIndex);
+            final Pair<Pair<Integer, TimedEvent>, Conditional>
+                    sequence = myQueuedEvents.get(theIndex);
             if (sequence.getValue() == null || sequence.getValue().shouldRun()) {
                 final Pair<Integer, TimedEvent> action = sequence.getKey();
 
-                final PauseTransition pause = new PauseTransition(Duration.seconds(action.getKey()));
+                final PauseTransition pause =
+                        new PauseTransition(Duration.seconds(action.getKey()));
                 pause.setOnFinished(e -> {
                     if (action.getValue().run()) {
                         doAction(theIndex + 1);

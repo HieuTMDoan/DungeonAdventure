@@ -6,7 +6,14 @@ import com.tcss.dungeonadventure.objects.skills.Skill;
 public abstract class Hero extends DungeonCharacter {
 
 
+    /**
+     * The chance to block an incoming attack.
+     */
     private final double myBlockChance;
+
+    /**
+     * The skill of the hero.
+     */
     private final Skill mySkill;
 
     public Hero(final String theName,

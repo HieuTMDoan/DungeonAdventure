@@ -8,7 +8,14 @@ import java.util.Map;
 
 public class InventoryPanelHandler {
 
+    /**
+     * The parent GUI.
+     */
     private final AdventuringGUI myGUI;
+
+    /**
+     * The VBox of the inventory.
+     */
     private final VBox myInventoryPanel;
 
 

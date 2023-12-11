@@ -6,12 +6,10 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -52,10 +50,6 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private CombatGUI myCombatGui;
 
-    /**
-     * The adventuring GUI.
-     */
-    private AdventuringGUI myAdventuringGui;
 
     @Override
     public void start(final Stage theStage) throws IOException {

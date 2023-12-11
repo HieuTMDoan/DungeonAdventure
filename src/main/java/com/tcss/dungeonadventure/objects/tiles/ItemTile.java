@@ -1,7 +1,7 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
 
-import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
 
@@ -29,12 +29,12 @@ public class ItemTile extends Tile {
     }
 
     @Override
-    public void onInteract() {
+    public void onInteract(final Player thePlayer) {
         if (myItem == null) {
             return;
         }
 
-        DungeonAdventure.getInstance().getPlayer().addItemToInventory(myItem);
+        thePlayer.addItemToInventory(myItem);
         myItem = null;
     }
 

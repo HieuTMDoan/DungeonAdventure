@@ -1,8 +1,9 @@
 package com.tcss.dungeonadventure.objects.tiles;
 
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.VisualComponent;
-
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 
 public class Tile extends VisualComponent implements Serializable {
 
@@ -46,9 +47,10 @@ public class Tile extends VisualComponent implements Serializable {
     /**
      * This method should be fired when the user steps on a tile.
      */
-    public void onInteract() {
+    public void onInteract(final Player thePlayer) {
         if (!isTraversable()) {
-            throw new RuntimeException("Target has entered a tile that should not be traversable");
+            throw new RuntimeException(
+                    "Target has entered a tile that should not be traversable");
         }
     }
 

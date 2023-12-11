@@ -50,8 +50,8 @@ public class Priestess extends Hero {
     /**
      * The priestess should only be able to heal herself, regardless of the opponent is.
      *
-     * @param theTarget
-     * @return
+     * @param theTarget Will be ignored.
+     * @return True if the skill was successful.
      */
     @Override
     public boolean useSkill(final DungeonCharacter theTarget) {

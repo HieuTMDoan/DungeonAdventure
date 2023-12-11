@@ -8,14 +8,11 @@ import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
-
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -125,9 +122,9 @@ public class AdventuringGUI implements PropertyChangeListener {
 
         myMessageBox = (VBox) lookup("messageBox");
         myMessageScrollPane = (ScrollPane) lookup("messageScrollPane");
-        myMessageBox.heightProperty().addListener(
-                (ChangeListener) (observable, oldValue, newValue)
-                        -> myMessageScrollPane.setVvalue((Double) newValue));
+        myMessageBox.heightProperty().addListener((observableValue, oldValue, newValue) ->
+                myMessageScrollPane.setVvalue((Double) newValue));
+
 
         // This is to fix a bug where things within a scroll-pane are blurry
         myMessageScrollPane.setCache(false);

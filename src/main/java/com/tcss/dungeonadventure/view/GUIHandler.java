@@ -159,7 +159,9 @@ public class GUIHandler extends Application implements PropertyChangeListener {
                 new CheatCodeGUI(this);
                 Layouts.swapLayout(Layouts.CHEAT_CODE);
             }
-
+            case I -> { 
+                Layouts.getCurrentLayout().enterCheatCode("invincible");
+            }
             default -> {
             }
         }
@@ -328,5 +330,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             }
 
         }
+
+
     }
 }

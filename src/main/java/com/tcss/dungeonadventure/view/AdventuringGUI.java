@@ -79,7 +79,15 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
      */
     private Label myPlayerInfoLabel;
 
-
+    /**
+     * Constructs a new AdventuringGUI, representing the graphical user interface for adventuring in the game.
+     * This GUI is responsible for displaying the current room, handling property changes, and interacting
+     * with the player's actions in the game.
+     *
+     * @param theGUI The GUIHandler responsible for managing the overall graphical user interface.
+     * @see GUIHandler
+     * @see PropertyChangeListener
+     */
     public AdventuringGUI(final GUIHandler theGUI) {
         super(theGUI);
         PCS.addPropertyListener(this);
@@ -266,6 +274,24 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
         myTileInfoLabel.setText(theString);
     }
 
+
+    /**
+     * Clears the entire grid of the GUI, setting each tile to an EmptyTile.
+     */
+    private void clearGrid() {
+        for (int row = 0; row < myGridPane.getRowCount(); row++) {
+            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
+                setTileAt(row, col, new EmptyTile());
+            }
+        }
+    }
+
+    /**
+     * Handles the mouse-over event for a specific tile in the grid, displaying tile information.
+     *
+     * @param theRowIndex The row index of the tile.
+     * @param theColIndex The column index of the tile.
+     */
     private void onMouseOver(final int theRowIndex, final int theColIndex) {
         try {
             final Tile t = myCurrentRoom.getRoomTiles()[theRowIndex][theColIndex];
@@ -278,15 +304,11 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
 
     }
 
-    private void clearGrid() {
-        for (int row = 0; row < myGridPane.getRowCount(); row++) {
-            for (int col = 0; col < myGridPane.getColumnCount(); col++) {
-                setTileAt(row, col, new EmptyTile());
-            }
-        }
-    }
-
-
+    /**
+     * Handles property changes in the game, updating the GUI accordingly.
+     *
+     * @param theEvent The property change event.
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
         switch (PCS.valueOf(theEvent.getPropertyName())) {
@@ -307,6 +329,12 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
         }
     }
 
+    /**
+     * Checks if this AdventuringGUI instance is equal to another object.
+     *
+     * @param theOther The object to compare.
+     * @return True if theOther is an instance of AdventuringGUI, false otherwise.
+     */
     @Override
     public boolean equals(final Object theOther) {
         return theOther instanceof AdventuringGUI;

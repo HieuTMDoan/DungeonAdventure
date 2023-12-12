@@ -30,7 +30,6 @@ import java.util.Arrays;
  * @version TCSS 360: Fall 2023
  */
 public class Room implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -45,19 +44,14 @@ public class Room implements Serializable {
     private static final Dimension MIN_ROOM_DIMENSION = new Dimension(5, 5);
 
     /**
-     * The chance for a room to contain two items.
-     */
-    private static final double TWO_ITEM_CHANCE = 0.05;
-
-    /**
      * The chance for a room to contain one item.
      */
     private static final double ONE_ITEM_CHANCE = 0.15;
 
     /**
-     * Chance for a room to have two pits.
+     * The chance for a room to contain two items.
      */
-    private static final double TWO_PIT_CHANCE = 0.2;
+    private static final double TWO_ITEM_CHANCE = 0.05;
 
     /**
      * Chance for a room to have one pit.
@@ -65,14 +59,20 @@ public class Room implements Serializable {
     private static final double ONE_PIT_CHANCE = 0.4;
 
     /**
-     * The chance for a room to contain two monsters.
+     * Chance for a room to have two pits.
      */
-    private static final double TWO_MONSTER_CHANCE = 0.15;
+    private static final double TWO_PIT_CHANCE = 0.2;
 
     /**
      * The chance for a room to contain one monster.
      */
     private static final double ONE_MONSTER_CHANCE = 0.35;
+
+    /**
+     * The chance for a room to contain two monsters.
+     */
+    private static final double TWO_MONSTER_CHANCE = 0.15;
+
 
     /**
      * The max amount of attempts to place a tile before abandoning.
@@ -85,13 +85,15 @@ public class Room implements Serializable {
     private static final double EXTRA_WALL_RATIO = 0.10;
 
     /**
-     * Boolean if the room is the entrance room.
-     */
-    private final boolean myIsEntranceRoom;
-    /**
      * Boolean if the room is the exit room.
      */
     private final boolean myIsExitRoom;
+
+    /**
+     * Boolean if the room is the entrance room.
+     */
+    private final boolean myIsEntranceRoom;
+
     /**
      * The dimensions of the room.
      */
@@ -482,16 +484,14 @@ public class Room implements Serializable {
     }
 
     /**
-     * Moves player to a specified location in the room. This may be useful
-     * for loading a player in from a specific direction when coming through a door.
+     * Sets the player's location based on the specified original direction.
+     * If the original direction is null, the player's location is set to null.
+     * Otherwise, the player's position is determined by finding the door on the opposite wall
+     * of the specified original direction.
      *
-     * @param theXY The player location.
+     * @param theOriginalDirection The original direction from which the player is moving.
+     *                             If null, the player's location is set to null.
      */
-    public void setPlayerLocation(final Point theXY) {
-        // TODO: Needs bound checks
-        myPlayerPosition = theXY == null ? null : new Point(theXY);
-    }
-
     public void setPlayerLocation(final Directions.Cardinal theOriginalDirection) {
         if (theOriginalDirection == null) {
             setPlayerLocation((Point) null);
@@ -506,6 +506,17 @@ public class Room implements Serializable {
             System.out.println(this);
         }
 
+    }
+
+    /**
+     * Moves player to a specified location in the room. This may be useful
+     * for loading a player in from a specific direction when coming through a door.
+     *
+     * @param theXY The player location.
+     */
+    public void setPlayerLocation(final Point theXY) {
+        // TODO: Needs bound checks
+        myPlayerPosition = theXY == null ? null : new Point(theXY);
     }
 
     /**
@@ -585,7 +596,19 @@ public class Room implements Serializable {
         return this.myRoomDimensions == null ? null : (int) this.myRoomDimensions.getHeight();
     }
 
+    /**
+     * @return The pillar contained in the room, or null.
+     */
+    public Item getPillar() {
+        return this.myPillar;
+    }
 
+    /**
+     * @return The tiles in the room.
+     */
+    public Tile[][] getRoomTiles() {
+        return this.myRoomTiles;
+    }
 
     /**
      * Returns the players current X position in the room. If the player
@@ -612,20 +635,11 @@ public class Room implements Serializable {
     }
 
     /**
-     * @return The pillar contained in the room, or null.
+     * Returns a string representation of the current state of the room, including the player's position.
+     * The room is represented as a grid of tiles, and the player's position is marked with a specific character.
+     *
+     * @return A string representation of the room, with the player's position marked.
      */
-    public Item getPillar() {
-        return this.myPillar;
-    }
-
-    /**
-     * @return The tiles in the room.
-     */
-    public Tile[][] getRoomTiles() {
-        return this.myRoomTiles;
-    }
-
-
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();

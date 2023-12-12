@@ -23,6 +23,10 @@ public class DungeonAdventureMemento implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * The saved player instance.
+     */
     private final Player myPlayer;
 
     /**
@@ -30,6 +34,9 @@ public class DungeonAdventureMemento implements Serializable {
      */
     private final Dungeon mySavedDungeon;
 
+    /**
+     * The discovered rooms in the dungeon.
+     */
     private final Room[][] myDiscoveredRooms;
 
 
@@ -48,14 +55,22 @@ public class DungeonAdventureMemento implements Serializable {
 
     }
 
-
-
-    public Player getSavedPlayer() {
-        return this.myPlayer;
-    }
-
+    /**
+     * Gets the discovered rooms in the dungeon.
+     *
+     * @return The discovered rooms in the dungeon.
+     */
     public Room[][] getSavedDiscoveredRooms() {
         return this.myDiscoveredRooms;
+    }
+
+    /**
+     * Gets the saved player instance.
+     *
+     * @return The saved player instance.
+     */
+    public Player getSavedPlayer() {
+        return this.myPlayer;
     }
 
 

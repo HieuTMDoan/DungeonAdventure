@@ -23,25 +23,26 @@ public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * The Hero of the player.
+     */
+    private final Hero myPlayerHero;
+
+    /**
+     * The number of steps the player has made.
+     */
+    private int myMoves;
+
+    /**
      * The name of the player.
      */
     private final String myPlayerName;
 
-    /**
-     * The Hero of the player.
-     */
-    private final Hero myPlayerHero;
 
     /**
      * The inventory of the player.
      */
     private final Map<Item, Integer> myInventory = new HashMap<>();
 
-
-    /**
-     * The number of steps the player has made.
-     */
-    private int myMoves;
     /**
      * The number of attacks missed during combat.
      */
@@ -54,18 +55,22 @@ public class Player implements Serializable {
      * The number of monsters encountered. //TODO
      */
     private int myMonstersEncountered;
-    /**
-     * The number of slain monsters.
-     */
-    private int myMonstersDefeated;
+
     /**
      * The number of items used.
      */
     private int myItemsUsed;
+
     /**
      * The number of items collected.
      */
     private int myItemsCollected;
+
+    /**
+     * The number of slain monsters.
+     */
+    private int myMonstersDefeated;
+
 
     public enum Fields {
 
@@ -177,15 +182,6 @@ public class Player implements Serializable {
     }
 
     /**
-     * Returns the current player's inventory.
-     *
-     * @return The current player's inventory.
-     */
-    public Map<Item, Integer> getInventory() {
-        return this.myInventory;
-    }
-
-    /**
      * Adds an {@link Item} to the inventory.
      *
      * @param theItem the {@link Item} to be added
@@ -199,11 +195,6 @@ public class Player implements Serializable {
         this.myInventory.put(theItem, itemCount + 1);
         PCS.firePropertyChanged(PCS.ITEMS_CHANGED, myInventory);
         PCS.firePropertyChanged(PCS.LOG, "Picked up " + theItem.getClass().getSimpleName());
-    }
-
-
-    public boolean containsItem(final Item theItem) {
-        return myInventory.containsKey(theItem) && myInventory.get(theItem) > 0;
     }
 
     /**
@@ -228,6 +219,21 @@ public class Player implements Serializable {
         PCS.firePropertyChanged(PCS.ITEMS_CHANGED, myInventory);
 
     }
+
+    /**
+     * Returns the current player's inventory.
+     *
+     * @return The current player's inventory.
+     */
+    public Map<Item, Integer> getInventory() {
+        return this.myInventory;
+    }
+
+
+    public boolean containsItem(final Item theItem) {
+        return myInventory.containsKey(theItem) && myInventory.get(theItem) > 0;
+    }
+
 
     /**
      * Returns true if the player has 4 pillar {@link Item items}.

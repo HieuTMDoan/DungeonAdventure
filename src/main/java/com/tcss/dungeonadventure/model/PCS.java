@@ -13,6 +13,7 @@ import java.beans.PropertyChangeSupport;
  * @version Fall 2023
  */
 public enum PCS {
+
     /**
      * The property to log a message in the GUI's logger.
      * Should be paired with a {@link String} as the message
@@ -21,24 +22,34 @@ public enum PCS {
     LOG,
 
     /**
-     * The property to log a message in the CombatGUI's logger.
-     * Should be paired with a {@link String} as the message
-     * to display.
-     */
-    COMBAT_LOG,
-
-    /**
      * The property when the players inventory changes.
      * Should be paired with a Map<Item, Integer>, representing
      * the players current inventory.
      */
     ITEMS_CHANGED,
 
+
+
     /**
      * The property of player movement.
      * Should be paired with {@link Directions.Cardinal}
      */
-    MOVE_PLAYER,
+    MOVE_PLAYER,    //Unused
+
+    /**
+     * The property to log a message in the CombatGUI's logger.
+     * Should be paired with a {@link String} as the message
+     * to display.
+     */
+    COMBAT_LOG,
+
+
+
+    /**
+     * The property of loading a new room.
+     * Should be paired with {@link Room}
+     */
+    LOAD_ROOM,
 
     /**
      * The property of player location change.
@@ -48,12 +59,6 @@ public enum PCS {
      * stored within the room.
      */
     UPDATED_PLAYER_LOCATION,
-
-    /**
-     * The property of loading a new room.
-     * Should be paired with {@link Room}
-     */
-    LOAD_ROOM,
 
     /**
      * The property of discovering new room(s)
@@ -66,7 +71,14 @@ public enum PCS {
      * The property of loading an EXISTING game.
      * Should be paired with //TODO something. idk what that is. game data or sum
      */
-    LOAD_EXISTING_GAME,
+    LOAD_EXISTING_GAME,   //Unused
+
+    /**
+     * The property of when actions are performed by either the
+     * player or the monster, which synchronizes the health in the GUI.
+     * Should be paired with the monster.
+     */
+    SYNC_COMBAT,
 
     /**
      * The property of loading a combat sequence between
@@ -75,12 +87,6 @@ public enum PCS {
      */
     BEGIN_COMBAT,
 
-    /**
-     * The property of when actions are performed by either the
-     * player or the monster, which synchronizes the health in the GUI.
-     * Should be paired with the monster.
-     */
-    SYNC_COMBAT,
 
     /**
      * The property of when a combat sequence is over.
@@ -111,17 +117,7 @@ public enum PCS {
      */
     private  static final PropertyChangeSupport PCS = new PropertyChangeSupport(PCS.class);
 
-    /**
-     * Fires a change of property to the listeners with the new value.
-     *
-     * @param theProperty the changed property
-     * @param theNewValue the new value of that property
-     */
-    public static void firePropertyChanged(final PCS theProperty,
-                                           final Object theNewValue) {
 
-        firePropertyChanged(theProperty, null, theNewValue);
-    }
 
     /**
      * Fires a change of property to the listeners
@@ -136,6 +132,18 @@ public enum PCS {
                                            final Object theNewValue) {
 
         PCS.firePropertyChange(theProperty.name(), theOldValue, theNewValue);
+    }
+
+    /**
+     * Fires a change of property to the listeners with the new value.
+     *
+     * @param theProperty the changed property
+     * @param theNewValue the new value of that property
+     */
+    public static void firePropertyChanged(final PCS theProperty,
+                                           final Object theNewValue) {
+
+        firePropertyChanged(theProperty, null, theNewValue);
     }
 
     /**

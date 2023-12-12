@@ -20,7 +20,6 @@ public class Warrior extends Hero {
      * Constructor for Warrior characters.
      *
      * @param theName class name of Warrior characters
-     * @param theDisplayChar display character of Warrior characters
      * @param theDefaultHealth starting health of Warrior characters
      * @param theMinDamage minimum damage dealt by Warrior characters
      * @param theMaxDamage maximum damage dealt by Warrior characters

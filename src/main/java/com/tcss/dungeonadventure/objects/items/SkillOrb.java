@@ -23,7 +23,8 @@ public class SkillOrb extends Item {
 
     @Override
     public String getDescription() {
-        return "Allows heroes to use their skill during combat. Consumed upon use.";
+        return "Allows heroes to use their skill during combat."
+                + " Consumed when a skill is used.";
     }
 
 }

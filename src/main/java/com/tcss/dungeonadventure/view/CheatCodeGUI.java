@@ -241,4 +241,11 @@ public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
             displayMap();
         }
     }
+
+    public void enterCheatCode(String cheatCode) {
+        if ("invincible".equalsIgnoreCase(cheatCode)) {
+            DungeonAdventure.getInstance().activateInvincibilityCheat();
+        }
+
+    }
 }

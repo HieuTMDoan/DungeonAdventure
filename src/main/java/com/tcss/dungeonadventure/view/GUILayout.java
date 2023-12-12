@@ -22,9 +22,7 @@ public abstract class GUILayout {
         return this.myGUI.lookup(theNodeID);
     }
 
-    void onShow() {
-        // do nothing by default
-    }
+
 
     GUIHandler getGui() {
         return this.myGUI;

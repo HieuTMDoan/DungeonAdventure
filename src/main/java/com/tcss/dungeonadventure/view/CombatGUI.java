@@ -23,12 +23,8 @@ import java.util.Calendar;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class CombatGUI implements PropertyChangeListener {
+public class CombatGUI extends GUILayout implements PropertyChangeListener {
 
-    /**
-     * The GUI Handler.
-     */
-    private final GUIHandler myGUI;
 
     /**
      * The scroll pane for the logger.
@@ -75,8 +71,8 @@ public class CombatGUI implements PropertyChangeListener {
 
 
     public CombatGUI(final GUIHandler theGUIHandler) {
+        super(theGUIHandler);
         PCS.addPropertyListener(this);
-        this.myGUI = theGUIHandler;
 
         locateNodes();
         attachEvents();
@@ -90,7 +86,7 @@ public class CombatGUI implements PropertyChangeListener {
      * @return The looked-up node, or null if it isn't found.
      */
     Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID);
+        return this.getGui().lookup(theNodeID);
     }
 
     private void locateNodes() {

@@ -2,7 +2,6 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.memento.DungeonAdventureMemento;
-import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -12,9 +11,9 @@ import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
 import javafx.application.Application;
-import javafx.util.Pair;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 import java.util.stream.IntStream;
 
 
@@ -43,6 +41,7 @@ public final class DungeonAdventure implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    public static final String SAVE_NAME = "saved_game.ser";
 
     /**
      * Singleton instance for DungeonAdventure.
@@ -77,6 +76,11 @@ public final class DungeonAdventure implements Serializable {
      * to preserve the singularity of the class.
      */
     private DungeonAdventure() {
+
+
+
+
+
     }
 
     /**
@@ -111,6 +115,8 @@ public final class DungeonAdventure implements Serializable {
      * @param theHero       The hero class.
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
+        System.out.println(Helper.SEED);
+
         // This is where ALL data needs to be reset, just in case the player
         // is restarting their game.
         if (myDiscoveredRooms != null) {
@@ -164,7 +170,7 @@ public final class DungeonAdventure implements Serializable {
      * @param theDirection the given {@link Directions.Cardinal}
      */
     public void movePlayer(final Directions.Cardinal theDirection) {
-        Player.Stats.increaseCounter(Player.Stats.MOVES);
+        myPlayer.increaseStat(Player.Fields.MOVES);
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
@@ -195,12 +201,12 @@ public final class DungeonAdventure implements Serializable {
                     damage[0] = hero.attack(myCurrentlyFightingMonster);
 
                     if (damage[0] > 0) {
-                        Player.Stats.increaseCounter(Player.Stats.DAMAGE_DEALT, damage[0]);
+                        myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT, damage[0]);
 
                         PCS.firePropertyChanged(PCS.COMBAT_LOG,
                                 "Player attacked, dealing " + damage[0] + " damage.");
                     } else {
-                        Player.Stats.increaseCounter(Player.Stats.MISSED_ATTACKS);
+                        myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
                         PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                     }
                 }
@@ -242,7 +248,7 @@ public final class DungeonAdventure implements Serializable {
 
             // Check for victory
             if (myCurrentlyFightingMonster.isDefeated()) {
-                Player.Stats.increaseCounter(Player.Stats.MONSTERS_DEFEATED);
+                myPlayer.increaseStat(Player.Fields.MONSTERS_DEFEATED);
                 PCS.firePropertyChanged(PCS.END_COMBAT, null);
                 PCS.firePropertyChanged(PCS.LOG,
                         "Defeated " + myCurrentlyFightingMonster.getName() + "!");
@@ -280,10 +286,8 @@ public final class DungeonAdventure implements Serializable {
             }
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
 
-            // Check for defeat
             if (hero.isDefeated()) {
-                // Handle player defeat
-                handlePlayerDefeat();
+                endGame(false);
                 return false;
             }
 
@@ -305,16 +309,15 @@ public final class DungeonAdventure implements Serializable {
         PCS.firePropertyChanged(PCS.BEGIN_COMBAT, theSurroundingMonsters[0]);
     }
 
-    /**
-     * Updates the game's status
-     * and displays a game-over in the event of losing.
-     */
-    public void handlePlayerDefeat() {
-        PCS.firePropertyChanged(PCS.GAME_END, false);
 
-        PCS.firePropertyChanged(PCS.LOG, myPlayer.getPlayerHero().getName()
-                + " " + DungeonAdventure.getInstance().getPlayer().getPlayerName()
-                + " defeated! Game over.");
+    public void endGame(final boolean theVictory) {
+        PCS.firePropertyChanged(PCS.GAME_END, theVictory);
+
+        final File f = new File(SAVE_NAME);
+
+        if (f.exists()) {
+            f.delete();
+        }
     }
 
 

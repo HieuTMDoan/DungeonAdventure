@@ -8,6 +8,8 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.PitTile;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -17,16 +19,14 @@ import java.util.Objects;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class EndGameGUI {
+public class EndGameGUI extends GUILayout {
+
+
+    private VBox myDefeatPanel;
+    private VBox myVictoryPanel;
 
     /**
-     * The GUI handler.
-     */
-    private final GUIHandler myGUI;
-
-
-    /**
-     * The title label, either "Game Over" or "Victory"
+     * The title label, either "Game Over" or "Victory".
      */
     private Label myTitleLabel;
 
@@ -60,20 +60,11 @@ public class EndGameGUI {
      * Initializes a basic pause menu screen with 3 menu options.
      */
     public EndGameGUI(final GUIHandler theGUI) {
-        this.myGUI = theGUI;
+        super(theGUI);
         locateNodes();
         attachEvents();
     }
 
-    /**
-     * Using a node ID, you can access nodes in the Pause screen's FXML by ID.
-     *
-     * @param theNodeID The ID of the node to access.
-     * @return The looked-up node, or null if it isn't found.
-     */
-    private Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID);
-    }
 
     private void locateNodes() {
         this.myStatsLabel = (Label) lookup("EGstatsLabel");
@@ -83,6 +74,9 @@ public class EndGameGUI {
         this.myDefeatedByChar = (Label) lookup("EGdefeatedChar");
         this.myDefeatedByName = (Label) lookup("EGdefeatedName");
         this.myDefeatedByHealth = (Label) lookup("EGdefeatedHealth");
+
+        this.myDefeatPanel = (VBox) lookup("EGdefeatPanel");
+        this.myVictoryPanel = (VBox) lookup("EGvictoryPanel");
     }
 
 
@@ -95,13 +89,18 @@ public class EndGameGUI {
     void show(final boolean theVictory) {
         myTitleLabel.setText(theVictory ? "Victory!" : "Game Over");
 
+
+        myVictoryPanel.setVisible(theVictory);
+        myDefeatPanel.setVisible(!theVictory);
+
+
         final long exploredRooms =
                 Arrays.stream(DungeonAdventure.getInstance().getDiscoveredRooms()).
                 flatMap(Arrays::stream).
                 filter(Objects::nonNull).
                 count();
 
-
+        final Player player = DungeonAdventure.getInstance().getPlayer();
         myStatsLabel.setText(String.format("""
                         Moves: %s
                         Explored Rooms: %s/%s
@@ -112,15 +111,15 @@ public class EndGameGUI {
                         Items Used: %s
                         Items Collected: %s
                         """,
-                Player.Stats.MOVES.getCounter(),
+                player.getStat(Player.Fields.MOVES),
                 exploredRooms,
                 Dungeon.MAZE_SIZE.height * Dungeon.MAZE_SIZE.width,
-                Player.Stats.MISSED_ATTACKS.getCounter(),
-                Player.Stats.DAMAGE_DEALT.getCounter(),
-                Player.Stats.MONSTERS_ENCOUNTERED.getCounter(),
-                Player.Stats.MONSTERS_DEFEATED.getCounter(),
-                Player.Stats.ITEMS_USED.getCounter(),
-                Player.Stats.ITEMS_COLLECTED.getCounter()));
+                player.getStat(Player.Fields.MISSED_ATTACKS),
+                player.getStat(Player.Fields.DAMAGE_DEALT),
+                player.getStat(Player.Fields.MONSTERS_ENCOUNTERED),
+                player.getStat(Player.Fields.MONSTERS_DEFEATED),
+                player.getStat(Player.Fields.ITEMS_USED),
+                player.getStat(Player.Fields.ITEMS_COLLECTED)));
 
         final Object lastDamageSource =
                 DungeonAdventure.getInstance().getPlayer().

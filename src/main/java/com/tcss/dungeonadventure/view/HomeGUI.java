@@ -3,15 +3,14 @@ package com.tcss.dungeonadventure.view;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.model.TimedSequence;
 import com.tcss.dungeonadventure.model.factories.HeroFactory;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 
 
 /**
@@ -21,12 +20,8 @@ import javafx.scene.control.ToggleGroup;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class HomeGUI implements PropertyChangeListener {
+public class HomeGUI extends GUILayout implements PropertyChangeListener {
 
-    /**
-     * The GUI handler.
-     */
-    private final GUIHandler myGUI;
 
     /**
      * The currently selected class. Set to warrior by default.
@@ -53,24 +48,24 @@ public class HomeGUI implements PropertyChangeListener {
      */
     private TextField myHeroNameTextField;
 
+
+    /**
+     * The load label;
+     */
+    private Label myLoadLabel;
+
     public HomeGUI(final GUIHandler theGUI) {
-        this.myGUI = theGUI;
+        super(theGUI);
         PCS.addPropertyListener(this);
 
         locateNodes();
         attachEvents();
 
+
+
+
     }
 
-    /**
-     * Using a node ID, you can access nodes in the Home screen's FXML by ID.
-     *
-     * @param theNodeID The ID of the node to access.
-     * @return The looked-up node, or null if it isn't found.
-     */
-    Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID);
-    }
 
     /**
      * Helper method to organize the binding of nodes to variables.
@@ -80,6 +75,7 @@ public class HomeGUI implements PropertyChangeListener {
         this.myLoadGameButton = (Button) lookup("homeLoadGameButton");
         this.myHelpButton = (Button) lookup("homeHelpButton");
         this.myHeroNameTextField = (TextField) lookup("homeHeroNameTextField");
+        this.myLoadLabel = (Label) lookup("homeLoadStatusLabel");
     }
 
     /**
@@ -89,18 +85,31 @@ public class HomeGUI implements PropertyChangeListener {
         this.myNewGameButton.setOnAction(e -> {
             // Start a new game and save the state to a file
             final String name = myHeroNameTextField.getText();
-            myGUI.startNewGame(name.isEmpty() ? "nameless" : name,
+            getGui().startNewGame(name.isEmpty() ? "nameless" : name,
                     HeroFactory.createCharacter(mySelectedClass));
         });
 
         this.myLoadGameButton.setOnAction(e -> {
+            if (!new File(DungeonAdventure.SAVE_NAME).exists()) {
+                new TimedSequence().afterDo(0, () -> {
+                    myLoadLabel.setVisible(true);
+                    return true;
+                }).afterDo(1, () -> {
+                    myLoadLabel.setVisible(false);
+                    return true;
+                }).start();
+
+
+                return;
+            }
+
             if (DungeonAdventure.getInstance().loadGameState()) {
-                myGUI.loadGame();
+                getGui().loadGame();
             }
         });
 
         this.myHelpButton.setOnAction(e -> {
-            new HelpGUI(myGUI);
+            new HelpGUI(getGui());
             GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HELP);
         });
 

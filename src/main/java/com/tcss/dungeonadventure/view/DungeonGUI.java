@@ -29,11 +29,7 @@ import javafx.scene.text.TextBoundsType;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class DungeonGUI implements PropertyChangeListener {
-    /**
-     * The GUI handler.
-     */
-    private final GUIHandler myGUI;
+public class DungeonGUI extends GUILayout implements PropertyChangeListener {
 
     /**
      * The back button.
@@ -63,24 +59,15 @@ public class DungeonGUI implements PropertyChangeListener {
      * discovered rooms and a back button to resume the game.
      */
     public DungeonGUI(final GUIHandler theGUI) {
-        this.myGUI = theGUI;
+        super(theGUI);
         this.myDiscoveredRooms = DungeonAdventure.getInstance().getDiscoveredRooms();
         this.myDungeon = DungeonAdventure.getInstance().getDungeon();
 
         PCS.addPropertyListener(this);
 
         locateNodes();
-        this.myBackButton.setOnAction(e -> myGUI.resumeGame());
+        this.myBackButton.setOnAction(e -> getGui().resumeGame());
         updateMap();
-    }
-
-    /**
-     * Using a node ID, you can access nodes in the Help screen's FXML by ID.
-     *
-     * @return The looked-up node, or null if it isn't found.
-     */
-    private Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID);
     }
 
     /**

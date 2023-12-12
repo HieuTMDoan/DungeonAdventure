@@ -30,17 +30,13 @@ import javafx.scene.text.TextBoundsType;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class AdventuringGUI implements PropertyChangeListener {
+public class AdventuringGUI extends GUILayout implements PropertyChangeListener {
 
     /**
      * The CSS styling for the box size.
      */
     static final String BOX_SIZE_CSS = "-fx-font-size: 45; ";
 
-    /**
-     * The GUI handler.
-     */
-    private final GUIHandler myGUI;
 
     /**
      * A 2D array of Text nodes, representing each character of the room grid.
@@ -85,7 +81,7 @@ public class AdventuringGUI implements PropertyChangeListener {
 
 
     public AdventuringGUI(final GUIHandler theGUI) {
-        this.myGUI = theGUI;
+        super(theGUI);
         PCS.addPropertyListener(this);
 
 
@@ -98,16 +94,6 @@ public class AdventuringGUI implements PropertyChangeListener {
 
     }
 
-
-    /**
-     * Using a node ID, you can access nodes in the Adventuring screen's FXML by ID.
-     *
-     * @param theNodeID The ID of the node to access.
-     * @return The looked-up node, or null if it isn't found.
-     */
-    Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID);
-    }
 
     /**
      * Helper method to organize the binding of nodes to variables.

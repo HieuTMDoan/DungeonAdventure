@@ -69,6 +69,11 @@
          </font>
       </Button>
       <Button fx:id="homeHelpButton" layoutX="22.0" layoutY="535.0" mnemonicParsing="false" text="Help" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" />
+      <Label fx:id="homeLoadStatusLabel" layoutX="661.0" layoutY="319.0" style="-fx-text-fill: yellow;" text="No save found!" visible="false">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </AnchorPane>
    <AnchorPane fx:id="pausePane" prefHeight="200.0" prefWidth="663.0" visible="false">
       <fx:include source="dungeon-pause-screen.fxml" />

@@ -15,20 +15,8 @@ public class ItemDisplayBox extends HBox {
      */
     private static final int SPACING = 16;
 
-    /**
-     * The item to display.
-     */
-    private final Item myItem;
-
-    /**
-     * The name of the item.
-     */
-    private final Label myNameDisplayLabel;
-
     ItemDisplayBox(final Item theItem, final int theCount) {
         super(SPACING);
-        this.myItem = theItem;
-
         this.setAlignment(Pos.CENTER_LEFT);
         final Text itemDisplayCharacter = new Text(String.valueOf(theItem.getDisplayChar()));
         itemDisplayCharacter.setBoundsType(TextBoundsType.VISUAL);
@@ -36,11 +24,11 @@ public class ItemDisplayBox extends HBox {
 
         this.getChildren().add(itemDisplayCharacter);
 
-        myNameDisplayLabel = new Label();
-        myNameDisplayLabel.setWrapText(true);
-        myNameDisplayLabel.setText(Helper.camelToSpaced(myItem.getClass().getSimpleName()) + " x" + theCount);
-        myNameDisplayLabel.setStyle("-fx-font-size: 16; -fx-text-fill: white;");
-        this.getChildren().add(myNameDisplayLabel);
+        final Label nameDisplayLabel = new Label();
+        nameDisplayLabel.setWrapText(true);
+        nameDisplayLabel.setText(Helper.camelToSpaced(theItem.getClass().getSimpleName()) + " x" + theCount);
+        nameDisplayLabel.setStyle("-fx-font-size: 16; -fx-text-fill: white;");
+        this.getChildren().add(nameDisplayLabel);
     }
 
 

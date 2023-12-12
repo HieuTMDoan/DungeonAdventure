@@ -1,7 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
-import com.tcss.dungeonadventure.model.memento.RoomMemento;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
@@ -97,11 +96,6 @@ public class Room implements Serializable {
      * The dimensions of the room.
      */
     private final Dimension myRoomDimensions;
-
-    /**
-     * The number of doors in the room.
-     */
-    private int myDoorNumber;
 
     /**
      * The pillar that this room contains. May be null.

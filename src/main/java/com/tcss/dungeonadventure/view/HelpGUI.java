@@ -1,6 +1,5 @@
 package com.tcss.dungeonadventure.view;
 
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 
 /**
@@ -9,11 +8,7 @@ import javafx.scene.control.Button;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class HelpGUI {
-    /**
-     * The GUI handler.
-     */
-    private final GUIHandler myGUI;
+public class HelpGUI extends GUILayout {
 
     /**
      * The back button.
@@ -24,25 +19,17 @@ public class HelpGUI {
      * Initializes a basic help screen with the game's manual.
      */
     public HelpGUI(final GUIHandler theGUI) {
-        this.myGUI = theGUI;
+        super(theGUI);
         locateNodes();
         attachEvents();
     }
 
-    /**
-     * Using a node ID, you can access nodes in the Help screen's FXML by ID.
-     *
-     * @return The looked-up node, or null if it isn't found.
-     */
-    private Node lookup() {
-        return this.myGUI.lookup("helpBackButton");
-    }
 
     /**
      * Helper method to attach mouse events to certain nodes.
      */
     private void locateNodes() {
-        this.myBackButton = (Button) lookup();
+        this.myBackButton = (Button) lookup("");
     }
 
     /**
@@ -50,7 +37,10 @@ public class HelpGUI {
      */
     private void attachEvents() {
         this.myBackButton.setOnAction(e -> {
-            new PauseGUI(myGUI);
+            if (GUIHandler.Layouts.getPreviousLayout() == GUIHandler.Layouts.PAUSE) {
+                new PauseGUI(getGui());
+            }
+
             GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.getPreviousLayout());
         });
     }

@@ -16,7 +16,8 @@ public class Heal extends Skill {
     }
 
     @Override
-    public Integer activateSkill(final DungeonCharacter theSource, final DungeonCharacter theTarget) {
+    public Integer activateSkill(final DungeonCharacter theSource,
+                                 final DungeonCharacter theTarget) {
 
         final int healAmount = HEAL_AMOUNT;
         theSource.changeHealth(healAmount);

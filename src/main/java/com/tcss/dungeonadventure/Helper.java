@@ -24,10 +24,12 @@ import java.util.Random;
 public final class Helper {
 
 
+    public static final long SEED = System.currentTimeMillis();
+
     /**
      * Random object to generate random numbers.
      */
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(SEED);
 
     /**
      * Contains all the class declaration of items that
@@ -55,6 +57,7 @@ public final class Helper {
     private Helper() {
 
     }
+
 
     /**
      * Returns a random integer between the

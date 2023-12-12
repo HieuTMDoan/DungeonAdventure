@@ -50,6 +50,11 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private CombatGUI myCombatGui;
 
+    /**
+     * The home GUI.
+     */
+    private HomeGUI myHomeGui;
+
 
     @Override
     public void start(final Stage theStage) throws IOException {
@@ -72,7 +77,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         myCombatGui = new CombatGUI(this);
 
         Layouts.swapLayout(Layouts.HOME);
-        new HomeGUI(this);
+        myHomeGui = new HomeGUI(this);
     }
 
     /**
@@ -81,7 +86,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
     private void setLayoutNodes() {
         Layouts.HOME.setNode(lookup("homePane"));
         Layouts.ADVENTURING.setNode(lookup("adventuringPane"));
-        Layouts.MENU.setNode(lookup("pausePane"));
+        Layouts.PAUSE.setNode(lookup("pausePane"));
         Layouts.HELP.setNode(lookup("helpPane"));
         Layouts.COMBAT.setNode(lookup("combatPane"));
         Layouts.END.setNode(lookup("endPane"));
@@ -107,8 +112,6 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         new AdventuringGUI(this);
         Layouts.swapLayout(Layouts.ADVENTURING);
     }
-
-
 
 
     /**
@@ -144,7 +147,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
 
             case P, ESCAPE -> {
                 new PauseGUI(this);
-                Layouts.swapLayout(Layouts.MENU);
+                Layouts.swapLayout(Layouts.PAUSE);
             }
 
             case M -> {
@@ -209,7 +212,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
          * Its corresponding layout node should be the
          * root pane of the pause screen.
          */
-        MENU,
+        PAUSE,
 
         /**
          * A layout enum for the help screen.
@@ -281,6 +284,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             }
 
             theLayout.getNode().setVisible(true);
+
             CURRENT_LAYOUT = theLayout;
         }
 

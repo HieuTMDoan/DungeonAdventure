@@ -5,7 +5,6 @@ import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -33,11 +32,7 @@ import static com.tcss.dungeonadventure.objects.Directions.Cardinal;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class CheatCodeGUI implements PropertyChangeListener {
-    /**
-     * The GUI handler.
-     */
-    private final GUIHandler myGUI;
+public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
 
     /**
      * The back button.
@@ -61,23 +56,15 @@ public class CheatCodeGUI implements PropertyChangeListener {
      * discovered rooms and a back button to resume the game.
      */
     public CheatCodeGUI(final GUIHandler theGUI) {
-        this.myGUI = theGUI;
+        super(theGUI);
         this.myCurrentDungeon = DungeonAdventure.getInstance().getDungeon();
 
         PCS.addPropertyListener(this);
         locateNodes();
-        this.myBackButton.setOnAction(e -> myGUI.resumeGame());
+        this.myBackButton.setOnAction(e -> getGui().resumeGame());
         displayMap();
     }
 
-    /**
-     * Using a node ID, you can access nodes in the Help screen's FXML by ID.
-     *
-     * @return The looked-up node, or null if it isn't found.
-     */
-    private Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID);
-    }
 
     /**
      * Helper method to attach mouse events to certain nodes.

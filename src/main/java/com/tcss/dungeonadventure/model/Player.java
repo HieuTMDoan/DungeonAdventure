@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -36,6 +37,75 @@ public class Player implements Serializable {
      */
     private final Map<Item, Integer> myInventory = new HashMap<>();
 
+
+    /**
+     * The number of steps the player has made.
+     */
+    private int myMoves;
+    /**
+     * The number of attacks missed during combat.
+     */
+    private int myMissedAttacks;
+    /**
+     * The amount of damage dealt.
+     */
+    private int myDamageDealt;
+    /**
+     * The number of monsters encountered. //TODO
+     */
+    private int myMonstersEncountered;
+    /**
+     * The number of slain monsters.
+     */
+    private int myMonstersDefeated;
+    /**
+     * The number of items used.
+     */
+    private int myItemsUsed;
+    /**
+     * The number of items collected.
+     */
+    private int myItemsCollected;
+
+    public enum Fields {
+
+        /**
+         * The number of steps the player has made.
+         */
+        MOVES,
+
+        /**
+         * The number of attacks missed during combat.
+         */
+        MISSED_ATTACKS,
+
+        /**
+         * The amount of damage dealt.
+         */
+        DAMAGE_DEALT,
+
+        /**
+         * The number of monsters encountered. //TODO
+         */
+        MONSTERS_ENCOUNTERED,
+
+        /**
+         * The number of slain monsters.
+         */
+        MONSTERS_DEFEATED,
+
+        /**
+         * The number of items used.
+         */
+        ITEMS_USED,
+
+        /**
+         * The number of items collected.
+         */
+        ITEMS_COLLECTED
+    }
+
+
     /**
      * Creates a new player with the specified {@link Hero} type and name.
      *
@@ -45,8 +115,48 @@ public class Player implements Serializable {
     public Player(final String thePlayerName, final Hero thePlayerHero) {
         this.myPlayerName = thePlayerName;
         this.myPlayerHero = thePlayerHero;
-        Player.Stats.resetAll();
+        resetAllStats();
     }
+
+    public void increaseStat(final Fields theField) {
+        increaseStat(theField, 1);
+    }
+
+    public void increaseStat(final Fields theField, final int theAmount) {
+        switch (theField) {
+            case MOVES -> myMoves += theAmount;
+            case MISSED_ATTACKS -> myMissedAttacks += theAmount;
+            case DAMAGE_DEALT -> myDamageDealt += theAmount;
+            case MONSTERS_ENCOUNTERED -> myMonstersEncountered += theAmount;
+            case MONSTERS_DEFEATED -> myMonstersDefeated += theAmount;
+            case ITEMS_USED -> myItemsUsed += theAmount;
+            case ITEMS_COLLECTED -> myItemsCollected += theAmount;
+            default -> throw new IllegalStateException("Unexpected value: " + theField);
+        }
+    }
+
+    public int getStat(final Fields theField) {
+        return switch (theField) {
+            case MOVES -> myMoves;
+            case MISSED_ATTACKS -> myMissedAttacks;
+            case DAMAGE_DEALT -> myDamageDealt;
+            case MONSTERS_ENCOUNTERED -> myMonstersEncountered;
+            case MONSTERS_DEFEATED -> myMonstersDefeated;
+            case ITEMS_USED -> myItemsUsed;
+            case ITEMS_COLLECTED -> myItemsCollected;
+        };
+    }
+
+    public void resetAllStats() {
+        myMoves = 0;
+        myMissedAttacks = 0;
+        myDamageDealt = 0;
+        myMonstersEncountered = 0;
+        myMonstersDefeated = 0;
+        myItemsUsed = 0;
+        myItemsCollected = 0;
+    }
+
 
     /**
      * Returns the current player's name.
@@ -81,7 +191,7 @@ public class Player implements Serializable {
      * @param theItem the {@link Item} to be added
      */
     public void addItemToInventory(final Item theItem) {
-        Stats.increaseCounter(Stats.ITEMS_COLLECTED);
+        increaseStat(Fields.ITEMS_COLLECTED);
         Integer itemCount = this.myInventory.get(theItem);
         if (itemCount == null) {
             itemCount = 0;
@@ -102,7 +212,7 @@ public class Player implements Serializable {
      * @param theItem the {@link Item} to be removed
      */
     public void removeItemFromInventory(final Item theItem) {
-        Stats.increaseCounter(Stats.ITEMS_USED);
+        increaseStat(Fields.ITEMS_USED);
 
         final Integer itemCount = this.myInventory.get(theItem);
         if (itemCount == null) {
@@ -138,89 +248,6 @@ public class Player implements Serializable {
             pillarSet.add(item);
         }
         return pillarSet.size() == 4;
-    }
-
-    /**
-     * Enumeration of stats that a player can have.
-     */
-    public enum Stats {
-
-        /**
-         * The number of steps the player has made.
-         */
-        MOVES,
-
-        /**
-         * The number of attacks missed during combat.
-         */
-        MISSED_ATTACKS,
-
-        /**
-         * The amount of damage dealt.
-         */
-        DAMAGE_DEALT,
-
-        /**
-         * The number of monsters encountered. //TODO
-         */
-        MONSTERS_ENCOUNTERED,
-
-        /**
-         * The number of slain monsters.
-         */
-        MONSTERS_DEFEATED,
-
-        /**
-         * The number of items used.
-         */
-        ITEMS_USED,
-
-        /**
-         * The number of items collected.
-         */
-        ITEMS_COLLECTED;
-
-        /**
-         * The counter of the {@link Stats Stats}.
-         */
-        private int myCounter;
-
-        /**
-         * Increases the counter of a {@link Stats Stats} by 1.
-         *
-         * @param theStat the {@link Stats Stats} to be counted
-         */
-        public static void increaseCounter(final Stats theStat) {
-            theStat.myCounter++;
-        }
-
-        /**
-         * Increases the counter of a {@link Stats Stats} by the set amount.
-         *
-         * @param theStat the {@link Stats Stats} to be counted
-         * @param theAmount the amount to be added
-         */
-        public static void increaseCounter(final Stats theStat, final int theAmount) {
-            theStat.myCounter += theAmount;
-        }
-
-        /**
-         * Resets all {@link Stats Stats}'s counters.
-         */
-        static void resetAll() {
-            for (final Stats s : values()) {
-                s.myCounter = 0;
-            }
-        }
-
-        /**
-         * Returns the current counter of a {@link Stats Stats}.
-         *
-         * @return The current counter of a {@link Stats Stats}.
-         */
-        public int getCounter() {
-            return this.myCounter;
-        }
     }
 
 

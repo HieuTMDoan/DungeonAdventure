@@ -11,11 +11,8 @@ import javafx.scene.control.Button;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public class PauseGUI {
-    /**
-     * The GUI handler.
-     */
-    private final GUIHandler myGUI;
+public class PauseGUI extends GUILayout {
+
 
     /**
      * The resume button.
@@ -36,20 +33,11 @@ public class PauseGUI {
      * Initializes a basic pause menu screen with 3 menu options.
      */
     public PauseGUI(final GUIHandler theGUI) {
-        this.myGUI = theGUI;
+        super(theGUI);
         locateNodes();
         attachEvents();
     }
 
-    /**
-     * Using a node ID, you can access nodes in the Pause screen's FXML by ID.
-     *
-     * @param theNodeID The ID of the node to access.
-     * @return The looked-up node, or null if it isn't found.
-     */
-    private Node lookup(final String theNodeID) {
-        return this.myGUI.lookup(theNodeID);
-    }
 
     /**
      * Helper method to attach mouse events to certain nodes.
@@ -65,13 +53,13 @@ public class PauseGUI {
      * Helper method to organize the binding of nodes to variables.
      */
     private void attachEvents() {
-        this.myResumeButton.setOnAction(e -> myGUI.resumeGame());
+        this.myResumeButton.setOnAction(e -> getGui().resumeGame());
 
         this.mySaveGameButton.setOnAction(e -> DungeonAdventure.getInstance().saveGameState());
 
         // Load the game when the "Load Game" button is clicked
         this.myHelpButton.setOnAction(e -> {
-            new HelpGUI(myGUI);
+            new HelpGUI(getGui());
             GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HELP);
         });
     }

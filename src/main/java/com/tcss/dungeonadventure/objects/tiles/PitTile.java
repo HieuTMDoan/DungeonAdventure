@@ -30,7 +30,7 @@ public class PitTile extends Tile {
         hero.changeHealth(this, -DAMAGE);
 
         if (hero.isDefeated()) {
-            DungeonAdventure.getInstance().handlePlayerDefeat();
+            DungeonAdventure.getInstance().endGame(false);
         }
 
         PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " heath.");

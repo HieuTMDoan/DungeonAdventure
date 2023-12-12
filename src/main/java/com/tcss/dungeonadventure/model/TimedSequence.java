@@ -21,11 +21,6 @@ public class TimedSequence {
     private final List<Pair<Pair<Integer, TimedEvent>, Conditional>> myQueuedEvents
             = new ArrayList<>();
 
-    public TimedSequence() {
-
-    }
-
-
     /**
      * Adds a new event to the timeline that will trigger AFTER the specified delay.
      *

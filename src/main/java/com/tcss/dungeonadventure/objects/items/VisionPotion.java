@@ -15,8 +15,10 @@ public class VisionPotion extends Item {
 
     @Override
     public void useItem(final DungeonCharacter theTarget) {
-        final Room[][] newDiscoveredRooms = DungeonAdventure.getInstance().getDiscoveredRooms();
-        final Room currentRoom = DungeonAdventure.getInstance().getDungeon().getCurrentRoom();
+        final Room[][] newDiscoveredRooms =
+                DungeonAdventure.getInstance().getDiscoveredRooms();
+        final Room currentRoom =
+                DungeonAdventure.getInstance().getDungeon().getCurrentRoom();
 
         addsAllAdjacentRooms(newDiscoveredRooms, currentRoom);
         DungeonAdventure.getInstance().setDiscoveredRooms(newDiscoveredRooms);

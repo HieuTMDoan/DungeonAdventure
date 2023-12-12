@@ -322,5 +322,11 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             myLayoutNode = theNode;
         }
 
+        public void enterCheatCode(String cheatCode) {
+            if ("invincible".equalsIgnoreCase(cheatCode)) {
+                DungeonAdventure.getInstance().activateInvincibilityCheat();
+            }
+
+        }
     }
 }

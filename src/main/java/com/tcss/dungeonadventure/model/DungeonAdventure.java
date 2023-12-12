@@ -442,6 +442,8 @@ public final class DungeonAdventure implements Serializable {
             }
 
 
+
+
             System.out.println("Game loaded successfully!");
 
             return true;
@@ -451,6 +453,19 @@ public final class DungeonAdventure implements Serializable {
         return false;
     }
 
+    /**
+     * Activates the invincibility cheat code.
+     */
+    public void activateInvincibilityCheat(){
+        if (myPlayer != null) {
+            // Toggle invincibility state
+            myPlayer.setInvincible(!myPlayer.isInvincible());
+
+            // Notify listeners about the cheat code activation
+            PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
+            PCS.firePropertyChanged(PCS.LOG, "Invincibility cheat activated!");
+        }
+    }
 
     /**
      * Enums for combat actions.

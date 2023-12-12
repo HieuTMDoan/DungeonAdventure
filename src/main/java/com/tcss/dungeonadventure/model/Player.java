@@ -27,6 +27,8 @@ public class Player implements Serializable {
      */
     private final Hero myPlayerHero;
 
+    private boolean invincible;
+
     /**
      * The number of steps the player has made.
      */
@@ -218,6 +220,14 @@ public class Player implements Serializable {
         }
         PCS.firePropertyChanged(PCS.ITEMS_CHANGED, myInventory);
 
+    }
+
+    public boolean isInvincible() {
+        return invincible;
+    }
+
+    public void setInvincible(boolean invincible) {
+        this.invincible = invincible;
     }
 
     /**

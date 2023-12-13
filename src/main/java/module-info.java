@@ -4,6 +4,7 @@ module com.tcss.dungeonadventure {
     requires org.xerial.sqlitejdbc;
     requires java.desktop;
     requires junit;
+    requires jlayer;
 
     exports com.tcss.dungeonadventure.model;
     exports com.tcss.dungeonadventure.model.factories;

@@ -28,7 +28,7 @@ public final class Helper {
     /**
      * Random object to generate random numbers.
      */
-    private static final Random RANDOM = new Random(-1411379312);
+    private static final Random RANDOM = new Random();
 
     /**
      * Contains all the class declaration of items that

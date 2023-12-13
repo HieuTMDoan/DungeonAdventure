@@ -19,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextBoundsType;
 
 
@@ -105,6 +106,10 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
                     }
                 } else {
                     // Adds and displays a blank room if it's not discovered yet
+                    final Text t = new Text("X");
+                    t.setBoundsType(TextBoundsType.VISUAL);
+                    t.setStyle("-fx-font-size: 36; -fx-fill: gray;");
+                    vBox.getChildren().add(t);
                     myGridPane.add(vBox, row, col);
                 }
             }
@@ -153,6 +158,7 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
             final int theRow,
             final int theColumn,
             final VBox theBox) {
+
         final double[] borderWidths = {0, 0, 0, 0};
         int i = 0;
 

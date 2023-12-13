@@ -127,9 +127,9 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
 
         for (Directions.Cardinal dir : Directions.Cardinal.values()) {
             if (theRoom.findDoorOnWall(dir) != null) {
-                borderWidths[i++] = 1;
-            } else {
                 borderWidths[i++] = 0;
+            } else {
+                borderWidths[i++] = 1;
             }
         }
         theBox.setBorder(createBorder(borderWidths));
@@ -157,15 +157,15 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
 
         for (Directions.Cardinal dir : Directions.Cardinal.values()) {
             if (theRoom.findDoorOnWall(dir) != null) {
-                borderWidths[i++] = 1;
-            } else {
                 borderWidths[i++] = 0;
+            } else {
+                borderWidths[i++] = 1;
             }
         }
 
         theBox.setBorder(createBorder(borderWidths));
         theText.setBoundsType(TextBoundsType.VISUAL);
-        theText.setStyle("-fx-font-size: 10; -fx-fill: white;");
+        theText.setStyle("-fx-font-size: 15; -fx-fill: white; -fx-font-weight: bold;");
         theBox.getChildren().add(theText);
         myGridPane.add(theBox, theRow, theColumn);
     }

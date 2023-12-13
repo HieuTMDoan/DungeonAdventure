@@ -25,6 +25,11 @@ public class PauseGUI extends GUILayout {
     private Button mySaveGameButton;
 
     /**
+     * The quit to home button.
+     */
+    private Button myQuitButton;
+
+    /**
      * The help button.
      */
     private Button myHelpButton;
@@ -45,6 +50,7 @@ public class PauseGUI extends GUILayout {
     private void locateNodes() {
         this.myResumeButton = (Button) lookup("menuResumeButton");
         this.mySaveGameButton = (Button) lookup("menuSaveButton");
+        this.myQuitButton = (Button) lookup("menuQuitButton");
         this.myHelpButton = (Button) lookup("menuHelpButton");
     }
 
@@ -56,6 +62,11 @@ public class PauseGUI extends GUILayout {
         this.myResumeButton.setOnAction(e -> getGui().resumeGame());
 
         this.mySaveGameButton.setOnAction(e -> DungeonAdventure.getInstance().saveGameState());
+
+        this.myQuitButton.setOnAction(e -> {
+            new HomeGUI(getGui());
+            GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HOME);
+        });
 
         // Load the game when the "Load Game" button is clicked
         this.myHelpButton.setOnAction(e -> {

@@ -107,7 +107,8 @@ public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
                     };
 
                     directionCharacter.setBoundsType(TextBoundsType.VISUAL);
-                    directionCharacter.setStyle("-fx-font-size: 15; " + "-fx-fill: rgb(255,127,80);");
+                    directionCharacter.setStyle("-fx-font-size: 15; "
+                            + "-fx-fill: rgb(255,127,80);");
                     vBox.getChildren().add(directionCharacter);
                 }
 
@@ -170,9 +171,9 @@ public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
 
         for (Cardinal dir : Cardinal.values()) {
             if (theRoom.findDoorOnWall(dir) != null) {
-                borderWidths[i++] = 1;
-            } else {
                 borderWidths[i++] = 0;
+            } else {
+                borderWidths[i++] = 1;
             }
         }
         theBox.setBorder(createBorder(borderWidths));
@@ -199,25 +200,26 @@ public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
 
         for (Cardinal dir : Cardinal.values()) {
             if (theRoom.findDoorOnWall(dir) != null) {
-                borderWidths[i++] = 1;
-            } else {
                 borderWidths[i++] = 0;
+            } else {
+                borderWidths[i++] = 1;
             }
         }
         theBox.setBorder(createBorder(borderWidths));
 
         theText.setBoundsType(TextBoundsType.VISUAL);
-        theText.setStyle("-fx-font-size: 10; " + "-fx-fill: white;");
+        theText.setStyle("-fx-font-size: 15; -fx-fill: white; -fx-font-weight: bold;");
         theBox.getChildren().add(theText);
 
         myGridPane.add(theBox, theColumn, theRow);
     }
 
     /**
-     * Creates and returns a colored border with the given border widths.
+     * Creates and returns colored borders with the given border widths.
+     * The borders that represent non-door walls in a room are colored and vice versa.
      *
      * @param theBorderWidths the 4 widths of the border
-     * @return Returns a colored border with the given border widths.
+     * @return Returns colored borders with the given border widths.
      */
     Border createBorder(final double[] theBorderWidths) {
         final BorderStroke borderStroke = new BorderStroke(
@@ -242,8 +244,8 @@ public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
         }
     }
 
-    public void enterCheatCode(String cheatCode) {
-        if ("invincible".equalsIgnoreCase(cheatCode)) {
+    public void enterCheatCode(final String theCheatCode) {
+        if ("invincible".equalsIgnoreCase(theCheatCode)) {
             DungeonAdventure.getInstance().activateInvincibilityCheat();
         }
 

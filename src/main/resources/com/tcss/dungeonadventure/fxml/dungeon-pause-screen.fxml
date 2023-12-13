@@ -7,13 +7,18 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@../css/colors.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-   <VBox alignment="CENTER" layoutX="400.0" layoutY="233.0" spacing="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+   <VBox alignment="CENTER" layoutY="14.0" style="-fx-spacing: 25;" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="14.0">
       <Button fx:id="menuResumeButton" minHeight="61.0" minWidth="346.0" mnemonicParsing="false" style="-fx-border-color: white; -fx-border-radius: 5;" text="Resume" textFill="WHITE">
          <font>
             <Font size="31.0" />
          </font>
       </Button>
       <Button fx:id="menuSaveButton" minHeight="61.0" minWidth="346.0" mnemonicParsing="false" style="-fx-border-color: white; -fx-border-radius: 5;" text="Save Game" textFill="WHITE">
+         <font>
+            <Font size="31.0" />
+         </font>
+      </Button>
+      <Button fx:id="menuQuitButton" minHeight="61.0" minWidth="346.0" mnemonicParsing="false" style="-fx-border-color: white; -fx-border-radius: 5;" text="Quit To Home" textFill="WHITE">
          <font>
             <Font size="31.0" />
          </font>

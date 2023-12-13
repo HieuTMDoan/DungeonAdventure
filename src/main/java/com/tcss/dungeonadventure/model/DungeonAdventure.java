@@ -115,8 +115,6 @@ public final class DungeonAdventure implements Serializable {
      * @param theHero       The hero class.
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
-        System.out.println(Helper.SEED);
-
         // This is where ALL data needs to be reset, just in case the player
         // is restarting their game.
         if (myDiscoveredRooms != null) {

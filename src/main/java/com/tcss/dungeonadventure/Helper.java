@@ -24,12 +24,11 @@ import java.util.Random;
 public final class Helper {
 
 
-    public static final long SEED = System.currentTimeMillis();
 
     /**
      * Random object to generate random numbers.
      */
-    private static final Random RANDOM = new Random(SEED);
+    private static final Random RANDOM = new Random(-1411379312);
 
     /**
      * Contains all the class declaration of items that

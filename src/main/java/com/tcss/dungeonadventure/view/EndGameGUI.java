@@ -106,7 +106,6 @@ public class EndGameGUI extends GUILayout {
                         Explored Rooms: %s/%s
                         Attacks Missed: %s
                         Damage Dealt: %s
-                        Monsters Encountered: %s
                         Monsters Defeated: %s
                         Items Used: %s
                         Items Collected: %s
@@ -116,7 +115,6 @@ public class EndGameGUI extends GUILayout {
                 Dungeon.MAZE_SIZE.height * Dungeon.MAZE_SIZE.width,
                 player.getStat(Player.Fields.MISSED_ATTACKS),
                 player.getStat(Player.Fields.DAMAGE_DEALT),
-                player.getStat(Player.Fields.MONSTERS_ENCOUNTERED),
                 player.getStat(Player.Fields.MONSTERS_DEFEATED),
                 player.getStat(Player.Fields.ITEMS_USED),
                 player.getStat(Player.Fields.ITEMS_COLLECTED)));

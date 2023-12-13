@@ -464,7 +464,7 @@ public final class DungeonAdventure implements Serializable {
     /**
      * Activates the invincibility cheat code.
      */
-    public void activateInvincibilityCheat(){
+    public void activateInvincibilityCheat() {
         if (myPlayer != null) {
             // Toggle invincibility state
             myPlayer.setInvincible(!myPlayer.isInvincible());

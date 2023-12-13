@@ -133,7 +133,6 @@ public final class DungeonAdventure implements Serializable {
         final Room startingRoom = myDungeon.getStartingRoom();
         final Tile[][] roomTiles = startingRoom.getRoomTiles();
 
-
         // This locates the entrance tile in the entrance room.
         final Point entranceTileLocation =
                 IntStream.range(0, roomTiles.length).
@@ -353,6 +352,7 @@ public final class DungeonAdventure implements Serializable {
     public void setDiscoveredRooms(final Room[][] theNewDiscoveredRooms) {
         this.myDiscoveredRooms = theNewDiscoveredRooms;
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
+
     }
 
     /**
@@ -362,8 +362,11 @@ public final class DungeonAdventure implements Serializable {
      * @param theDirection the given {@link Directions.Cardinal}
      */
     public void changeRoom(final Directions.Cardinal theDirection) {
+
         final Room room =
                 this.myDungeon.getCurrentRoom().getAdjacentRoomByDirection(theDirection);
+
+
         final int row = room.getDungeonLocation().y;
         final int col = room.getDungeonLocation().x;
 
@@ -396,7 +399,8 @@ public final class DungeonAdventure implements Serializable {
         }
 
         myPlayer.removeItemFromInventory(theItem);
-        PCS.firePropertyChanged(PCS.LOG, "Used item: " + theItem.getClass().getSimpleName());
+        PCS.firePropertyChanged(PCS.LOG, "Used a "
+                + Helper.camelToSpaced(theItem.getClass().getSimpleName()));
         theItem.useItem(myPlayer.getPlayerHero());
     }
 
@@ -466,10 +470,8 @@ public final class DungeonAdventure implements Serializable {
      */
     public void activateInvincibilityCheat() {
         if (myPlayer != null) {
-            // Toggle invincibility state
             myPlayer.setInvincible(!myPlayer.isInvincible());
 
-            // Notify listeners about the cheat code activation
             PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
             PCS.firePropertyChanged(PCS.LOG, "Invincibility cheat activated!");
         }

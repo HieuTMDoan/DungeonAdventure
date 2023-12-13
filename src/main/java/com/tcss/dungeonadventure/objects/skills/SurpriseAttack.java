@@ -25,8 +25,8 @@ public class SurpriseAttack extends Skill {
     }
 
     @Override
-    public Integer activateSkill(final DungeonCharacter theSource,
-                                 final DungeonCharacter theTarget) {
+    public void activateSkill(final DungeonCharacter theSource,
+                              final DungeonCharacter theTarget) {
         final int ranInt = Helper.getRandomIntBetween(0, 1);
 
         if (ranInt < DEFAULT_SUCCESSFUL) { // SUCCESSFUL
@@ -49,7 +49,6 @@ public class SurpriseAttack extends Skill {
                 }
 
             }
-            return 1;
 
         } else if (ranInt < DEFAULT_SUCCESSFUL + DEFAULT_NONE) { // NOTHING
             PCS.firePropertyChanged(PCS.COMBAT_LOG,
@@ -66,11 +65,8 @@ public class SurpriseAttack extends Skill {
                 PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
             }
 
-            return 0;
-
         } else { // UNSUCCESSFUL
             PCS.firePropertyChanged(PCS.COMBAT_LOG, "Surprise Attack was unsuccessful!");
-            return null;
         }
 
     }

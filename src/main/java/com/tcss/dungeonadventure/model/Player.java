@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 
@@ -27,23 +28,26 @@ public class Player implements Serializable {
      */
     private final Hero myPlayerHero;
 
-    private boolean invincible;
-
-    /**
-     * The number of steps the player has made.
-     */
-    private int myMoves;
-
     /**
      * The name of the player.
      */
     private final String myPlayerName;
 
+    /**
+     * If the hero is invincible or not.
+     */
+    private boolean myInvincible;
 
     /**
      * The inventory of the player.
      */
     private final Map<Item, Integer> myInventory = new HashMap<>();
+
+
+    /**
+     * The number of steps the player has made.
+     */
+    private int myMoves;
 
     /**
      * The number of attacks missed during combat.
@@ -196,7 +200,8 @@ public class Player implements Serializable {
         }
         this.myInventory.put(theItem, itemCount + 1);
         PCS.firePropertyChanged(PCS.ITEMS_CHANGED, myInventory);
-        PCS.firePropertyChanged(PCS.LOG, "Picked up " + theItem.getClass().getSimpleName());
+        PCS.firePropertyChanged(PCS.LOG, "Picked up a "
+                + Helper.camelToSpaced(theItem.getClass().getSimpleName()));
     }
 
     /**
@@ -223,11 +228,11 @@ public class Player implements Serializable {
     }
 
     public boolean isInvincible() {
-        return invincible;
+        return myInvincible;
     }
 
-    public void setInvincible(boolean invincible) {
-        this.invincible = invincible;
+    public void setInvincible(final boolean theInvincible) {
+        this.myInvincible = theInvincible;
     }
 
     /**

@@ -40,11 +40,6 @@ public abstract class Item extends VisualComponent implements Serializable {
 
 
     /**
-     * The description of the item.
-     */
-    private String myDescription;     //Unassigned field
-
-    /**
      * Constructs a new item with the specified display character and item type.
      *
      * @param theDisplayChar The character used to display the item.
@@ -62,8 +57,7 @@ public abstract class Item extends VisualComponent implements Serializable {
      */
     @Override
     public String getDescription() {
-        // Use the stored description or the default if not set
-        return (myDescription != null) ? myDescription : "Item: " + getClass().getSimpleName();
+        return "Item: " + getClass().getSimpleName();
     }
 
     /**
@@ -81,8 +75,6 @@ public abstract class Item extends VisualComponent implements Serializable {
      * @param theTarget The target of the item's use, typically a dungeon character.
      */
     public abstract void useItem(DungeonCharacter theTarget);
-
-    // Add a copy method to create a copy of the Item
 
 
     /**

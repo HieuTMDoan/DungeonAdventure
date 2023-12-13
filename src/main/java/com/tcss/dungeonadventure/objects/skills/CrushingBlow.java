@@ -25,8 +25,8 @@ public class CrushingBlow extends Skill {
     }
 
     @Override
-    public Integer activateSkill(final DungeonCharacter theSource,
-                                 final DungeonCharacter theTarget) {
+    public void activateSkill(final DungeonCharacter theSource,
+                              final DungeonCharacter theTarget) {
 
 
         final int damage =
@@ -37,7 +37,6 @@ public class CrushingBlow extends Skill {
         DungeonAdventure.getInstance().getPlayer().increaseStat(Player.Fields.DAMAGE_DEALT, damage);
         PCS.firePropertyChanged(PCS.COMBAT_LOG, "Crushing Blow dealt " + damage + " damage.");
 
-        return damage;
     }
 
     @Override

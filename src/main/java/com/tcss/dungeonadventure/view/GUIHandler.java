@@ -50,10 +50,6 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private CombatGUI myCombatGui;
 
-    /**
-     * The home GUI.
-     */
-    private HomeGUI myHomeGui;
 
 
     @Override
@@ -77,7 +73,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         myCombatGui = new CombatGUI(this);
 
         Layouts.swapLayout(Layouts.HOME);
-        myHomeGui = new HomeGUI(this);
+        new HomeGUI(this);
     }
 
     /**
@@ -159,9 +155,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
                 new CheatCodeGUI(this);
                 Layouts.swapLayout(Layouts.CHEAT_CODE);
             }
-            case I -> { 
-                Layouts.getCurrentLayout().enterCheatCode("invincible");
-            }
+            case I -> Layouts.getCurrentLayout().enterCheatCode("invincible");
             default -> {
             }
         }
@@ -324,8 +318,8 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             myLayoutNode = theNode;
         }
 
-        public void enterCheatCode(String cheatCode) {
-            if ("invincible".equalsIgnoreCase(cheatCode)) {
+        public void enterCheatCode(final String theCheatCode) {
+            if ("invincible".equalsIgnoreCase(theCheatCode)) {
                 DungeonAdventure.getInstance().activateInvincibilityCheat();
             }
 

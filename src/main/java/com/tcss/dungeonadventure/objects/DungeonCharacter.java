@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.objects;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import java.io.Serializable;
 
@@ -85,7 +86,8 @@ public abstract class DungeonCharacter extends VisualComponent implements Serial
 
 
             if (theTarget instanceof final Hero hero) {
-                if (Helper.getRandomDoubleBetween(0, 1) < hero.getBlockChance()) {
+                if (DungeonAdventure.getInstance().getPlayer().isInvincible()
+                        || Helper.getRandomDoubleBetween(0, 1) < hero.getBlockChance()) {
                     return null;
                 }
             }

@@ -259,11 +259,7 @@ public final class DungeonAdventure implements Serializable {
             return true;
 
         }).afterDo(1, () -> { // monster attack phase
-            Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
-            if (myPlayer.isInvincible()) {
-                damageToPlayer = 0;
-            }
-
+            final Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
             if (damageToPlayer == null) {
                 PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
             } else if (damageToPlayer > 0) {

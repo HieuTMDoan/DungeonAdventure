@@ -82,6 +82,7 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
      * Updates the current map of the discovered dungeon.
      */
     private void updateMap() {
+        myGridPane.getChildren().clear();
         for (int row = 0; row < myDiscoveredRooms.length; row++) {
             for (int col = 0; col < myDiscoveredRooms[row].length; col++) {
                 final VBox vBox = new VBox();

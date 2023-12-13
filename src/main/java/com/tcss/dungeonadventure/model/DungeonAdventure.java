@@ -78,9 +78,6 @@ public final class DungeonAdventure implements Serializable {
     private DungeonAdventure() {
 
 
-
-
-
     }
 
     /**
@@ -112,7 +109,7 @@ public final class DungeonAdventure implements Serializable {
      * Starts a NEW game with the specified hero name and hero class.
      *
      * @param thePlayerName The name of the player.
-     * @param theHero       The hero class.
+     * @param theHero       The hero class.`
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
         // This is where ALL data needs to be reset, just in case the player
@@ -186,71 +183,67 @@ public final class DungeonAdventure implements Serializable {
         final TimedSequence s = new TimedSequence();
 
         s.afterDo(0, () -> { // player action phase
-            if (!myPlayer.isInvincible()) { // Check if player is invincible
-                switch (theAction) {
-                    case ATTACK -> {
-                        damage[0] = hero.attack(myCurrentlyFightingMonster);
+            switch (theAction) {
+                case ATTACK -> {
+                    damage[0] = hero.attack(myCurrentlyFightingMonster);
 
-                        if (damage[0] > 0) {
-                            myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT, damage[0]);
+                    if (damage[0] > 0) {
+                        myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT, damage[0]);
 
-                            PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                    "Player attacked, dealing " + damage[0] + " damage.");
-                        } else {
-                            myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
-                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
-                        }
-                    }
-
-                    case USE_SKILL -> {
-                        if (!myPlayer.containsItem(new SkillOrb())) {
-                            PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                    "You need a Skill Orb to use your skill!");
-                            return false;
-                        }
-
-                        myPlayer.removeItemFromInventory(new SkillOrb());
                         PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                "Used a Skill Orb to activate "
-                                        + Helper.camelToSpaced(hero.getSkill().getClass().getSimpleName()));
-
-                        hero.useSkill(myCurrentlyFightingMonster);
+                                "Player attacked, dealing " + damage[0] + " damage.");
+                    } else {
+                        myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
+                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                     }
-
-                    case FLEE -> {
-                        if (Helper.getRandomDoubleBetween(0, 1) > FLEE_CHANCE) {
-                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Couldn't flee!");
-                        } else {
-                            PCS.firePropertyChanged(PCS.END_COMBAT, null);
-                            PCS.firePropertyChanged(PCS.LOG, "Fled from combat!");
-                            return false;
-                        }
-                    }
-
-                    default -> throw new IllegalStateException(
-                            "Unexpected value: " + theAction);
                 }
 
-                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-                PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
+                case USE_SKILL -> {
+                    if (!myPlayer.containsItem(new SkillOrb())) {
+                        PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                                "You need a Skill Orb to use your skill!");
+                        return false;
+                    }
 
+                    myPlayer.removeItemFromInventory(new SkillOrb());
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                            "Used a Skill Orb to activate "
+                                    + Helper.camelToSpaced(hero.getSkill().getClass().getSimpleName()));
 
-                // Check for victory
-                if (myCurrentlyFightingMonster.isDefeated()) {
-                    myPlayer.increaseStat(Player.Fields.MONSTERS_DEFEATED);
-                    PCS.firePropertyChanged(PCS.END_COMBAT, null);
-                    PCS.firePropertyChanged(PCS.LOG,
-                            "Defeated " + myCurrentlyFightingMonster.getName() + "!");
-                    myCurrentlyFightingMonster = null;
-                    return false;
+                    hero.useSkill(myCurrentlyFightingMonster);
                 }
-                return true;
+
+                case FLEE -> {
+                    if (Helper.getRandomDoubleBetween(0, 1) > FLEE_CHANCE) {
+                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Couldn't flee!");
+                    } else {
+                        PCS.firePropertyChanged(PCS.END_COMBAT, null);
+                        PCS.firePropertyChanged(PCS.LOG, "Fled from combat!");
+                        return false;
+                    }
+                }
+
+                default -> throw new IllegalStateException(
+                        "Unexpected value: " + theAction);
             }
 
-            // If the player is invincible, do not apply damage and return false
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
-            return false;
+
+
+            // Check for victory
+            if (myCurrentlyFightingMonster.isDefeated()) {
+                myPlayer.increaseStat(Player.Fields.MONSTERS_DEFEATED);
+                PCS.firePropertyChanged(PCS.END_COMBAT, null);
+                PCS.firePropertyChanged(PCS.LOG,
+                        "Defeated " + myCurrentlyFightingMonster.getName() + "!");
+                myCurrentlyFightingMonster = null;
+                return false;
+            }
+
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
+            return true;
         }).afterDoIf(1, () -> damage[0] > 0, () -> { // Monster heal phase
             final int healAmount = myCurrentlyFightingMonster.heal();
             if (healAmount > 0) {
@@ -264,32 +257,30 @@ public final class DungeonAdventure implements Serializable {
             }
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             return true;
+
         }).afterDo(1, () -> { // monster attack phase
-            if (!myPlayer.isInvincible()) { // Check if player is invincible
-                final Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
-
-                if (damageToPlayer == null) {
-                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
-                } else if (damageToPlayer > 0) {
-                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                            myCurrentlyFightingMonster.getName()
-                                    + " attacked, dealing " + damageToPlayer + " damage.");
-                } else {
-                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                            myCurrentlyFightingMonster.getName() + " missed!");
-                }
-                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-
-                if (hero.isDefeated()) {
-                    endGame(false);
-                    return false;
-                }
-
-                PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
-                return true;
+            Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
+            if (myPlayer.isInvincible()) {
+                damageToPlayer = 0;
             }
 
-            // If the player is invincible, do not apply damage and return false
+            if (damageToPlayer == null) {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
+            } else if (damageToPlayer > 0) {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                        myCurrentlyFightingMonster.getName()
+                                + " attacked, dealing " + damageToPlayer + " damage.");
+            } else {
+                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                        myCurrentlyFightingMonster.getName() + " missed!");
+            }
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+
+            if (hero.isDefeated()) {
+                endGame(false);
+                return false;
+            }
+
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
             return false;
@@ -305,11 +296,6 @@ public final class DungeonAdventure implements Serializable {
      *                               to engage in combat with.
      */
     private void startCombat(final Monster[] theSurroundingMonsters) {
-        if (myPlayer.isInvincible()) {
-            // Player is invincible, exit combat immediately
-            PCS.firePropertyChanged(PCS.END_COMBAT, null);
-            return;
-        }
         this.myCurrentlyFightingMonster = theSurroundingMonsters[0];
         PCS.firePropertyChanged(PCS.BEGIN_COMBAT, theSurroundingMonsters[0]);
     }
@@ -450,8 +436,6 @@ public final class DungeonAdventure implements Serializable {
                     break;
                 }
             }
-
-
 
 
             System.out.println("Game loaded successfully!");

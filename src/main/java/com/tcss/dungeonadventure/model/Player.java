@@ -57,10 +57,6 @@ public class Player implements Serializable {
      * The amount of damage dealt.
      */
     private int myDamageDealt;
-    /**
-     * The number of monsters encountered. //TODO
-     */
-    private int myMonstersEncountered;
 
     /**
      * The number of items used.
@@ -94,11 +90,6 @@ public class Player implements Serializable {
          * The amount of damage dealt.
          */
         DAMAGE_DEALT,
-
-        /**
-         * The number of monsters encountered. //TODO
-         */
-        MONSTERS_ENCOUNTERED,
 
         /**
          * The number of slain monsters.
@@ -138,7 +129,6 @@ public class Player implements Serializable {
             case MOVES -> myMoves += theAmount;
             case MISSED_ATTACKS -> myMissedAttacks += theAmount;
             case DAMAGE_DEALT -> myDamageDealt += theAmount;
-            case MONSTERS_ENCOUNTERED -> myMonstersEncountered += theAmount;
             case MONSTERS_DEFEATED -> myMonstersDefeated += theAmount;
             case ITEMS_USED -> myItemsUsed += theAmount;
             case ITEMS_COLLECTED -> myItemsCollected += theAmount;
@@ -151,7 +141,6 @@ public class Player implements Serializable {
             case MOVES -> myMoves;
             case MISSED_ATTACKS -> myMissedAttacks;
             case DAMAGE_DEALT -> myDamageDealt;
-            case MONSTERS_ENCOUNTERED -> myMonstersEncountered;
             case MONSTERS_DEFEATED -> myMonstersDefeated;
             case ITEMS_USED -> myItemsUsed;
             case ITEMS_COLLECTED -> myItemsCollected;
@@ -162,7 +151,6 @@ public class Player implements Serializable {
         myMoves = 0;
         myMissedAttacks = 0;
         myDamageDealt = 0;
-        myMonstersEncountered = 0;
         myMonstersDefeated = 0;
         myItemsUsed = 0;
         myItemsCollected = 0;

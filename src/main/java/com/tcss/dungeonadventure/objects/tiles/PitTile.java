@@ -36,6 +36,10 @@ public class PitTile extends Tile {
 
     @Override
     public void onInteract(final Player thePlayer) {
+        if (thePlayer.isInvincible()) {
+            return;
+        }
+
         final Hero hero = thePlayer.getPlayerHero();
         hero.changeHealth(this, -DAMAGE);
 

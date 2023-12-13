@@ -1,5 +1,6 @@
 package com.tcss.dungeonadventure.model;
 
+import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
 
@@ -27,23 +28,26 @@ public class Player implements Serializable {
      */
     private final Hero myPlayerHero;
 
-    private boolean invincible;
-
-    /**
-     * The number of steps the player has made.
-     */
-    private int myMoves;
-
     /**
      * The name of the player.
      */
     private final String myPlayerName;
 
+    /**
+     * If the hero is invincible or not.
+     */
+    private boolean myInvincible;
 
     /**
      * The inventory of the player.
      */
     private final Map<Item, Integer> myInventory = new HashMap<>();
+
+
+    /**
+     * The number of steps the player has made.
+     */
+    private int myMoves;
 
     /**
      * The number of attacks missed during combat.
@@ -53,10 +57,6 @@ public class Player implements Serializable {
      * The amount of damage dealt.
      */
     private int myDamageDealt;
-    /**
-     * The number of monsters encountered. //TODO
-     */
-    private int myMonstersEncountered;
 
     /**
      * The number of items used.
@@ -90,11 +90,6 @@ public class Player implements Serializable {
          * The amount of damage dealt.
          */
         DAMAGE_DEALT,
-
-        /**
-         * The number of monsters encountered. //TODO
-         */
-        MONSTERS_ENCOUNTERED,
 
         /**
          * The number of slain monsters.
@@ -134,7 +129,6 @@ public class Player implements Serializable {
             case MOVES -> myMoves += theAmount;
             case MISSED_ATTACKS -> myMissedAttacks += theAmount;
             case DAMAGE_DEALT -> myDamageDealt += theAmount;
-            case MONSTERS_ENCOUNTERED -> myMonstersEncountered += theAmount;
             case MONSTERS_DEFEATED -> myMonstersDefeated += theAmount;
             case ITEMS_USED -> myItemsUsed += theAmount;
             case ITEMS_COLLECTED -> myItemsCollected += theAmount;
@@ -147,7 +141,6 @@ public class Player implements Serializable {
             case MOVES -> myMoves;
             case MISSED_ATTACKS -> myMissedAttacks;
             case DAMAGE_DEALT -> myDamageDealt;
-            case MONSTERS_ENCOUNTERED -> myMonstersEncountered;
             case MONSTERS_DEFEATED -> myMonstersDefeated;
             case ITEMS_USED -> myItemsUsed;
             case ITEMS_COLLECTED -> myItemsCollected;
@@ -158,7 +151,6 @@ public class Player implements Serializable {
         myMoves = 0;
         myMissedAttacks = 0;
         myDamageDealt = 0;
-        myMonstersEncountered = 0;
         myMonstersDefeated = 0;
         myItemsUsed = 0;
         myItemsCollected = 0;
@@ -196,7 +188,8 @@ public class Player implements Serializable {
         }
         this.myInventory.put(theItem, itemCount + 1);
         PCS.firePropertyChanged(PCS.ITEMS_CHANGED, myInventory);
-        PCS.firePropertyChanged(PCS.LOG, "Picked up " + theItem.getClass().getSimpleName());
+        PCS.firePropertyChanged(PCS.LOG, "Picked up a "
+                + Helper.camelToSpaced(theItem.getClass().getSimpleName()));
     }
 
     /**
@@ -223,11 +216,11 @@ public class Player implements Serializable {
     }
 
     public boolean isInvincible() {
-        return invincible;
+        return myInvincible;
     }
 
-    public void setInvincible(boolean invincible) {
-        this.invincible = invincible;
+    public void setInvincible(final boolean theInvincible) {
+        this.myInvincible = theInvincible;
     }
 
     /**

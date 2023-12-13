@@ -78,9 +78,6 @@ public final class DungeonAdventure implements Serializable {
     private DungeonAdventure() {
 
 
-
-
-
     }
 
     /**
@@ -112,11 +109,9 @@ public final class DungeonAdventure implements Serializable {
      * Starts a NEW game with the specified hero name and hero class.
      *
      * @param thePlayerName The name of the player.
-     * @param theHero       The hero class.
+     * @param theHero       The hero class.`
      */
     public void startNewGame(final String thePlayerName, final Hero theHero) {
-        System.out.println(Helper.SEED);
-
         // This is where ALL data needs to be reset, just in case the player
         // is restarting their game.
         if (myDiscoveredRooms != null) {
@@ -132,7 +127,6 @@ public final class DungeonAdventure implements Serializable {
 
         final Room startingRoom = myDungeon.getStartingRoom();
         final Tile[][] roomTiles = startingRoom.getRoomTiles();
-
 
         // This locates the entrance tile in the entrance room.
         final Point entranceTileLocation =
@@ -182,13 +176,6 @@ public final class DungeonAdventure implements Serializable {
         startCombat(surroundingMonsters);
     }
 
-    /**
-     * Processes the given combat action.
-     * Updates the status of the battle with messages
-     * and the stats of the player and monster.
-     *
-     * @param theAction the action to take by the player
-     */
     public void doCombatAction(final CombatActions theAction) {
         final Integer[] damage = new Integer[]{0};
         final Hero hero = myPlayer.getPlayerHero();
@@ -234,8 +221,6 @@ public final class DungeonAdventure implements Serializable {
                         PCS.firePropertyChanged(PCS.LOG, "Fled from combat!");
                         return false;
                     }
-
-
                 }
 
                 default -> throw new IllegalStateException(
@@ -255,8 +240,10 @@ public final class DungeonAdventure implements Serializable {
                 myCurrentlyFightingMonster = null;
                 return false;
             }
-            return true;
 
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
+            return true;
         }).afterDoIf(1, () -> damage[0] > 0, () -> { // Monster heal phase
             final int healAmount = myCurrentlyFightingMonster.heal();
             if (healAmount > 0) {
@@ -273,7 +260,6 @@ public final class DungeonAdventure implements Serializable {
 
         }).afterDo(1, () -> { // monster attack phase
             final Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
-
             if (damageToPlayer == null) {
                 PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
             } else if (damageToPlayer > 0) {
@@ -291,11 +277,12 @@ public final class DungeonAdventure implements Serializable {
                 return false;
             }
 
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
-            return true;
+            return false;
         }).start();
-
     }
+
 
     /**
      * Starts engaging in combat with a monster
@@ -345,6 +332,7 @@ public final class DungeonAdventure implements Serializable {
     public void setDiscoveredRooms(final Room[][] theNewDiscoveredRooms) {
         this.myDiscoveredRooms = theNewDiscoveredRooms;
         PCS.firePropertyChanged(PCS.ROOMS_DISCOVERED, myDiscoveredRooms);
+
     }
 
     /**
@@ -354,8 +342,11 @@ public final class DungeonAdventure implements Serializable {
      * @param theDirection the given {@link Directions.Cardinal}
      */
     public void changeRoom(final Directions.Cardinal theDirection) {
+
         final Room room =
                 this.myDungeon.getCurrentRoom().getAdjacentRoomByDirection(theDirection);
+
+
         final int row = room.getDungeonLocation().y;
         final int col = room.getDungeonLocation().x;
 
@@ -388,7 +379,8 @@ public final class DungeonAdventure implements Serializable {
         }
 
         myPlayer.removeItemFromInventory(theItem);
-        PCS.firePropertyChanged(PCS.LOG, "Used item: " + theItem.getClass().getSimpleName());
+        PCS.firePropertyChanged(PCS.LOG, "Used a "
+                + Helper.camelToSpaced(theItem.getClass().getSimpleName()));
         theItem.useItem(myPlayer.getPlayerHero());
     }
 
@@ -442,8 +434,6 @@ public final class DungeonAdventure implements Serializable {
             }
 
 
-
-
             System.out.println("Game loaded successfully!");
 
             return true;
@@ -456,12 +446,10 @@ public final class DungeonAdventure implements Serializable {
     /**
      * Activates the invincibility cheat code.
      */
-    public void activateInvincibilityCheat(){
+    public void activateInvincibilityCheat() {
         if (myPlayer != null) {
-            // Toggle invincibility state
             myPlayer.setInvincible(!myPlayer.isInvincible());
 
-            // Notify listeners about the cheat code activation
             PCS.firePropertyChanged(PCS.CHEAT_CODE, myDungeon);
             PCS.firePropertyChanged(PCS.LOG, "Invincibility cheat activated!");
         }

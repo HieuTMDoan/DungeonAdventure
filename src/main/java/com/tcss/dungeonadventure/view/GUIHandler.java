@@ -6,10 +6,12 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
+
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -50,11 +52,6 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      */
     private CombatGUI myCombatGui;
 
-    /**
-     * The home GUI.
-     */
-    private HomeGUI myHomeGui;
-
 
     @Override
     public void start(final Stage theStage) throws IOException {
@@ -77,7 +74,7 @@ public class GUIHandler extends Application implements PropertyChangeListener {
         myCombatGui = new CombatGUI(this);
 
         Layouts.swapLayout(Layouts.HOME);
-        myHomeGui = new HomeGUI(this);
+        new HomeGUI(this);
     }
 
     /**
@@ -128,38 +125,75 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      * @param theEvent the key press event
      */
     private void handleKeyPress(final KeyEvent theEvent) {
-        if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
-            return;
-        }
+
 
         switch (theEvent.getCode()) {
-            case UP, W -> DungeonAdventure.getInstance().
-                    movePlayer(Directions.Cardinal.NORTH);
+            case UP, W -> {
+                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
+                    return;
+                }
 
-            case DOWN, S -> DungeonAdventure.getInstance().
-                    movePlayer(Directions.Cardinal.SOUTH);
+                DungeonAdventure.getInstance().
+                        movePlayer(Directions.Cardinal.NORTH);
+            }
 
-            case LEFT, A -> DungeonAdventure.getInstance().
-                    movePlayer(Directions.Cardinal.WEST);
+            case DOWN, S -> {
+                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
+                    return;
+                }
 
-            case RIGHT, D -> DungeonAdventure.getInstance().
-                    movePlayer(Directions.Cardinal.EAST);
+                DungeonAdventure.getInstance().
+                        movePlayer(Directions.Cardinal.SOUTH);
+            }
+
+            case LEFT, A -> {
+                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
+                    return;
+                }
+
+                DungeonAdventure.getInstance().
+                        movePlayer(Directions.Cardinal.WEST);
+            }
+
+            case RIGHT, D -> {
+                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
+                    return;
+                }
+
+                DungeonAdventure.getInstance().
+                        movePlayer(Directions.Cardinal.EAST);
+            }
 
             case P, ESCAPE -> {
-                new PauseGUI(this);
-                Layouts.swapLayout(Layouts.PAUSE);
+                if (Layouts.getCurrentLayout() == Layouts.PAUSE) {
+                    Layouts.swapLayout(Layouts.ADVENTURING);
+                } else if (Layouts.getCurrentLayout() == Layouts.ADVENTURING) {
+                    new PauseGUI(this);
+                    Layouts.swapLayout(Layouts.PAUSE);
+                }
+
             }
 
             case M -> {
-                new DungeonGUI(this);
-                Layouts.swapLayout(Layouts.DUNGEON);
+                if (Layouts.getCurrentLayout() == Layouts.DUNGEON) {
+                    Layouts.swapLayout(Layouts.ADVENTURING);
+                } else if (Layouts.getCurrentLayout() == Layouts.ADVENTURING) {
+                    new DungeonGUI(this);
+                    Layouts.swapLayout(Layouts.DUNGEON);
+                }
+
             }
 
             case PERIOD -> {
-                new CheatCodeGUI(this);
-                Layouts.swapLayout(Layouts.CHEAT_CODE);
-            }
+                if (Layouts.getCurrentLayout() == Layouts.CHEAT_CODE) {
+                    Layouts.swapLayout(Layouts.ADVENTURING);
+                } else if (Layouts.getCurrentLayout() == Layouts.ADVENTURING) {
+                    new CheatCodeGUI(this);
+                    Layouts.swapLayout(Layouts.CHEAT_CODE);
+                }
 
+            }
+            case I -> Layouts.getCurrentLayout().enterCheatCode("invincible");
             default -> {
             }
         }
@@ -322,11 +356,13 @@ public class GUIHandler extends Application implements PropertyChangeListener {
             myLayoutNode = theNode;
         }
 
-        public void enterCheatCode(String cheatCode) {
-            if ("invincible".equalsIgnoreCase(cheatCode)) {
+        public void enterCheatCode(final String theCheatCode) {
+            if ("invincible".equalsIgnoreCase(theCheatCode)) {
                 DungeonAdventure.getInstance().activateInvincibilityCheat();
             }
 
         }
+
+
     }
 }

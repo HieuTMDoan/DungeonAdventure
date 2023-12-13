@@ -56,8 +56,8 @@ public abstract class Hero extends DungeonCharacter {
      *
      * @return The block chance as an integer.
      */
-    public int getBlockChance() {
-        return (int) myBlockChance;
+    public double getBlockChance() {
+        return myBlockChance;
     }
 
     /**
@@ -73,10 +73,9 @@ public abstract class Hero extends DungeonCharacter {
      * Activates the hero's special skill on a target.
      *
      * @param theTarget The target of the hero's skill.
-     * @return The result of activating the skill, typically damage or a special effect.
      */
-    public Integer useSkill(final DungeonCharacter theTarget) {
-        return mySkill.activateSkill(this, theTarget);
+    public void useSkill(final DungeonCharacter theTarget) {
+        mySkill.activateSkill(this, theTarget);
     }
 
     /**

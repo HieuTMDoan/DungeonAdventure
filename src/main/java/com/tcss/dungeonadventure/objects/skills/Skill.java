@@ -11,7 +11,7 @@ public abstract class Skill implements Serializable {
 
     }
 
-    public abstract Integer activateSkill(DungeonCharacter theSource, DungeonCharacter theTarget);
+    public abstract void activateSkill(DungeonCharacter theSource, DungeonCharacter theTarget);
 
 
     public abstract String getDescription();

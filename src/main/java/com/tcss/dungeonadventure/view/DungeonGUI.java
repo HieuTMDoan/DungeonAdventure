@@ -19,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextBoundsType;
 
 
@@ -82,6 +83,7 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
      * Updates the current map of the discovered dungeon.
      */
     private void updateMap() {
+        myGridPane.getChildren().clear();
         for (int row = 0; row < myDiscoveredRooms.length; row++) {
             for (int col = 0; col < myDiscoveredRooms[row].length; col++) {
                 final VBox vBox = new VBox();
@@ -104,6 +106,10 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
                     }
                 } else {
                     // Adds and displays a blank room if it's not discovered yet
+                    final Text t = new Text("X");
+                    t.setBoundsType(TextBoundsType.VISUAL);
+                    t.setStyle("-fx-font-size: 36; -fx-fill: gray;");
+                    vBox.getChildren().add(t);
                     myGridPane.add(vBox, row, col);
                 }
             }
@@ -127,9 +133,9 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
 
         for (Directions.Cardinal dir : Directions.Cardinal.values()) {
             if (theRoom.findDoorOnWall(dir) != null) {
-                borderWidths[i++] = 1;
-            } else {
                 borderWidths[i++] = 0;
+            } else {
+                borderWidths[i++] = 1;
             }
         }
         theBox.setBorder(createBorder(borderWidths));
@@ -152,20 +158,21 @@ public class DungeonGUI extends GUILayout implements PropertyChangeListener {
             final int theRow,
             final int theColumn,
             final VBox theBox) {
+
         final double[] borderWidths = {0, 0, 0, 0};
         int i = 0;
 
         for (Directions.Cardinal dir : Directions.Cardinal.values()) {
             if (theRoom.findDoorOnWall(dir) != null) {
-                borderWidths[i++] = 1;
-            } else {
                 borderWidths[i++] = 0;
+            } else {
+                borderWidths[i++] = 1;
             }
         }
 
         theBox.setBorder(createBorder(borderWidths));
         theText.setBoundsType(TextBoundsType.VISUAL);
-        theText.setStyle("-fx-font-size: 10; -fx-fill: white;");
+        theText.setStyle("-fx-font-size: 15; -fx-fill: white; -fx-font-weight: bold;");
         theBox.getChildren().add(theText);
         myGridPane.add(theBox, theRow, theColumn);
     }

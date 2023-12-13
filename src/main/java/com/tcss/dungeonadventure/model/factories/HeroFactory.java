@@ -16,7 +16,7 @@ import java.util.Map;
  * @author Aaron, Sunny, Hieu
  * @version TCSS 360: Fall 2023
  */
-public final class HeroFactory  {
+public final class HeroFactory {
 
     /**
      * Default empty constructor.

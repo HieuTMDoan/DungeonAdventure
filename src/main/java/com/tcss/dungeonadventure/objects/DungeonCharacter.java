@@ -1,6 +1,8 @@
 package com.tcss.dungeonadventure.objects;
 
 import com.tcss.dungeonadventure.Helper;
+import com.tcss.dungeonadventure.model.DungeonAdventure;
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import java.io.Serializable;
 
@@ -76,16 +78,21 @@ public abstract class DungeonCharacter extends VisualComponent implements Serial
         int damageDealth = 0;
 
         if (this.myAccuracy >= randomAccuracy) {
-            final int damage = Helper.getRandomIntBetween(myMinDamage, myMaxDamage);
-            damageDealth = damage;
+            if (this instanceof Hero && DungeonAdventure.getInstance().getPlayer().isInvincible()) {
+                damageDealth = 1000;
+            } else {
+                damageDealth = Helper.getRandomIntBetween(myMinDamage, myMaxDamage);
+            }
+
 
             if (theTarget instanceof final Hero hero) {
-                if (Helper.getRandomDoubleBetween(0, 1) < hero.getBlockChance()) {
+                if (DungeonAdventure.getInstance().getPlayer().isInvincible()
+                        || Helper.getRandomDoubleBetween(0, 1) < hero.getBlockChance()) {
                     return null;
                 }
             }
 
-            theTarget.changeHealth(this, -damage);
+            theTarget.changeHealth(this, -damageDealth);
         }
         return damageDealth;
     }

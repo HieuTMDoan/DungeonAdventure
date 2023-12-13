@@ -29,7 +29,7 @@ public class HelpGUI extends GUILayout {
      * Helper method to attach mouse events to certain nodes.
      */
     private void locateNodes() {
-        this.myBackButton = (Button) lookup("");
+        this.myBackButton = (Button) lookup("helpBackButton");
     }
 
     /**

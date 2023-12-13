@@ -108,27 +108,6 @@ public class Dungeon implements Serializable {
         );
     }
 
-    public Dungeon(final Room[][] theRooms) {
-        this.myMaze = theRooms;
-
-
-        Room startingRoom = null;
-        Room exitRoom = null;
-        for (final Room[] row : theRooms) {
-            for (final Room room : row) {
-                if (room.isEntranceRoom()) {
-                    startingRoom = room;
-                } else if (room.isExitRoom()) {
-                    exitRoom = room;
-                }
-            }
-        }
-
-        myStartingRoom = startingRoom;
-        myExitRoom = exitRoom;
-    }
-
-
     /**
      * Generates and returns an array of all Pillar rooms.
      *
@@ -166,17 +145,7 @@ public class Dungeon implements Serializable {
 
     }
 
-    /**
-     * Adds extra terrain to rooms. This needs to be called AFTER doors are
-     * generated to ensure no doors are blocked by terrain.
-     */
-    private void generateExtraWalls() {
-        for (final Room[] row : myMaze) {
-            for (final Room room : row) {
-                Room.addExtraWalls(room);
-            }
-        }
-    }
+
 
     /**
      * Places the starting {@link Room} and the exit {@link Room} in random positions
@@ -470,6 +439,19 @@ public class Dungeon implements Serializable {
 
 
     /**
+     * Adds extra terrain to rooms. This needs to be called AFTER doors are
+     * generated to ensure no doors are blocked by terrain.
+     */
+    private void generateExtraWalls() {
+        for (final Room[] row : myMaze) {
+            for (final Room room : row) {
+                Room.addExtraWalls(room);
+            }
+        }
+    }
+
+
+    /**
      * Searches the 8 surrounding tiles around the player if there are
      * any monsters around. If there are monsters, return them in an
      * array. Otherwise, return null.
@@ -497,20 +479,6 @@ public class Dungeon implements Serializable {
             }
         }
 
-        // Checks for every diagonal direction
-//        for (final Directions.Diagonal d : Directions.Diagonal.values()) {
-//            try {
-//                final Tile tile = roomTiles[x + d.getXOffset()][y + d.getYOffset()];
-//                if (!(tile instanceof final NPCTile npcTile)) {
-//                    continue;
-//                }
-//
-//                if (npcTile.getNPC() instanceof Monster && npcTile.getNPC().getHealth() > 0) {
-//                    surroundingMonsters.add((Monster) npcTile.getNPC());
-//                }
-//            } catch (final ArrayIndexOutOfBoundsException ignored) {
-//            }
-//        }
 
         return surroundingMonsters.isEmpty()
                 ? null : surroundingMonsters.toArray(new Monster[0]);
@@ -545,27 +513,6 @@ public class Dungeon implements Serializable {
      */
     public Room getStartingRoom() {
         return this.myStartingRoom;
-    }
-
-    @Serial
-    private void readObject(final ObjectInputStream theOis)
-            throws IOException, ClassNotFoundException {
-        theOis.defaultReadObject();
-
-        // Initialize transient fields here
-        myCurrentRoom = initializeCurrentRoom();
-    }
-
-
-    /**
-     * Initializes the current room after deserialization.
-     * This method can be customized based on your specific logic.
-     *
-     * @return The initialized current room.
-     */
-    private Room initializeCurrentRoom() {
-        // Example: Setting the current room to the starting room.
-        return myStartingRoom;
     }
 
 

@@ -107,73 +107,6 @@ public final class SQLiteDB {
     }
 
     /**
-     * Prints a list of all {@link DungeonCharacter}'s initial statistics.
-     * Only use this method for testing.
-     */
-    public static void getCharacters() {
-        final String querySearch = "SELECT * FROM dungeonCharacters";
-
-        try (PreparedStatement stmt = myConn.prepareStatement(querySearch)) {
-            final ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                //prints the common stats among all Dungeon Characters first
-                final String name = rs.getString("NAME");
-                final String displayChar = rs.getString("DISPLAY_CHAR");
-                final int health = rs.getInt("HEALTH");
-                final int damageMin = rs.getInt("DAMAGE_MIN");
-                final int damageMax = rs.getInt("DAMAGE_MAX");
-                final int attackSpeed = rs.getInt("ATTACK_SPEED");
-                final double accuracy = rs.getDouble("ACCURACY");
-
-                //if current row contains hero stats, prints relevant hero stats
-                if ("+".equals(displayChar)) {
-                    final double blockChance = rs.getDouble("BLOCK_CHANCE");
-
-                    System.out.printf(
-                            """
-                                    NAME: %s |\s
-                                    DISPLAY_CHAR: %s |\s
-                                    HEALTH: %s |\s
-                                    DAMAGE_MIN: %s |\s
-                                    DAMAGE_MAX: %s |\s
-                                    ATTACK_SPEED: %s |\s
-                                    ACCURACY: %s |\s
-                                    BLOCK_CHANCE: %s |\s
-                                    %n
-                                    """,
-                            name, displayChar, health, damageMin, damageMax,
-                            attackSpeed, accuracy, blockChance);
-                } else { //prints relevant monster stats otherwise
-                    final double healChance = rs.getDouble("HEAL_CHANCE");
-                    final int healMin = rs.getInt("HEAL_MIN");
-                    final int healMax = rs.getInt("HEAL_MAX");
-
-                    System.out.printf(
-                            """
-                                    NAME: %s |\s
-                                    DISPLAY_CHAR: %s |\s
-                                    HEALTH: %s |\s
-                                    DAMAGE_MIN: %s |\s
-                                    DAMAGE_MAX: %s |\s
-                                    ATTACK_SPEED: %s |\s
-                                    ACCURACY: %s |\s
-                                    HEAL_CHANCE: %s |\s
-                                    HEAL_MIN: %s |\s
-                                    HEAL_MAX: %s |\s
-                                    %n
-                                    """,
-                            name, displayChar, health, damageMin, damageMax,
-                            attackSpeed, accuracy, healChance, healMin, healMax);
-                }
-            }
-        } catch (final SQLException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-    }
-
-    /**
      * Checks if the {@link SQLiteDataSource} already has data.
      *
      * @return true if data already exists in the {@link SQLiteDataSource}
@@ -227,7 +160,6 @@ public final class SQLiteDB {
     /**
      * Inserts all of {@link DungeonCharacter}'s stats into the database's table.
      */
-    @SuppressWarnings("checkstyle:LineLength")
     private static void insertCharacters() {
         final String insertPriestess = "INSERT INTO dungeonCharacters "
                 + "(NAME, DISPLAY_CHAR, HEALTH, DAMAGE_MIN, "

@@ -87,4 +87,14 @@ public abstract class Hero extends DungeonCharacter {
     public String getTileColor() {
         return "green";
     }
+
+    /**
+     * Gets the attack speed of the hero.
+     *
+     * @return The attack speed of the hero.
+     */
+    @Override
+    public int getAttackSpeed() {
+        return super.getAttackSpeed();
+    }
 }

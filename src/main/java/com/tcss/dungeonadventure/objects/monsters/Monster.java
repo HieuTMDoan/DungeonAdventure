@@ -59,6 +59,17 @@ public abstract class Monster extends DungeonCharacter {
         return healAmount;
     }
 
+    /**
+     * Gets the attack speed of the monster.
+     *
+     * @return The attack speed of the monster.
+     */
+    @Override
+    public int getAttackSpeed() {
+        // Access the private myAttackSpeed from DungeonCharacter using the getter method
+        return super.getAttackSpeed();
+    }
+
     @Override
     public String getTileColor() {
         return "red";

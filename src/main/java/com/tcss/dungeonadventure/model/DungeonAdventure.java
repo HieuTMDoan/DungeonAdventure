@@ -184,25 +184,28 @@ public final class DungeonAdventure implements Serializable {
 
         s.afterDo(0, () -> { // player action phase
             switch (theAction) {
-                case ATTACK -> {
-                    damage[0] = hero.attack(myCurrentlyFightingMonster);
+                case ATTACK:
+                    int playerAttacks = calculateAttacks(hero.getAttackSpeed(), myCurrentlyFightingMonster.getAttackSpeed());
+                    for (int i = 0; i < playerAttacks; i++) {
+                        damage[0] += hero.attack(myCurrentlyFightingMonster);
 
-                    if (damage[0] > 0) {
-                        myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT, damage[0]);
+                        if (damage[0] > 0) {
+                            myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT, damage[0]);
 
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                "Player attacked, dealing " + damage[0] + " damage.");
-                    } else {
-                        myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
+                            PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                                    "Player attacked, dealing " + damage[0] + " damage.");
+                        } else {
+                            myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
+                            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
+                        }
                     }
-                }
+                    break;
 
-                case USE_SKILL -> {
+                case USE_SKILL:
                     if (!myPlayer.containsItem(new SkillOrb())) {
                         PCS.firePropertyChanged(PCS.COMBAT_LOG,
                                 "You need a Skill Orb to use your skill!");
-                        return false;
+                        break;
                     }
 
                     myPlayer.removeItemFromInventory(new SkillOrb());
@@ -211,25 +214,23 @@ public final class DungeonAdventure implements Serializable {
                                     + Helper.camelToSpaced(hero.getSkill().getClass().getSimpleName()));
 
                     hero.useSkill(myCurrentlyFightingMonster);
-                }
+                    break;
 
-                case FLEE -> {
+                case FLEE:
                     if (Helper.getRandomDoubleBetween(0, 1) > FLEE_CHANCE) {
                         PCS.firePropertyChanged(PCS.COMBAT_LOG, "Couldn't flee!");
                     } else {
                         PCS.firePropertyChanged(PCS.END_COMBAT, null);
                         PCS.firePropertyChanged(PCS.LOG, "Fled from combat!");
-                        return false;
                     }
-                }
+                    break;
 
-                default -> throw new IllegalStateException(
-                        "Unexpected value: " + theAction);
+                default:
+                    throw new IllegalStateException("Unexpected value: " + theAction);
             }
 
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
-
 
             // Check for victory
             if (myCurrentlyFightingMonster.isDefeated()) {
@@ -238,12 +239,11 @@ public final class DungeonAdventure implements Serializable {
                 PCS.firePropertyChanged(PCS.LOG,
                         "Defeated " + myCurrentlyFightingMonster.getName() + "!");
                 myCurrentlyFightingMonster = null;
-                return false;
             }
 
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
-            return true;
+            return false;
         }).afterDoIf(1, () -> damage[0] > 0, () -> { // Monster heal phase
             final int healAmount = myCurrentlyFightingMonster.heal();
             if (healAmount > 0) {
@@ -256,25 +256,28 @@ public final class DungeonAdventure implements Serializable {
                                 formatted(myCurrentlyFightingMonster.getName()));
             }
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-            return true;
-
+            return false;
         }).afterDo(1, () -> { // monster attack phase
-            final Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
-            if (damageToPlayer == null) {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
-            } else if (damageToPlayer > 0) {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                        myCurrentlyFightingMonster.getName()
-                                + " attacked, dealing " + damageToPlayer + " damage.");
-            } else {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                        myCurrentlyFightingMonster.getName() + " missed!");
+            int monsterAttacks = calculateAttacks(myCurrentlyFightingMonster.getAttackSpeed(), hero.getAttackSpeed());
+            for (int i = 0; i < monsterAttacks; i++) {
+                // Monster attacks
+                Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
+                if (damageToPlayer == null) {
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
+                } else if (damageToPlayer > 0) {
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                            myCurrentlyFightingMonster.getName()
+                                    + " attacked, dealing " + damageToPlayer + " damage.");
+                } else {
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                            myCurrentlyFightingMonster.getName() + " missed!");
+                }
             }
+
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
 
             if (hero.isDefeated()) {
                 endGame(false);
-                return false;
             }
 
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
@@ -283,6 +286,13 @@ public final class DungeonAdventure implements Serializable {
         }).start();
     }
 
+
+    private int calculateAttacks(int attackerSpeed, int defenderSpeed) {
+        // Calculate the number of attacks based on speed
+        int speedDifference = attackerSpeed - defenderSpeed;
+        int attacks = Math.max(1, speedDifference / 10); // Adjust the formula as needed
+        return Math.min(attacks, 5); // Limit to a maximum of 5 attacks per round
+    }
 
     /**
      * Starts engaging in combat with a monster

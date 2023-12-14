@@ -10,8 +10,6 @@ import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.EntranceTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
 import com.tcss.dungeonadventure.view.GUIHandler;
-import javafx.application.Application;
-
 import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,15 +19,19 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
+import javafx.application.Application;
 
 
 /**
  * Represents the game's logic and functionalities.
  * This object communicates with the listener classes via MVC pattern.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public final class DungeonAdventure implements Serializable {
 
@@ -38,10 +40,14 @@ public final class DungeonAdventure implements Serializable {
      */
     public static final double FLEE_CHANCE = 0.45;
 
+    /**
+     * The name of the save file.
+     */
+    public static final String SAVE_NAME = "saved_game.ser";
+
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public static final String SAVE_NAME = "saved_game.ser";
 
     /**
      * Singleton instance for DungeonAdventure.
@@ -176,22 +182,28 @@ public final class DungeonAdventure implements Serializable {
         startCombat(surroundingMonsters);
     }
 
+    /**
+     * Does an action in combat based on the action specified by the GUI.
+     *
+     * @param theAction The action to do.
+     */
     public void doCombatAction(final CombatActions theAction) {
-        final Integer[] damage = new Integer[]{0};
+        final AtomicInteger damageFromPlayer = new AtomicInteger();
         final Hero hero = myPlayer.getPlayerHero();
-
         final TimedSequence s = new TimedSequence();
 
         s.afterDo(0, () -> { // player action phase
             switch (theAction) {
                 case ATTACK -> {
-                    damage[0] = hero.attack(myCurrentlyFightingMonster);
+                    damageFromPlayer.set(hero.attack(myCurrentlyFightingMonster));
 
-                    if (damage[0] > 0) {
-                        myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT, damage[0]);
+                    if (damageFromPlayer.get() > 0) {
+                        myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT,
+                                damageFromPlayer.get());
 
                         PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                "Player attacked, dealing " + damage[0] + " damage.");
+                                "Player attacked, dealing "
+                                        + damageFromPlayer.get() + " damage.");
                     } else {
                         myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
                         PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
@@ -208,7 +220,8 @@ public final class DungeonAdventure implements Serializable {
                     myPlayer.removeItemFromInventory(new SkillOrb());
                     PCS.firePropertyChanged(PCS.COMBAT_LOG,
                             "Used a Skill Orb to activate "
-                                    + Helper.camelToSpaced(hero.getSkill().getClass().getSimpleName()));
+                                    + Helper.camelToSpaced(
+                                            hero.getSkill().getClass().getSimpleName()));
 
                     hero.useSkill(myCurrentlyFightingMonster);
                 }
@@ -244,7 +257,8 @@ public final class DungeonAdventure implements Serializable {
             PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
             PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
             return true;
-        }).afterDoIf(1, () -> damage[0] > 0, () -> { // Monster heal phase
+
+        }).afterDoIf(1, () -> damageFromPlayer.get() > 0, () -> { // Monster heal phase
             final int healAmount = myCurrentlyFightingMonster.heal();
             if (healAmount > 0) {
                 PCS.firePropertyChanged(PCS.COMBAT_LOG,
@@ -297,13 +311,20 @@ public final class DungeonAdventure implements Serializable {
     }
 
 
+    /**
+     * Ends the game and deletes the save file.
+     *
+     * @param theVictory If the player was victorious.
+     */
     public void endGame(final boolean theVictory) {
         PCS.firePropertyChanged(PCS.GAME_END, theVictory);
 
         final File f = new File(SAVE_NAME);
 
         if (f.exists()) {
-            f.delete();
+            if (!f.delete()) {
+                throw new RuntimeException("Could not delete save file.");
+            }
         }
     }
 
@@ -378,10 +399,10 @@ public final class DungeonAdventure implements Serializable {
             return;
         }
 
+        theItem.useItem(myPlayer.getPlayerHero());
         myPlayer.removeItemFromInventory(theItem);
         PCS.firePropertyChanged(PCS.LOG, "Used a "
                 + Helper.camelToSpaced(theItem.getClass().getSimpleName()));
-        theItem.useItem(myPlayer.getPlayerHero());
     }
 
 
@@ -396,7 +417,9 @@ public final class DungeonAdventure implements Serializable {
         try (ObjectOutputStream oos =
                      new ObjectOutputStream(new FileOutputStream("saved_game.ser"))) {
 
-            oos.writeObject(new DungeonAdventureMemento(myPlayer, myDungeon, myDiscoveredRooms));
+            oos.writeObject(
+                    new DungeonAdventureMemento(myPlayer, myDungeon, myDiscoveredRooms));
+
             System.out.println("Game saved successfully!");
         } catch (final IOException ex) {
             System.err.println("Error writing saved game state file: " + ex.getMessage());
@@ -428,7 +451,8 @@ public final class DungeonAdventure implements Serializable {
                         continue;
                     }
 
-                    myDungeon.loadPlayerTo(room, new Point(room.getPlayerXPosition(), room.getPlayerYPosition()));
+                    myDungeon.loadPlayerTo(room,
+                            new Point(room.getPlayerXPosition(), room.getPlayerYPosition()));
                     break;
                 }
             }

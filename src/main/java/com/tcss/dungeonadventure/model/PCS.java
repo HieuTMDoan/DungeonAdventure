@@ -1,6 +1,5 @@
 package com.tcss.dungeonadventure.model;
 
-import com.tcss.dungeonadventure.objects.Directions;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -10,7 +9,7 @@ import java.beans.PropertyChangeSupport;
  * @author Aaron Burnham
  * @author Sunny Ali
  * @author Hieu Doan
- * @version Fall 2023
+ * @version TCSS 360 - Fall 2023
  */
 public enum PCS {
 
@@ -28,13 +27,6 @@ public enum PCS {
      */
     ITEMS_CHANGED,
 
-
-
-    /**
-     * The property of player movement.
-     * Should be paired with {@link Directions.Cardinal}
-     */
-    MOVE_PLAYER,    //Unused
 
     /**
      * The property to log a message in the CombatGUI's logger.
@@ -66,12 +58,6 @@ public enum PCS {
      */
     ROOMS_DISCOVERED,
 
-
-    /**
-     * The property of loading an EXISTING game.
-     * Should be paired with //TODO something. idk what that is. game data or sum
-     */
-    LOAD_EXISTING_GAME,   //Unused
 
     /**
      * The property of when actions are performed by either the
@@ -115,8 +101,7 @@ public enum PCS {
     /**
      * The Property Change Listener for DungeonAdventure.
      */
-    private  static final PropertyChangeSupport PCS = new PropertyChangeSupport(PCS.class);
-
+    private static final PropertyChangeSupport PCS = new PropertyChangeSupport(PCS.class);
 
 
     /**

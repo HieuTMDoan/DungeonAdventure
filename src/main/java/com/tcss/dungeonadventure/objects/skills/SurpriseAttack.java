@@ -7,6 +7,15 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
+
+/**
+ * The skill of the Thief class to gamble on dealing more damage.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class SurpriseAttack extends Skill {
 
     /**
@@ -19,10 +28,6 @@ public class SurpriseAttack extends Skill {
      */
     private static final double DEFAULT_NONE = 0.4;
 
-
-    public SurpriseAttack() {
-
-    }
 
     @Override
     public void activateSkill(final DungeonCharacter theSource,

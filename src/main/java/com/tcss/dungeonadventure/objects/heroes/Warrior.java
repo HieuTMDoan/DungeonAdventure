@@ -7,8 +7,10 @@ import com.tcss.dungeonadventure.objects.skills.Skill;
 /**
  * Represents a Warrior character.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class Warrior extends Hero {
     /**

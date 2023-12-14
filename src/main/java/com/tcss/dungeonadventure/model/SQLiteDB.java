@@ -2,8 +2,6 @@ package com.tcss.dungeonadventure.model;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
-import org.sqlite.SQLiteDataSource;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,13 +10,17 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.sqlite.SQLiteDataSource;
+
 
 /**
  * Utility class that uses JDBC API to store and manage the game's SQLite database.
  * The database stores all of {@link DungeonCharacter}'s initial statistics.
  *
- * @author Hieu, Aaron, Sunny
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public final class SQLiteDB {
     /**
@@ -52,16 +54,54 @@ public final class SQLiteDB {
     }
 
     public enum Keys {
+        /**
+         * The key to get the characters name from the database.
+         */
         NAME,
-        DISPLAY_CHAR,
+
+        /**
+         * The key to get the characters health from the database.
+         */
         HEALTH,
+
+        /**
+         * The key to get the characters min damage from the database.
+         */
         DAMAGE_MIN,
+
+        /**
+         * The key to get the characters max damage from the database.
+         */
         DAMAGE_MAX,
+
+        /**
+         * The key to get the characters attack speed from the database.
+         */
         ATTACK_SPEED,
+
+        /**
+         * The key to get the characters accuracy from the database.
+         */
         ACCURACY,
+
+        /**
+         * The key to get the characters chance-to-heal from the database.
+         */
         HEAL_CHANCE,
+
+        /**
+         * The key to get the characters min heal from the database.
+         */
         HEAL_MIN,
+
+        /**
+         * The key to get the characters max damage from the database.
+         */
         HEAL_MAX,
+
+        /**
+         * The key to get the characters block-chance from the database.
+         */
         BLOCK_CHANCE
     }
 

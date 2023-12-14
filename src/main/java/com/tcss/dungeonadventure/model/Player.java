@@ -3,7 +3,6 @@ package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.Item;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -16,8 +15,10 @@ import java.util.Set;
  * The player has the ability to pick up items in dungeon,
  * engage in combat with a monster, and use items from the inventory.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class Player implements Serializable {
     @Serial
@@ -120,10 +121,21 @@ public class Player implements Serializable {
         resetAllStats();
     }
 
+    /**
+     * Increments the stat fields by 1.
+     *
+     * @param theField The Field to increase.
+     */
     public void increaseStat(final Fields theField) {
         increaseStat(theField, 1);
     }
 
+    /**
+     * Increase a stat field by a specified amount.
+     *
+     * @param theField The Field to increase.
+     * @param theAmount The amount to increase it by.
+     */
     public void increaseStat(final Fields theField, final int theAmount) {
         switch (theField) {
             case MOVES -> myMoves += theAmount;
@@ -136,6 +148,12 @@ public class Player implements Serializable {
         }
     }
 
+    /**
+     * Returns the counter of each stat.
+     *
+     * @param theField The field to get.
+     * @return The counter of the stat.
+     */
     public int getStat(final Fields theField) {
         return switch (theField) {
             case MOVES -> myMoves;

@@ -3,20 +3,17 @@ package com.tcss.dungeonadventure.model.memento;
 import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.model.Room;
-import com.tcss.dungeonadventure.objects.heroes.Hero;
-import javafx.util.Pair;
-
-import java.awt.Point;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a Memento for capturing and restoring the state of the Dungeon Adventure game.
  * This Memento includes information about the player name, hero, dungeon, and room mementos.
- * @author Sunny, Aaron, Hieu
- * @version Fall 2023
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class DungeonAdventureMemento implements Serializable {
 
@@ -40,11 +37,10 @@ public class DungeonAdventureMemento implements Serializable {
     private final Room[][] myDiscoveredRooms;
 
 
-
     /**
      * Constructs a DungeonAdventureMemento with the specified player name, hero, and dungeon.
      *
-     * @param theDungeon    The dungeon instance.
+     * @param theDungeon The dungeon instance.
      */
     public DungeonAdventureMemento(final Player thePlayer,
                                    final Dungeon theDungeon,

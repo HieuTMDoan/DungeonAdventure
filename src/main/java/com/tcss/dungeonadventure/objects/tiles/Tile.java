@@ -5,6 +5,15 @@ import com.tcss.dungeonadventure.objects.VisualComponent;
 import java.io.Serial;
 import java.io.Serializable;
 
+
+/**
+ * An abstract class of an individual component of the layout of a Room.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class Tile extends VisualComponent implements Serializable {
 
     @Serial

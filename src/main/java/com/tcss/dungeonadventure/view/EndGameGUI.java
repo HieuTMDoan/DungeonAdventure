@@ -6,23 +6,31 @@ import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.VisualComponent;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.PitTile;
-import javafx.scene.Node;
+import java.util.Arrays;
+import java.util.Objects;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * Represents the GUI of the end screen when the game is over.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class EndGameGUI extends GUILayout {
 
 
+    /**
+     * The panel that is displayed when the player is defeated.
+     */
     private VBox myDefeatPanel;
+
+    /**
+     * The panel that is displayed when the player is victorious.
+     */
     private VBox myVictoryPanel;
 
     /**
@@ -65,7 +73,9 @@ public class EndGameGUI extends GUILayout {
         attachEvents();
     }
 
-
+    /**
+     * Helper method to organize the binding of nodes to variables.
+     */
     private void locateNodes() {
         this.myStatsLabel = (Label) lookup("EGstatsLabel");
         this.myTitleLabel = (Label) lookup("EGtitleLabel");
@@ -79,13 +89,20 @@ public class EndGameGUI extends GUILayout {
         this.myVictoryPanel = (VBox) lookup("EGvictoryPanel");
     }
 
-
+    /**
+     * Helper method to attach events to nodes.
+     */
     private void attachEvents() {
         this.myMainMenuLabel.setOnMouseClicked(e ->
                 GUIHandler.Layouts.swapLayout(GUIHandler.Layouts.HOME)
         );
     }
 
+    /**
+     * Populates the end screen based if the player was victorious.
+     *
+     * @param theVictory If the player was victorious or not.
+     */
     void show(final boolean theVictory) {
         myTitleLabel.setText(theVictory ? "Victory!" : "Game Over");
 
@@ -96,9 +113,9 @@ public class EndGameGUI extends GUILayout {
 
         final long exploredRooms =
                 Arrays.stream(DungeonAdventure.getInstance().getDiscoveredRooms()).
-                flatMap(Arrays::stream).
-                filter(Objects::nonNull).
-                count();
+                        flatMap(Arrays::stream).
+                        filter(Objects::nonNull).
+                        count();
 
         final Player player = DungeonAdventure.getInstance().getPlayer();
         myStatsLabel.setText(String.format("""

@@ -6,9 +6,17 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-
 import java.io.Serial;
 
+
+/**
+ * A tile that will damage the player upon stepping over the tile.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class PitTile extends Tile {
 
     @Serial
@@ -20,6 +28,9 @@ public class PitTile extends Tile {
     private static final int DAMAGE = 15;
 
 
+    /**
+     * Constructs a new PitTile.
+     */
     public PitTile() {
         super(TileChars.Room.PIT, true);
     }

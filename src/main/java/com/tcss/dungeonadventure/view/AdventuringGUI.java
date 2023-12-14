@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
+import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.model.Room;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
@@ -13,6 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Objects;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -27,8 +29,10 @@ import javafx.scene.text.TextBoundsType;
  * Represents the GUI of the current room the player is in,
  * and of player's stats, tile info, inventory, and message box.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class AdventuringGUI extends GUILayout implements PropertyChangeListener {
 
@@ -80,11 +84,13 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
     private Label myPlayerInfoLabel;
 
     /**
-     * Constructs a new AdventuringGUI, representing the graphical user interface for adventuring in the game.
-     * This GUI is responsible for displaying the current room, handling property changes, and interacting
-     * with the player's actions in the game.
+     * Constructs a new AdventuringGUI, representing the graphical user interface
+     * for adventuring in the game.
+     * <p>
+     * This GUI is responsible for displaying the current room, handling property changes,
+     * and interacting with the player's actions in the game.
      *
-     * @param theGUI The GUIHandler responsible for managing the overall graphical user interface.
+     * @param theGUI The GUIHandler responsible for managing the graphical user interface.
      * @see GUIHandler
      * @see PropertyChangeListener
      */
@@ -196,32 +202,39 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
     }
 
 
+    /**
+     * Loads the room that the player is in.
+     *
+     * @param theRoom The room to render.
+     */
     private void loadRoom(final Room theRoom) {
         clearGrid();
         myCurrentRoom = theRoom;
 
         renderRoomWithPlayer();
-        updatePlayerStats();  // Update PlayerStatsBox when loading a new room
+        updatePlayerStats();
     }
 
+    /**
+     * Updates the players stats.
+     */
     private void updatePlayerStats() {
-        if (myCurrentRoom != null && DungeonAdventure.getInstance().getPlayer() != null) {
-            final Hero playerHero = DungeonAdventure.getInstance().getPlayer().getPlayerHero();
+        final Player player = DungeonAdventure.getInstance().getPlayer();
+        if (myCurrentRoom != null && player != null) {
+            final Hero playerHero = player.getPlayerHero();
 
-            if (playerHero != null) {
-                myPlayerInfoLabel.setText(String.format("""
-                                Name: %s
-                                Health: %s/%s
-                                Damage Range: %s-%s
-                                Speed: %s
-                                Accuracy: %s
-                                """,
-                        playerHero.getName(),
-                        playerHero.getHealth(), playerHero.getMaxHealth(),
-                        playerHero.getMinDamage(), playerHero.getMaxDamage(),
-                        playerHero.getAttackSpeed(),
-                        playerHero.getAccuracy()));
-            }
+            myPlayerInfoLabel.setText(String.format("""
+                            Name: %s
+                            Health: %s/%s
+                            Damage Range: %s-%s
+                            Speed: %s
+                            Accuracy: %s
+                            """,
+                    playerHero.getName(),
+                    playerHero.getHealth(), playerHero.getMaxHealth(),
+                    playerHero.getMinDamage(), playerHero.getMaxDamage(),
+                    playerHero.getAttackSpeed(),
+                    playerHero.getAccuracy()));
         }
     }
 
@@ -239,6 +252,7 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
                             && row == myCurrentRoom.getPlayerXPosition()
                             && col == myCurrentRoom.getPlayerYPosition()) {
                         setTileAt(row, col, TileChars.Player.PLAYER, "green");
+
                     } else {
                         setTileAt(row, col, myCurrentRoom.getRoomTiles()[row][col]);
                     }
@@ -287,7 +301,8 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
     }
 
     /**
-     * Handles the mouse-over event for a specific tile in the grid, displaying tile information.
+     * Handles the mouse-over event for a specific tile in the grid,
+     * displaying tile information.
      *
      * @param theRowIndex The row index of the tile.
      * @param theColIndex The column index of the tile.
@@ -315,12 +330,13 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
             case LOAD_ROOM -> loadRoom((Room) theEvent.getNewValue());
             case UPDATED_PLAYER_LOCATION -> {
                 renderRoomWithPlayer();
-                updatePlayerStats();  // Update PlayerStatsBox when player location changes
+                updatePlayerStats();
             }
             case ITEMS_CHANGED -> {
-                this.myInventoryPaneHandler.syncItems(
-                        (Map<Item, Integer>) theEvent.getNewValue());
-                updatePlayerStats();  // Update PlayerStatsBox when items change
+                this.myInventoryPaneHandler.
+                        syncItems((Map<Item, Integer>) theEvent.getNewValue());
+
+                updatePlayerStats();
             }
             case LOG -> log((String) theEvent.getNewValue());
             case END_COMBAT -> loadRoom(myCurrentRoom);
@@ -338,6 +354,11 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
     @Override
     public boolean equals(final Object theOther) {
         return theOther instanceof AdventuringGUI;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(myInventoryPaneHandler);
     }
 
 }

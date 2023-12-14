@@ -5,8 +5,10 @@ import javafx.scene.control.Button;
 /**
  * Represents the Help GUI of the game that includes the game's instruction.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class HelpGUI extends GUILayout {
 

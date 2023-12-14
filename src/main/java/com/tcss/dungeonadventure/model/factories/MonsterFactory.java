@@ -13,8 +13,10 @@ import java.util.Map;
  * This class works with {@link SQLiteDB} to retrieve
  * {@link Monster} stats during the production process.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public final class MonsterFactory {
 

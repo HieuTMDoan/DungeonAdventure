@@ -2,6 +2,7 @@ package com.tcss.dungeonadventure;
 
 
 import com.tcss.dungeonadventure.model.factories.MonsterFactory;
+import com.tcss.dungeonadventure.objects.items.GreaterHealingPotion;
 import com.tcss.dungeonadventure.objects.items.HealingPotion;
 import com.tcss.dungeonadventure.objects.items.Item;
 import com.tcss.dungeonadventure.objects.items.PillarOfAbstraction;
@@ -11,18 +12,18 @@ import com.tcss.dungeonadventure.objects.items.PillarOfPolymorphism;
 import com.tcss.dungeonadventure.objects.items.SkillOrb;
 import com.tcss.dungeonadventure.objects.items.VisionPotion;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 
 /**
  * This class contains static helper methods to use around the program.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360 : Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public final class Helper {
-
 
 
     /**
@@ -35,7 +36,11 @@ public final class Helper {
      * can randomly generate in rooms.
      */
     private static final Class<?>[] ITEM_POOL =
-            new Class[]{HealingPotion.class, VisionPotion.class, SkillOrb.class};
+            new Class[]{
+                    HealingPotion.class,
+                    VisionPotion.class,
+                    SkillOrb.class,
+                    GreaterHealingPotion.class};
 
     /**
      * Contains all the class declarations of the monsters
@@ -82,6 +87,11 @@ public final class Helper {
         return theMin + (theMax - theMin) * RANDOM.nextDouble();
     }
 
+    /**
+     * Gets a random item out of the item pool {@link #ITEM_POOL}.
+     *
+     * @return A new instance of the random item.
+     */
     public static Item getRandomItem() {
         try {
             return (Item) ITEM_POOL[Helper.getRandomIntBetween(0, ITEM_POOL.length)].
@@ -98,11 +108,21 @@ public final class Helper {
     }
 
 
+    /**
+     * Gets a random monster out of the monster pool {@link #MONSTER_POOL}.
+     *
+     * @return A new instance of the random monster.
+     */
     public static Monster getRandomMonster() {
         return MonsterFactory.createCharacter(
                 MONSTER_POOL[Helper.getRandomIntBetween(0, MONSTER_POOL.length)]);
     }
 
+    /**
+     * Get an array of the classes of the pillars.
+     *
+     * @return An Class[] populated by the 4 Pillars.
+     */
     public static Class<?>[] getPillarList() {
         return PILLARS;
     }
@@ -111,7 +131,7 @@ public final class Helper {
      * Converts an upper camel-cased string to sentence case.
      * <p>
      * e.g. CrushingBlow -> Crushing Blow
-     *
+     * 
      * @param theString The input string.
      * @return The formatted string.
      */

@@ -1,17 +1,19 @@
 package com.tcss.dungeonadventure.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Creates a timeline of events, using conditionals and delays.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class TimedSequence {
 
@@ -25,7 +27,7 @@ public class TimedSequence {
      * Adds a new event to the timeline that will trigger AFTER the specified delay.
      *
      * @param theSecondsDelay The delay before the event is triggered.
-     * @param theEvent The event to run.
+     * @param theEvent        The event to run.
      * @return itself.
      */
     public TimedSequence afterDo(final int theSecondsDelay, final TimedEvent theEvent) {
@@ -37,8 +39,8 @@ public class TimedSequence {
      * IF the conditional evaluates to true.
      *
      * @param theSecondsDelay The delay before the event is triggered.
-     * @param theEvent The event to run.
-     * @param theCondition The condition for the event to run.
+     * @param theEvent        The event to run.
+     * @param theCondition    The condition for the event to run.
      * @return itself.
      */
     public TimedSequence afterDoIf(final int theSecondsDelay,
@@ -92,16 +94,25 @@ public class TimedSequence {
     }
 
 
-
+    /**
+     * A functional interface to create a TimedSequence. Override the {@link #run()} method
+     * with the event to run, similar to the {@link Runnable} interface.
+     */
     @FunctionalInterface
     public interface TimedEvent {
         /**
-         * The event to run. If the return value is false, it will stop the execution of the sequence.
+         * The event to run. If the return value is false, it will stop the
+         * execution of the sequence.
+         *
          * @return True if the sequence should continue, false otherwise.
          */
         boolean run();
     }
 
+    /**
+     * A functional interface to create a TimedSequence. Override the {@link #shouldRun()}
+     * method with an implementation that determines if the {@link TimedEvent} should run.
+     */
     @FunctionalInterface
     public interface Conditional {
 
@@ -110,9 +121,6 @@ public class TimedSequence {
          */
         boolean shouldRun();
     }
-
-
-
 
 
 }

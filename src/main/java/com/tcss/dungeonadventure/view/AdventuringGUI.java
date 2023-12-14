@@ -128,7 +128,7 @@ public class AdventuringGUI extends GUILayout implements PropertyChangeListener 
 
         // This is to fix a bug where things within a scroll-pane are blurry
         myMessageScrollPane.setCache(false);
-        for (Node n : myMessageScrollPane.getChildrenUnmodifiable()) {
+        for (final Node n : myMessageScrollPane.getChildrenUnmodifiable()) {
             n.setCache(false);
         }
     }

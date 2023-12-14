@@ -168,12 +168,10 @@ public final class DungeonAdventure implements Serializable {
         this.myDungeon.getCurrentRoom().movePlayer(theDirection);
         PCS.firePropertyChanged(PCS.UPDATED_PLAYER_LOCATION, null);
 
-
-        final Monster[] surroundingMonsters = myDungeon.getAnySurroundingMonsters();
-        if (surroundingMonsters == null) { // There are no monsters surrounding
-            return;
+        Monster[] surroundingMonsters = myDungeon.getAnySurroundingMonsters();
+        if (surroundingMonsters.length > 0) {
+            startCombat(surroundingMonsters);
         }
-        startCombat(surroundingMonsters);
     }
 
     public void doCombatAction(final CombatActions theAction) {

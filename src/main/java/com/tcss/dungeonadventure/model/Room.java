@@ -221,15 +221,42 @@ public class Room implements Serializable {
             try {
                 final Item pillar = (Item) thePillar.getConstructor().newInstance();
                 putTileAtValidLocation(new ItemTile(pillar), tiles, false);
+
+                // Increase the chance of having monsters in rooms with pillars
+                final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
+                final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
+                        ? 4  // Increased number of monsters around pillars
+                        : (monsterRandom < ONE_MONSTER_CHANCE)
+                        ? 3
+                        : 2;
+                for (int i = 0; i < monsterNum; i++) {
+                    final Monster randomMonster = Helper.getRandomMonster();
+                    putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
+                }
+
             } catch (final InstantiationException
                            | NoSuchMethodException
                            | IllegalAccessException
                            | InvocationTargetException e) {
-
                 e.printStackTrace();
             }
         }
+        if (theIsExit) {
+            // Increase the chance of having more monsters in exit rooms
+            final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
+            final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
+                    ? 3  // Adjust the number of monsters as needed
+                    : (monsterRandom < ONE_MONSTER_CHANCE)
+                    ? 2
+                    : 1;
+            for (int i = 0; i < monsterNum; i++) {
+                final Monster randomMonster = Helper.getRandomMonster();
+                putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
+            }
 
+
+        return tiles;
+    }
 
         final double itemRandom = Helper.getRandomDoubleBetween(0, 1);
         final int itemNum = (itemRandom < TWO_ITEM_CHANCE)
@@ -252,6 +279,17 @@ public class Room implements Serializable {
             final Monster randomMonster = Helper.getRandomMonster();
             putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
         }
+//        // Increase the overall number of monsters in the dungeon
+//        final double totalMonsterRandom = Helper.getRandomDoubleBetween(0, 1);
+//        final int totalMonsterNum = (totalMonsterRandom < TWO_MONSTER_CHANCE)
+//                ? 5  // Adjust the total number of monsters as needed
+//                : (totalMonsterRandom < ONE_MONSTER_CHANCE)
+//                ? 4
+//                : 3;
+//        for (int i = 0; i < totalMonsterNum; i++) {
+//            final Monster randomMonster = Helper.getRandomMonster();
+//            putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
+//        }
 
         final double pitRandom = Helper.getRandomDoubleBetween(0, 1);
         final int pitNum = (pitRandom < TWO_PIT_CHANCE)

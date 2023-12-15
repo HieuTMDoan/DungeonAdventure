@@ -1,5 +1,8 @@
 package com.tcss.dungeonadventure.objects.tiles;
-
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
@@ -27,6 +30,10 @@ public class PitTile extends Tile {
      */
     private static final int DAMAGE = 15;
 
+    /**
+     * The sound file for stepping on a pit.
+     */
+    private static final String PIT_STEP_SOUND_FILE = "Oof.wav";
 
     /**
      * Constructs a new PitTile.
@@ -41,6 +48,9 @@ public class PitTile extends Tile {
             return;
         }
 
+        // Play the sound when the player steps on the pit
+        playSound(PIT_STEP_SOUND_FILE);
+
         final Hero hero = thePlayer.getPlayerHero();
         hero.changeHealth(this, -DAMAGE);
 
@@ -48,8 +58,23 @@ public class PitTile extends Tile {
             DungeonAdventure.getInstance().endGame(false);
         }
 
-        PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " heath.");
+        PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " health.");
+    }
 
+    /**
+     * Plays a sound file.
+     *
+     * @param soundFilePath The path to the sound file.
+     */
+    private void playSound(String soundFilePath) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundFilePath).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

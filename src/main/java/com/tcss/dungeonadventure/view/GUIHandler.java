@@ -6,12 +6,10 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
-
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -22,8 +20,10 @@ import javafx.stage.Stage;
 /**
  * Represents the GUI manager for the program.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class GUIHandler extends Application implements PropertyChangeListener {
     /**
@@ -125,43 +125,34 @@ public class GUIHandler extends Application implements PropertyChangeListener {
      * @param theEvent the key press event
      */
     private void handleKeyPress(final KeyEvent theEvent) {
-
-
         switch (theEvent.getCode()) {
             case UP, W -> {
-                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
-                    return;
+                if (Layouts.getCurrentLayout() == Layouts.ADVENTURING) {
+                    DungeonAdventure.getInstance().
+                            movePlayer(Directions.Cardinal.NORTH);
                 }
-
-                DungeonAdventure.getInstance().
-                        movePlayer(Directions.Cardinal.NORTH);
             }
 
             case DOWN, S -> {
-                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
-                    return;
+                if (Layouts.getCurrentLayout() == Layouts.ADVENTURING) {
+                    DungeonAdventure.getInstance().
+                            movePlayer(Directions.Cardinal.SOUTH);
                 }
-
-                DungeonAdventure.getInstance().
-                        movePlayer(Directions.Cardinal.SOUTH);
             }
 
             case LEFT, A -> {
-                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
-                    return;
+                if (Layouts.getCurrentLayout() == Layouts.ADVENTURING) {
+                    DungeonAdventure.getInstance().
+                            movePlayer(Directions.Cardinal.WEST);
                 }
 
-                DungeonAdventure.getInstance().
-                        movePlayer(Directions.Cardinal.WEST);
             }
 
             case RIGHT, D -> {
-                if (Layouts.getCurrentLayout() != Layouts.ADVENTURING) {
-                    return;
+                if (Layouts.getCurrentLayout() == Layouts.ADVENTURING) {
+                    DungeonAdventure.getInstance().
+                            movePlayer(Directions.Cardinal.EAST);
                 }
-
-                DungeonAdventure.getInstance().
-                        movePlayer(Directions.Cardinal.EAST);
             }
 
             case P, ESCAPE -> {

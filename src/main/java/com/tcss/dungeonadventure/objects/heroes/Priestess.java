@@ -1,6 +1,5 @@
 package com.tcss.dungeonadventure.objects.heroes;
 
-import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.skills.Heal;
 import com.tcss.dungeonadventure.objects.skills.Skill;
@@ -8,8 +7,10 @@ import com.tcss.dungeonadventure.objects.skills.Skill;
 /**
  * Represents a Priestess character.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class Priestess extends Hero {
     /**

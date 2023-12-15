@@ -1,9 +1,16 @@
 package com.tcss.dungeonadventure.view;
 
+import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
+import static com.tcss.dungeonadventure.objects.Directions.Cardinal;
+
 import com.tcss.dungeonadventure.model.Dungeon;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Room;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Border;
@@ -17,20 +24,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.tcss.dungeonadventure.model.Dungeon.MAZE_SIZE;
-import static com.tcss.dungeonadventure.objects.Directions.Cardinal;
-
 /**
  * Represents the GUI of the current dungeon
  * that which the entirety of it is visible.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
 
@@ -244,10 +245,4 @@ public class CheatCodeGUI extends GUILayout implements PropertyChangeListener {
         }
     }
 
-    public void enterCheatCode(final String theCheatCode) {
-        if ("invincible".equalsIgnoreCase(theCheatCode)) {
-            DungeonAdventure.getInstance().activateInvincibilityCheat();
-        }
-
-    }
 }

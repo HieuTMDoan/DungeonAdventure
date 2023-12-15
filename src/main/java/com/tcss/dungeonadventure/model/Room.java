@@ -26,8 +26,10 @@ import java.util.Arrays;
  * A room is made up of tiles of multiple types
  * and contains monsters and items to pick and use.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class Room implements Serializable {
     @Serial
@@ -255,8 +257,8 @@ public class Room implements Serializable {
             }
 
 
-        return tiles;
-    }
+            return tiles;
+        }
 
         final double itemRandom = Helper.getRandomDoubleBetween(0, 1);
         final int itemNum = (itemRandom < TWO_ITEM_CHANCE)
@@ -387,7 +389,7 @@ public class Room implements Serializable {
      * in the given {@link Directions.Cardinal Cardinal}.
      *
      * @param theWallLocation the direction for door to be added
-     * @param theOtherRoom the room whose wall is to be added with
+     * @param theOtherRoom    the room whose wall is to be added with
      */
     public void addDoorToWall(final Directions.Cardinal theWallLocation,
                               final Room theOtherRoom) {
@@ -673,8 +675,11 @@ public class Room implements Serializable {
     }
 
     /**
-     * Returns a string representation of the current state of the room, including the player's position.
-     * The room is represented as a grid of tiles, and the player's position is marked with a specific character.
+     * Returns a string representation of the current state of the room,
+     * including the player's position.
+     * <p>
+     * The room is represented as a grid of tiles, and the player's position is
+     * marked with a specific character.
      *
      * @return A string representation of the room, with the player's position marked.
      */

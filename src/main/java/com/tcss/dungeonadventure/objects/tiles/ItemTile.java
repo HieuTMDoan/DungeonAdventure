@@ -4,9 +4,16 @@ package com.tcss.dungeonadventure.objects.tiles;
 import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.items.Item;
-
 import java.io.Serial;
 
+/**
+ * A tile to represent an item in the dungeon.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class ItemTile extends Tile {
 
     @Serial

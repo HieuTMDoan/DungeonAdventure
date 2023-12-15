@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author Aaron Burnham
  * @author Sunny Ali
  * @author Hieu Doan
- * @version Fall 2023
+ * @version TCSS 360 - Fall 2023
  */
 public abstract class VisualComponent implements Serializable {
 
@@ -40,6 +40,9 @@ public abstract class VisualComponent implements Serializable {
         return "NO_DESCRIPTION";
     }
 
+    /**
+     * @return The default color of the component..
+     */
     public String getTileColor() {
         return "white";
     }

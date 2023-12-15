@@ -3,8 +3,17 @@ package com.tcss.dungeonadventure.objects.tiles;
 
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
-
 import java.io.Serial;
+
+
+/**
+ * A tile to represent other {@link DungeonCharacter}, such as Monsters.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 
 public class NPCTile extends Tile {
 
@@ -16,12 +25,20 @@ public class NPCTile extends Tile {
      */
     private DungeonCharacter myDungeonCharacter;
 
-
+    /**
+     * Constructs a new NPCTile based on the specified DungeonCharacter.
+     *
+     * @param theDungeonCharacter The DungeonCharacter on the tile.
+     */
     public NPCTile(final DungeonCharacter theDungeonCharacter) {
         super(theDungeonCharacter.getDisplayChar(), false);
         this.myDungeonCharacter = theDungeonCharacter;
     }
 
+
+    /**
+     * Empty tile for Serialization.
+     */
     public NPCTile() {
 
     }

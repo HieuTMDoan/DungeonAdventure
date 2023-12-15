@@ -15,6 +15,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.Serial;
 
+
+/**
+ * A tile that will damage the player upon stepping over the tile.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class PitTile extends Tile {
 
     @Serial
@@ -30,6 +39,9 @@ public class PitTile extends Tile {
      */
     //private static final String SOUND_EFFECT_PATH = "soundpath";
 
+    /**
+     * Constructs a new PitTile.
+     */
     public PitTile() {
         super(TileChars.Room.PIT, true);
     }

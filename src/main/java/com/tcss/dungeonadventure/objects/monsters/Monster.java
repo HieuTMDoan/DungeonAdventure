@@ -3,6 +3,15 @@ package com.tcss.dungeonadventure.objects.monsters;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 
+
+/**
+ * A child of {@link DungeonCharacter} to represent enemies the player will fight.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public abstract class Monster extends DungeonCharacter {
 
     /**
@@ -50,6 +59,11 @@ public abstract class Monster extends DungeonCharacter {
 
     }
 
+    /**
+     * Heals the monster a small amount.
+     *
+     * @return The amount the monster healed.
+     */
     public int heal() {
         int healAmount = 0;
         if (Helper.getRandomDoubleBetween(0, 1) < this.myHealChance) {

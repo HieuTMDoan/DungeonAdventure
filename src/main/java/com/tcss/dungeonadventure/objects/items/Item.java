@@ -8,11 +8,16 @@ import java.util.Objects;
 
 /**
  * An abstract class representing an item in the game.
- * Items have a display character and can be of different types, such as pillars or consumables.
+ * Items have a display character and can be of different types,
+ * such as pillars or consumables.
  * Subclasses must implement the useItem method to define the item's behavior when used.
  *
  * @see VisualComponent
  * @see Serializable
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public abstract class Item extends VisualComponent implements Serializable {
 

@@ -7,21 +7,22 @@ import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
 import com.tcss.dungeonadventure.objects.items.SkillOrb;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 /**
  * Represents the GUI of the combat screen whenever the player interacts with a monster.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class CombatGUI extends GUILayout implements PropertyChangeListener {
 
@@ -36,7 +37,11 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
      */
     private VBox myMessageBox;
 
+    /**
+     * The label that holds the action description.
+     */
     private Label myDescriptionLabel;
+
 
     /* Player Action Nodes */
 
@@ -70,6 +75,11 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
     private Label myEnemyHealthLabel;
 
 
+    /**
+     * Constructs a new Combat GUI.
+     *
+     * @param theGUIHandler The parent GUI Handler.
+     */
     public CombatGUI(final GUIHandler theGUIHandler) {
         super(theGUIHandler);
         PCS.addPropertyListener(this);
@@ -78,17 +88,9 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
         attachEvents();
     }
 
-
     /**
-     * Using a node ID, you can access nodes in the Combat screen's FXML by ID.
-     *
-     * @param theNodeID The ID of the node to access.
-     * @return The looked-up node, or null if it isn't found.
+     * Helper method to locate corresponding Nodes.
      */
-    Node lookup(final String theNodeID) {
-        return this.getGui().lookup(theNodeID);
-    }
-
     private void locateNodes() {
         this.myLogScroll = (ScrollPane) lookup("combatScrollPane");
         this.myDescriptionLabel = (Label) lookup("combatDescriptionLabel");
@@ -105,6 +107,9 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
 
     }
 
+    /**
+     * Helper method to attach events to nodes.
+     */
     private void attachEvents() {
         myMessageBox.heightProperty().addListener((observable, oldValue, newValue)
                 -> myLogScroll.setVvalue((Double) newValue));
@@ -114,7 +119,9 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
             myDescriptionLabel.setText(
                     ("Attack:\nSwing your weapon, dealing %s - %s damage to the enemy. "
                             + "Has a %s%% chance of hitting").
-                            formatted(hero.getMinDamage(), hero.getMaxDamage(), hero.getAccuracy() * 100));
+                            formatted(hero.getMinDamage(),
+                                    hero.getMaxDamage(),
+                                    hero.getAccuracy() * 100));
         });
         myAttackButton.setOnMouseExited(e -> myDescriptionLabel.setText(""));
         myAttackButton.setOnMouseClicked(e ->
@@ -122,13 +129,14 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
                         doCombatAction(DungeonAdventure.CombatActions.ATTACK));
 
         myUseSkillButton.setOnMouseEntered(e -> {
-            final Player hero = DungeonAdventure.getInstance().getPlayer();
-            final Integer skillCount = hero.getInventory().get(new SkillOrb());
+            final Player player = DungeonAdventure.getInstance().getPlayer();
+            final Hero hero = player.getPlayerHero();
+            final Integer skillCount = player.getInventory().get(new SkillOrb());
 
             myDescriptionLabel.setText("Skill: %s\n%s\n\nSkill Orbs remaining: %s".
                     formatted(
-                            Helper.camelToSpaced(hero.getPlayerHero().getSkill().getClass().getSimpleName()),
-                            hero.getPlayerHero().getSkill().getDescription(),
+                            Helper.camelToSpaced(hero.getSkill().getClass().getSimpleName()),
+                            hero.getSkill().getDescription(),
                             skillCount == null ? 0 : skillCount));
         });
 
@@ -151,6 +159,11 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
 
     }
 
+    /**
+     * Syncs combat, setting health labels and names.
+     *
+     * @param theMonster The monster the player is fighting.
+     */
     private void syncCombat(final Monster theMonster) {
         myEnemyHealthLabel.setText(
                 String.format("Health: %s/%s",
@@ -164,6 +177,11 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
                 String.format("Health: %s/%s", player.getHealth(), player.getMaxHealth()));
     }
 
+    /**
+     * Starts combat, resetting old fields.
+     *
+     * @param theMonster The monster the player is fighting.
+     */
     void startCombat(final Monster theMonster) {
         myMessageBox.getChildren().clear();
         syncCombat(theMonster);
@@ -202,6 +220,9 @@ public class CombatGUI extends GUILayout implements PropertyChangeListener {
                 myAttackButton.setVisible(canDoAction);
                 myUseSkillButton.setVisible(canDoAction);
                 myFleeButton.setVisible(canDoAction);
+            }
+            default -> {
+
             }
         }
     }

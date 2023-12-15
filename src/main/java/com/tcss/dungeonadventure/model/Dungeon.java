@@ -5,11 +5,8 @@ import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.monsters.Monster;
 import com.tcss.dungeonadventure.objects.tiles.NPCTile;
 import com.tcss.dungeonadventure.objects.tiles.Tile;
-
 import java.awt.Dimension;
 import java.awt.Point;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,8 +18,10 @@ import java.util.Map;
 /**
  * Represents a randomly generated maze of type {@link Room}.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class Dungeon implements Serializable {
 
@@ -58,7 +57,7 @@ public class Dungeon implements Serializable {
     /**
      * The room that contains a pillar of Object-Oriented.
      */
-    private List<Room> myPillarRooms;
+    private final List<Room> myPillarRooms;
 
     /**
      * The 2D representation of the {@link Dungeon}.
@@ -529,8 +528,10 @@ public class Dungeon implements Serializable {
     }
 
     /**
-     * @param theRoom
-     * @param theOriginalDirection
+     * Loads player to a specific room from a direction.
+     *
+     * @param theRoom The room to load into.
+     * @param theOriginalDirection The direction the player is entering the room from.
      */
     public void loadPlayerTo(final Room theRoom,
                              final Directions.Cardinal theOriginalDirection) {

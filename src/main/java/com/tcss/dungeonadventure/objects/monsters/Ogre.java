@@ -2,6 +2,15 @@ package com.tcss.dungeonadventure.objects.monsters;
 
 import com.tcss.dungeonadventure.objects.TileChars;
 
+
+/**
+ * A child of {@link Monster}.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class Ogre extends Monster {
     public Ogre(final String theName,
                    final int theHealth,

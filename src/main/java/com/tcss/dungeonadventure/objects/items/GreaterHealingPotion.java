@@ -3,33 +3,30 @@ package com.tcss.dungeonadventure.objects.items;
 import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
+
 /**
- * An item to heal the player.
+ * An upgraded {@link HealingPotion} to restore more health.
  *
  * @author Aaron Burnham
  * @author Sunny Ali
  * @author Hieu Doan
  * @version TCSS 360 - Fall 2023
  */
-public class HealingPotion extends Item {
+public class GreaterHealingPotion extends Item {
 
     /**
      * The amount healed when used.
      */
-    private static final int HEAL_AMOUNT = 35;
+    private static final int HEAL_AMOUNT = 60;
+
 
     /**
-     * Constructs a new Healing Potion.
+     * Constructs a new Greater Healing Potion.
      */
-    public HealingPotion() {
-        super(TileChars.Items.HEALING_POTION, ItemTypes.CONSUMABLE);
+    public GreaterHealingPotion() {
+        super(TileChars.Items.GREATER_HEALING_POTION, ItemTypes.CONSUMABLE);
     }
 
-    /**
-     * Uses the healing potion to restore health to the specified target dungeon character.
-     *
-     * @param theTarget The dungeon character to whom the healing potion is applied.
-     */
     @Override
     public void useItem(final DungeonCharacter theTarget) {
         if (theTarget != null) {
@@ -59,5 +56,3 @@ public class HealingPotion extends Item {
         return "Heals " + HEAL_AMOUNT + ". Consumed upon use.";
     }
 }
-
-

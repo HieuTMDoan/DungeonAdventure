@@ -2,10 +2,18 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
 import com.tcss.dungeonadventure.objects.items.Item;
+import java.util.Map;
 import javafx.scene.layout.VBox;
 
-import java.util.Map;
 
+/**
+ * A class to manage the GUI representation of the inventory.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class InventoryPanelHandler {
 
     /**
@@ -19,14 +27,19 @@ public class InventoryPanelHandler {
     private final VBox myInventoryPanel;
 
 
-    public InventoryPanelHandler(final AdventuringGUI theGUI) {
+    /**
+     * Constructs a new InventoryPanelHandler
+     *
+     * @param theGUI The AdventuringGUI.
+     */
+    InventoryPanelHandler(final AdventuringGUI theGUI) {
         this.myGUI = theGUI;
         myInventoryPanel = (VBox) theGUI.lookup("inventoryPanel");
         myInventoryPanel.getChildren().clear();
         syncItems(DungeonAdventure.getInstance().getPlayer().getInventory());
     }
 
-    public void syncItems(final Map<Item, Integer> theItems) {
+    void syncItems(final Map<Item, Integer> theItems) {
         myInventoryPanel.getChildren().clear();
 
         for (final Item item : theItems.keySet()) {

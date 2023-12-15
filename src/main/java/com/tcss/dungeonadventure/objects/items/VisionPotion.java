@@ -7,8 +7,19 @@ import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
 
+/**
+ * An item that gives the player insight on the surrounding rooms.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class VisionPotion extends Item {
 
+    /**
+     * Constructs a new Vision Potion.
+     */
     public VisionPotion() {
         super(TileChars.Items.VISION_POTION, ItemTypes.CONSUMABLE);
     }

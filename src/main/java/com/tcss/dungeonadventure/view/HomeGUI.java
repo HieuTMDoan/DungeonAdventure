@@ -8,19 +8,23 @@ import com.tcss.dungeonadventure.model.factories.HeroFactory;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 
 
 /**
  * Represents the GUI of the home screen
  * before starting a new or saved game.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
-public class HomeGUI extends GUILayout implements PropertyChangeListener {
+public class HomeGUI extends GUILayout {
 
 
     /**
@@ -48,21 +52,21 @@ public class HomeGUI extends GUILayout implements PropertyChangeListener {
      */
     private TextField myHeroNameTextField;
 
-
     /**
-     * The load label;
+     * The load label.
      */
     private Label myLoadLabel;
 
+    /**
+     * Constructs a new HomeGUI.
+     *
+     * @param theGUI The GUI Handler.
+     */
     public HomeGUI(final GUIHandler theGUI) {
         super(theGUI);
-        PCS.addPropertyListener(this);
 
         locateNodes();
         attachEvents();
-
-
-
 
     }
 
@@ -132,10 +136,5 @@ public class HomeGUI extends GUILayout implements PropertyChangeListener {
         thiefRadioButton.setOnAction(e -> mySelectedClass = Helper.Characters.THIEF);
     }
 
-
-    @Override
-    public void propertyChange(final PropertyChangeEvent theEvent) {
-
-    }
 
 }

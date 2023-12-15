@@ -1,18 +1,18 @@
 package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.model.DungeonAdventure;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 
 
 /**
  * Represents the pause menu GUI of the program.
  *
- * @author Aaron, Sunny, Hieu
- * @version TCSS 360: Fall 2023
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
  */
 public class PauseGUI extends GUILayout {
-
 
     /**
      * The resume button.

@@ -5,8 +5,19 @@ import com.tcss.dungeonadventure.objects.DungeonCharacter;
 import com.tcss.dungeonadventure.objects.TileChars;
 
 
+/**
+ * One of the key items needed to beat the game.
+ *
+ * @author Aaron Burnham
+ * @author Sunny Ali
+ * @author Hieu Doan
+ * @version TCSS 360 - Fall 2023
+ */
 public class PillarOfAbstraction extends Item {
 
+    /**
+     * Constructs a new Pillar of Abstraction.
+     */
     public PillarOfAbstraction() {
         super(TileChars.Items.PILLAR_OF_ABSTRACTION, ItemTypes.PILLAR);
 

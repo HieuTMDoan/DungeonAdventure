@@ -192,109 +192,144 @@ public final class DungeonAdventure implements Serializable {
         final Hero hero = myPlayer.getPlayerHero();
         final TimedSequence s = new TimedSequence();
 
-        s.afterDo(0, () -> { // player action phase
-            switch (theAction) {
-                case ATTACK -> {
-                    damageFromPlayer.set(hero.attack(myCurrentlyFightingMonster));
+        s.afterDo(0, () -> playerAction(theAction, damageFromPlayer, hero)).
+                afterDoIf(1, () -> damageFromPlayer.get() > 0, this::monsterHeal).
+                afterDo(1, () -> monsterAttack(hero)).start();
+    }
 
-                    if (damageFromPlayer.get() > 0) {
-                        myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT,
-                                damageFromPlayer.get());
+    /**
+     * Executes the monster's attack action
+     * and returns true if the monster's action doesn't yet end combat.
+     *
+     * @param theHero the player's Hero type that is in combat
+     *                with the monster
+     * @return True if the monster's action doesn't yet end combat.
+     */
+    private boolean monsterAttack(final Hero theHero) {
+        final boolean result = false;
+        final Integer damageToPlayer = myCurrentlyFightingMonster.attack(theHero);
 
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                "Player attacked, dealing "
-                                        + damageFromPlayer.get() + " damage.");
-                    } else {
-                        myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
-                    }
-                }
+        if (damageToPlayer == null) {
+            PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
+        } else if (damageToPlayer > 0) {
+            PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                    myCurrentlyFightingMonster.getName()
+                            + " attacked, dealing " + damageToPlayer + " damage.");
+        } else {
+            PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                    myCurrentlyFightingMonster.getName() + " missed!");
+        }
+        PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
 
-                case USE_SKILL -> {
-                    if (!myPlayer.containsItem(new SkillOrb())) {
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                                "You need a Skill Orb to use your skill!");
-                        return false;
-                    }
+        if (theHero.isDefeated()) {
+            endGame(false);
+        } else {
+            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
+        }
 
-                    myPlayer.removeItemFromInventory(new SkillOrb());
+        return result;
+    }
+
+    /**
+     * Executes the monster's healing action
+     * and returns true to continue the combat.
+     *
+     * @return True to continue the combat.
+     */
+    private boolean monsterHeal() {
+        final int healAmount = myCurrentlyFightingMonster.heal();
+
+        if (healAmount > 0) {
+            PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                    "%s healed %s health!".
+                            formatted(myCurrentlyFightingMonster.getName(), healAmount));
+        } else {
+            PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                    "%s tried to heal, but was unsuccessful!".
+                            formatted(myCurrentlyFightingMonster.getName()));
+        }
+
+        PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+        return true;
+    }
+
+    /**
+     * Executes the player's chosen action
+     * and returns true if the player's action doesn't yet end combat.
+     *
+     * @param theAction the player's chosen action
+     * @param theDamageFromPlayer the player's damage dealt
+     * @param theHero the player's type
+     * @return True if the player's action doesn't yet end combat.
+     */
+    private boolean playerAction(final CombatActions theAction,
+                                 final AtomicInteger theDamageFromPlayer,
+                                 final Hero theHero) {
+        boolean result = true;
+        switch (theAction) {
+            case ATTACK -> {
+                theDamageFromPlayer.set(theHero.attack(myCurrentlyFightingMonster));
+
+                if (theDamageFromPlayer.get() > 0) {
+                    myPlayer.increaseStat(Player.Fields.DAMAGE_DEALT,
+                            theDamageFromPlayer.get());
+
                     PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                            "Used a Skill Orb to activate "
-                                    + Helper.camelToSpaced(
-                                            hero.getSkill().getClass().getSimpleName()));
-
-                    hero.useSkill(myCurrentlyFightingMonster);
+                            "Player attacked, dealing "
+                                    + theDamageFromPlayer.get() + " damage.");
+                } else {
+                    myPlayer.increaseStat(Player.Fields.MISSED_ATTACKS);
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player missed!");
                 }
-
-                case FLEE -> {
-                    if (Helper.getRandomDoubleBetween(0, 1) > FLEE_CHANCE) {
-                        PCS.firePropertyChanged(PCS.COMBAT_LOG, "Couldn't flee!");
-                    } else {
-                        PCS.firePropertyChanged(PCS.END_COMBAT, null);
-                        PCS.firePropertyChanged(PCS.LOG, "Fled from combat!");
-                        return false;
-                    }
-                }
-
-                default -> throw new IllegalStateException(
-                        "Unexpected value: " + theAction);
             }
 
-            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
+            case USE_SKILL -> {
+                if (!myPlayer.containsItem(new SkillOrb())) {
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                            "You need a Skill Orb to use your skill!");
+                    result = false;
+                    break;
+                }
 
+                myPlayer.removeItemFromInventory(new SkillOrb());
+                PCS.firePropertyChanged(PCS.COMBAT_LOG,
+                        "Used a Skill Orb to activate "
+                                + Helper.camelToSpaced(
+                                        theHero.getSkill().getClass().getSimpleName()));
 
-            // Check for victory
+                theHero.useSkill(myCurrentlyFightingMonster);
+            }
+
+            case FLEE -> {
+                if (Helper.getRandomDoubleBetween(0, 1) > FLEE_CHANCE) {
+                    PCS.firePropertyChanged(PCS.COMBAT_LOG, "Couldn't flee!");
+                } else {
+                    PCS.firePropertyChanged(PCS.END_COMBAT, null);
+                    PCS.firePropertyChanged(PCS.LOG, "Fled from combat!");
+                    result = false;
+                }
+            }
+
+            default -> throw new IllegalStateException(
+                    "Unexpected value: " + theAction);
+        }
+
+        if (result) { // Check for victory
             if (myCurrentlyFightingMonster.isDefeated()) {
                 myPlayer.increaseStat(Player.Fields.MONSTERS_DEFEATED);
                 PCS.firePropertyChanged(PCS.END_COMBAT, null);
                 PCS.firePropertyChanged(PCS.LOG,
                         "Defeated " + myCurrentlyFightingMonster.getName() + "!");
                 myCurrentlyFightingMonster = null;
-                return false;
-            }
-
-            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
-            return true;
-
-        }).afterDoIf(1, () -> damageFromPlayer.get() > 0, () -> { // Monster heal phase
-            final int healAmount = myCurrentlyFightingMonster.heal();
-            if (healAmount > 0) {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                        "%s healed %s health!".
-                                formatted(myCurrentlyFightingMonster.getName(), healAmount));
+                result = false;
             } else {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                        "%s tried to heal, but was unsuccessful!".
-                                formatted(myCurrentlyFightingMonster.getName()));
+                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
+                PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, false);
             }
-            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-            return true;
+        }
 
-        }).afterDo(1, () -> { // monster attack phase
-            final Integer damageToPlayer = myCurrentlyFightingMonster.attack(hero);
-            if (damageToPlayer == null) {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG, "Player blocked the attack!");
-            } else if (damageToPlayer > 0) {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                        myCurrentlyFightingMonster.getName()
-                                + " attacked, dealing " + damageToPlayer + " damage.");
-            } else {
-                PCS.firePropertyChanged(PCS.COMBAT_LOG,
-                        myCurrentlyFightingMonster.getName() + " missed!");
-            }
-            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-
-            if (hero.isDefeated()) {
-                endGame(false);
-                return false;
-            }
-
-            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-            PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
-            return false;
-        }).start();
+        return result;
     }
 
 

@@ -426,7 +426,7 @@ public class Dungeon implements Serializable {
                     final Room otherRoom = getRoomAt(x, y);
 
                     room.addDoorToWall(randomDirection, otherRoom);
-                    otherRoom.addDoorToWall(randomDirection.getOpposite(), otherRoom);
+                    otherRoom.addDoorToWall(randomDirection.getOpposite(), room);
 
 
                 }

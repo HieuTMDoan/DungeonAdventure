@@ -532,12 +532,6 @@ public class Room implements Serializable {
         }
         myPlayerPosition = findDoorOnWall(theOriginalDirection.getOpposite());
 
-        if (myPlayerPosition == null) {
-            System.out.println("WARNING: Could not find door on wall: "
-                    + theOriginalDirection.getOpposite());
-
-            System.out.println(this);
-        }
 
     }
 

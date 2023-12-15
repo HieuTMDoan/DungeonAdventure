@@ -218,19 +218,21 @@ public class Room implements Serializable {
                     : new ExitTile(), tiles, false);
 
             // Increase the chance of having more monsters in exit rooms
-            final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
-            final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
-                    ? 6  // Adjust the number of monsters as needed for a heavily guarded exit
-                    : (monsterRandom < ONE_MONSTER_CHANCE)
-                    ? 5
-                    : 4;
-            for (int i = 0; i < monsterNum; i++) {
-                final Monster randomMonster = Helper.getRandomMonster();
-                putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
-            }
+            if (theIsExit) {
+                final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
+                final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
+                        ? 6  // Adjust the number of monsters as needed for a heavily guarded exit
+                        : (monsterRandom < ONE_MONSTER_CHANCE)
+                        ? 5
+                        : 4;
+                for (int i = 0; i < monsterNum; i++) {
+                    final Monster randomMonster = Helper.getRandomMonster();
+                    putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
+                }
 
-            // Add extra walls for increased difficulty
-            addExtraWalls(new Room(tiles));
+                // Add extra walls for increased difficulty
+                addExtraWalls(new Room(tiles));
+            }
 
             return tiles;
         }
@@ -259,22 +261,6 @@ public class Room implements Serializable {
                            | InvocationTargetException e) {
                 e.printStackTrace();
             }
-        }
-        if (theIsExit) {
-            // Increase the chance of having more monsters in exit rooms
-            final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
-            final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
-                    ? 4  // Adjust the number of monsters as needed
-                    : (monsterRandom < ONE_MONSTER_CHANCE)
-                    ? 3
-                    : 2;
-            for (int i = 0; i < monsterNum; i++) {
-                final Monster randomMonster = Helper.getRandomMonster();
-                putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
-            }
-
-
-            return tiles;
         }
 
         final double itemRandom = Helper.getRandomDoubleBetween(0, 1);

@@ -212,7 +212,6 @@ public class Room implements Serializable {
             }
         }
 
-        // if the room is an exit or entrance, it shouldn't contain anything else.
         if (theIsEntrance || theIsExit) {
             putTileAtValidLocation(theIsEntrance ? new EntranceTile()
                     : new ExitTile(), tiles, false);
@@ -221,17 +220,15 @@ public class Room implements Serializable {
             if (theIsExit) {
                 final double monsterRandom = Helper.getRandomDoubleBetween(0, 1);
                 final int monsterNum = (monsterRandom < TWO_MONSTER_CHANCE)
-                        ? 6  // Adjust the number of monsters as needed for a heavily guarded exit
-                        : (monsterRandom < ONE_MONSTER_CHANCE)
                         ? 5
-                        : 4;
+                        : (monsterRandom < ONE_MONSTER_CHANCE)
+                        ? 4
+                        : 3;
                 for (int i = 0; i < monsterNum; i++) {
                     final Monster randomMonster = Helper.getRandomMonster();
                     putTileAtValidLocation(new NPCTile(randomMonster), tiles, true);
                 }
 
-                // Add extra walls for increased difficulty
-                addExtraWalls(new Room(tiles));
             }
 
             return tiles;

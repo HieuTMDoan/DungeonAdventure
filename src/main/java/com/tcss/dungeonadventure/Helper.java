@@ -121,7 +121,7 @@ public final class Helper {
     /**
      * Get an array of the classes of the pillars.
      *
-     * @return An Class[] populated by the 4 Pillars.
+     * @return A Class[] populated by the 4 Pillars.
      */
     public static Class<?>[] getPillarList() {
         return PILLARS;

@@ -165,6 +165,9 @@ public class Player implements Serializable {
         };
     }
 
+    /**
+     * Resets all counters of each stat to zero.
+     */
     public void resetAllStats() {
         myMoves = 0;
         myMissedAttacks = 0;
@@ -233,10 +236,18 @@ public class Player implements Serializable {
 
     }
 
+    /**
+     * @return If the player is invincible or not.
+     */
     public boolean isInvincible() {
         return myInvincible;
     }
 
+    /**
+     * Sets whether the player is invincible or not.
+     *
+     * @param theInvincible If the player is invincible.
+     */
     public void setInvincible(final boolean theInvincible) {
         this.myInvincible = theInvincible;
     }
@@ -251,6 +262,12 @@ public class Player implements Serializable {
     }
 
 
+    /**
+     * Checks if a specified item is in the players inventory.
+     *
+     * @param theItem The item to look for.
+     * @return True if the item exists in the inventory, false otherwise.
+     */
     public boolean containsItem(final Item theItem) {
         return myInventory.containsKey(theItem) && myInventory.get(theItem) > 0;
     }

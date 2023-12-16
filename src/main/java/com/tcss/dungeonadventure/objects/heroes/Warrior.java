@@ -21,28 +21,28 @@ public class Warrior extends Hero {
     /**
      * Constructor for Warrior characters.
      *
-     * @param theName class name of Warrior characters
+     * @param theName          class name of Warrior characters
      * @param theDefaultHealth starting health of Warrior characters
-     * @param theMinDamage minimum damage dealt by Warrior characters
-     * @param theMaxDamage maximum damage dealt by Warrior characters
-     * @param theAttackSpeed attack speed of Warrior characters
-     * @param theAccuracy attack accuracy of Warrior characters
-     * @param theBlockChance chance to block of Warrior characters
+     * @param theMinDamage     minimum damage dealt by Warrior characters
+     * @param theMaxDamage     maximum damage dealt by Warrior characters
+     * @param theAttackSpeed   attack speed of Warrior characters
+     * @param theAccuracy      attack accuracy of Warrior characters
+     * @param theBlockChance   chance to block of Warrior characters
      */
     public Warrior(final String theName,
-                     final int theDefaultHealth,
-                     final int theMinDamage,
-                     final int theMaxDamage,
-                     final int theAttackSpeed,
-                     final double theAccuracy,
-                     final double theBlockChance) {
+                   final int theDefaultHealth,
+                   final int theMinDamage,
+                   final int theMaxDamage,
+                   final int theAttackSpeed,
+                   final double theAccuracy,
+                   final double theBlockChance) {
         super(theName,
                 TileChars.Player.PLAYER,
                 theDefaultHealth,
                 theMinDamage,
                 theMaxDamage,
                 theAttackSpeed,
-                  theAccuracy,
+                theAccuracy,
                 theBlockChance,
                 MY_SKILL);
     }

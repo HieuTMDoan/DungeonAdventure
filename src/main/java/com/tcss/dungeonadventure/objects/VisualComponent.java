@@ -41,7 +41,7 @@ public abstract class VisualComponent implements Serializable {
     }
 
     /**
-     * @return The default color of the component..
+     * @return The default color of the component.
      */
     public String getTileColor() {
         return "white";

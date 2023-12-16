@@ -63,15 +63,6 @@ public class Tile extends VisualComponent implements Serializable {
         }
     }
 
-    /**
-     * Create a new instance of the Tile with the same state.
-     *
-     * @return A new instance of the Tile with the same state.
-     */
-    public Tile copy() {
-        return new Tile(super.getDisplayChar(), this.myDefaultTraversable);
-    }
-
     @Override
     public String toString() {
         return String.valueOf(super.getDisplayChar());

@@ -23,13 +23,14 @@ import org.sqlite.SQLiteDataSource;
  * @version TCSS 360 - Fall 2023
  */
 public final class SQLiteDB {
+
     /**
      * Represents the connection with the data source.
      */
     private static Connection myConn;
 
     /**
-     *
+     * No instance of SQLiteDB should be created. This is a utility class.
      */
     private SQLiteDB() { }
 

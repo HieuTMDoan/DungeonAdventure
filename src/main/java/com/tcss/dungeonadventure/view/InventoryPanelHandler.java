@@ -28,7 +28,7 @@ public class InventoryPanelHandler {
 
 
     /**
-     * Constructs a new InventoryPanelHandler
+     * Constructs a new InventoryPanelHandler.
      *
      * @param theGUI The AdventuringGUI.
      */

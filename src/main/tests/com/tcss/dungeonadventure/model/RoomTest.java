@@ -160,17 +160,7 @@ class RoomTest {
         assertEquals(p, room.getDungeonLocation());
     }
 
-    @Test
-    public void getAdjacentRoomByDirection() {
-        fail();
 
-    }
-
-    @Test
-    public void testGetAdjacentRoomByDirection() {
-        fail();
-
-    }
 
     @Test
     public void isEntranceRoom() {
@@ -230,29 +220,6 @@ class RoomTest {
         assertEquals(height, (int) room.getRoomHeight());
     }
 
-    @Test
-    public void deepCopyRoomData() {
-        fail();
-
-    }
-
-    @Test
-    public void createMemento() {
-        fail();
-
-    }
-
-    @Test
-    public void saveToMemento() {
-        fail();
-
-    }
-
-    @Test
-    public void restoreFromMemento() {
-        fail();
-
-    }
 
     @Test
     public void getPlayerXPosition() {

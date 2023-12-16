@@ -2,11 +2,8 @@ package com.tcss.dungeonadventure.view;
 
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.model.DungeonAdventure;
-import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.TimedSequence;
 import com.tcss.dungeonadventure.model.factories.HeroFactory;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

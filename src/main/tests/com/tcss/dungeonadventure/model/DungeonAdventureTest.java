@@ -6,13 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DungeonAdventureTest {
 
-    @Test
-    void getInstance() {
-    }
-
-    @Test
-    void initialize() {
-    }
 
     @Test
     void startNewGame() {

@@ -270,47 +270,7 @@ public final class DungeonAdventure implements Serializable {
 
         return false;
     }
-//    final boolean result = false;
-//
-//        // Sets up the number of attacks a monster can perform per round
-//        final int heroAttackSpeed = theHero.getAttackSpeed();
-//        final int monsterAttackSpeed = myCurrentlyFightingMonster.getAttackSpeed();
-//        final int attackNum = monsterAttackSpeed / heroAttackSpeed;
-//
-//        // Accumulates the damage dealt, number of blocks, and number of missed attacks
-//        int totalDamageFromMonster = 0;
-//        int blockedNum = 0;
-//        int missedNum = 0;
-//        for (int i = 0; i < attackNum; i++) {
-//            final Integer damageToPlayer = myCurrentlyFightingMonster.attack(theHero);
-//
-//            if (damageToPlayer == null) {
-//                blockedNum++;
-//            } else if (damageToPlayer > 0) {
-//                totalDamageFromMonster += damageToPlayer;
-//            } else {
-//                missedNum++;
-//            }
-//            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-//
-//            if (theHero.isDefeated()) {
-//                endGame(false);
-//                break;
-//            } else {
-//                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-//                PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
-//            }
-//        }
-//
-//        // Sends a message for the attack status
-//        PCS.firePropertyChanged(PCS.COMBAT_LOG,
-//                myCurrentlyFightingMonster.getName()
-//                        + " attacked " + attackNum + " times, dealing "
-//                        + totalDamageFromMonster + " damage, blocked by player "
-//                        + blockedNum + " times, missed "
-//                        + missedNum + " times.");
-//
-//        return result;
+
     /**
      * Executes the monster's healing action
      * and returns true to continue the combat.

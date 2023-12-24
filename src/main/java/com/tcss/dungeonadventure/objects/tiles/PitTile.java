@@ -5,14 +5,6 @@ import com.tcss.dungeonadventure.model.PCS;
 import com.tcss.dungeonadventure.model.Player;
 import com.tcss.dungeonadventure.objects.TileChars;
 import com.tcss.dungeonadventure.objects.heroes.Hero;
-
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackEvent;
-import javazoom.jl.player.advanced.PlaybackListener;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.Serial;
 
 
@@ -34,10 +26,6 @@ public class PitTile extends Tile {
      */
     private static final int DAMAGE = 15;
 
-    /**
-     * The path to the MP3 sound effect file.
-     */
-    //private static final String SOUND_EFFECT_PATH = "soundpath";
 
     /**
      * Constructs a new PitTile.
@@ -52,6 +40,9 @@ public class PitTile extends Tile {
             return;
         }
 
+        // Play the sound when the player steps on the pit
+        playSound(PIT_STEP_SOUND_FILE);
+
         final Hero hero = thePlayer.getPlayerHero();
         hero.changeHealth(this, -DAMAGE);
 
@@ -59,10 +50,8 @@ public class PitTile extends Tile {
             DungeonAdventure.getInstance().endGame(false);
         }
 
-        // Play the sound effect
-        //playSoundEffect();
+        PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " heath.");
 
-        PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " health.");
     }
 
 //    private void playSoundEffect() {

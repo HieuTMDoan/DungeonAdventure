@@ -232,7 +232,8 @@ public final class DungeonAdventure implements Serializable {
         // Sets up the number of attacks a monster can perform per round
         final int heroAttackSpeed = theHero.getAttackSpeed();
         final int monsterAttackSpeed = myCurrentlyFightingMonster.getAttackSpeed();
-        final int attackNum = monsterAttackSpeed / heroAttackSpeed;
+        final int attackNum = (monsterAttackSpeed / heroAttackSpeed) == 0
+                ? 1 : monsterAttackSpeed / heroAttackSpeed;
 
         // Accumulates the damage dealt, number of blocks, and number of missed attacks
         int totalDamageFromMonster = 0;
@@ -351,7 +352,8 @@ public final class DungeonAdventure implements Serializable {
                 // Sets up the number of attacks the player can perform per round
                 final int heroAttackSpeed = theHero.getAttackSpeed();
                 final int monsterAttackSpeed = myCurrentlyFightingMonster.getAttackSpeed();
-                final int attackNum = heroAttackSpeed / monsterAttackSpeed;
+                final int attackNum = (heroAttackSpeed / monsterAttackSpeed == 0)
+                        ? 1 : (heroAttackSpeed / monsterAttackSpeed);
 
                 // Accumulates the damage dealt and number of missed attacks
                 int totalDamageFromPlayer = 0;

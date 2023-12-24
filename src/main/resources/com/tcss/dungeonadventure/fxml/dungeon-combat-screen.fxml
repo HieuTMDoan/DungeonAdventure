@@ -38,21 +38,20 @@
                </Label>
             </VBox>
          </AnchorPane>
-         <ScrollPane fx:id="combatScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
-            <content>
-               <VBox fx:id="combatMessageBox" prefHeight="200.0" prefWidth="100.0" spacing="8.0">
-                  <Label text="[12:59:59] Hero used Crushing Blow!" textFill="WHITE">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label text="[12:59:59] Skeleton lost 25 health." textFill="WHITE">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-               </VBox>
-            </content>
+         <ScrollPane fx:id="combatScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0"
+                     GridPane.columnIndex="1">
+            <VBox fx:id="combatMessageBox">
+               <Label text="[12:59:59] Hero used Crushing Blow!" textFill="WHITE">
+                  <font>
+                     <Font size="18.0"/>
+                  </font>
+               </Label>
+               <Label text="[12:59:59] Skeleton lost 25 health." textFill="WHITE">
+                  <font>
+                     <Font size="18.0"/>
+                  </font>
+               </Label>
+            </VBox>
          </ScrollPane>
       </GridPane>
    </AnchorPane>

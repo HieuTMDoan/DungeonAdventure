@@ -26,14 +26,14 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <VBox layoutX="17.0" layoutY="361.0" prefHeight="253.0" prefWidth="147.0" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0">
-               <children>
-                  <Label fx:id="playerInfoLabel" text="Player Info" wrapText="true">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-               </children></VBox>
+                <VBox layoutX="17.0" layoutY="361.0" prefHeight="253.0" prefWidth="147.0" AnchorPane.bottomAnchor="31.0"
+                      AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0">
+                    <Label fx:id="playerInfoLabel" text="Player Info" wrapText="true">
+                        <font>
+                            <Font size="16.0"/>
+                        </font>
+                    </Label>
+                </VBox>
             </AnchorPane>
         </left>
         <center>

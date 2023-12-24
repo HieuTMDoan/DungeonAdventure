@@ -3,14 +3,23 @@ package com.tcss.dungeonadventure.model;
 import com.tcss.dungeonadventure.Helper;
 import com.tcss.dungeonadventure.objects.Directions;
 import com.tcss.dungeonadventure.objects.TileChars;
-import com.tcss.dungeonadventure.objects.tiles.*;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Arrays;
 
+import com.tcss.dungeonadventure.objects.items.HealingPotion;
+import com.tcss.dungeonadventure.objects.tiles.DoorTile;
+import com.tcss.dungeonadventure.objects.tiles.EmptyTile;
+import com.tcss.dungeonadventure.objects.tiles.PitTile;
+import com.tcss.dungeonadventure.objects.tiles.Tile;
+import com.tcss.dungeonadventure.objects.tiles.WallTile;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RoomTest {
 
@@ -32,14 +41,20 @@ class RoomTest {
 
     @Test
     public void generateRandomTileSetBothEntranceExitException() {
-        Object e = null;
-        try {
-            Room.generateRandomTileSet(true, true, null);
-        } catch (final IllegalArgumentException ex) {
-            e = ex;
-        }
-        assertTrue(e instanceof IllegalArgumentException);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> Room.generateRandomTileSet(true, true, null));
+
     }
+
+    @Test
+    public void generateRandomTileSetNonPillarItem() {
+
+        assertThrows(IllegalArgumentException.class,
+                () -> Room.generateRandomTileSet(false, false, HealingPotion.class));
+
+    }
+
 
     @Test
     public void addExtraWalls() {
@@ -160,17 +175,7 @@ class RoomTest {
         assertEquals(p, room.getDungeonLocation());
     }
 
-    @Test
-    public void getAdjacentRoomByDirection() {
-        fail();
 
-    }
-
-    @Test
-    public void testGetAdjacentRoomByDirection() {
-        fail();
-
-    }
 
     @Test
     public void isEntranceRoom() {
@@ -230,29 +235,6 @@ class RoomTest {
         assertEquals(height, (int) room.getRoomHeight());
     }
 
-    @Test
-    public void deepCopyRoomData() {
-        fail();
-
-    }
-
-    @Test
-    public void createMemento() {
-        fail();
-
-    }
-
-    @Test
-    public void saveToMemento() {
-        fail();
-
-    }
-
-    @Test
-    public void restoreFromMemento() {
-        fail();
-
-    }
 
     @Test
     public void getPlayerXPosition() {

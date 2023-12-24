@@ -29,6 +29,9 @@ import javafx.util.Pair;
 /**
  * Represents the game's logic and functionalities.
  * This object communicates with the listener classes via MVC pattern.
+ * <p>
+ * To open the map with the path to victory, press '.' (Period)
+ * To get invincibility, press 'i'.
  *
  * @author Aaron Burnham
  * @author Sunny Ali
@@ -252,11 +255,12 @@ public final class DungeonAdventure implements Serializable {
             }
         }
 
+
         // Sends a message for the attack status and syncs monster combat
         PCS.firePropertyChanged(PCS.COMBAT_LOG,
                 myCurrentlyFightingMonster.getName()
                         + " attacked " + attackNum + " times, dealing "
-                        + totalDamageFromMonster + " damage, blocked by player "
+                        + totalDamageFromMonster + " damage, was blocked by player "
                         + blockedNum + " times, missed "
                         + missedNum + " times.");
         PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
@@ -270,47 +274,7 @@ public final class DungeonAdventure implements Serializable {
 
         return false;
     }
-//    final boolean result = false;
-//
-//        // Sets up the number of attacks a monster can perform per round
-//        final int heroAttackSpeed = theHero.getAttackSpeed();
-//        final int monsterAttackSpeed = myCurrentlyFightingMonster.getAttackSpeed();
-//        final int attackNum = monsterAttackSpeed / heroAttackSpeed;
-//
-//        // Accumulates the damage dealt, number of blocks, and number of missed attacks
-//        int totalDamageFromMonster = 0;
-//        int blockedNum = 0;
-//        int missedNum = 0;
-//        for (int i = 0; i < attackNum; i++) {
-//            final Integer damageToPlayer = myCurrentlyFightingMonster.attack(theHero);
-//
-//            if (damageToPlayer == null) {
-//                blockedNum++;
-//            } else if (damageToPlayer > 0) {
-//                totalDamageFromMonster += damageToPlayer;
-//            } else {
-//                missedNum++;
-//            }
-//            PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-//
-//            if (theHero.isDefeated()) {
-//                endGame(false);
-//                break;
-//            } else {
-//                PCS.firePropertyChanged(PCS.SYNC_COMBAT, myCurrentlyFightingMonster);
-//                PCS.firePropertyChanged(PCS.TOGGLE_COMBAT_LOCK, true);
-//            }
-//        }
-//
-//        // Sends a message for the attack status
-//        PCS.firePropertyChanged(PCS.COMBAT_LOG,
-//                myCurrentlyFightingMonster.getName()
-//                        + " attacked " + attackNum + " times, dealing "
-//                        + totalDamageFromMonster + " damage, blocked by player "
-//                        + blockedNum + " times, missed "
-//                        + missedNum + " times.");
-//
-//        return result;
+
     /**
      * Executes the monster's healing action
      * and returns true to continue the combat.
@@ -338,9 +302,9 @@ public final class DungeonAdventure implements Serializable {
      * Executes the player's chosen action
      * and returns true if the player's action doesn't yet end combat.
      *
-     * @param theAction the player's chosen action
+     * @param theAction           the player's chosen action
      * @param theDamageFromPlayer the player's damage dealt
-     * @param theHero the player's type
+     * @param theHero             the player's type
      * @return True if the player's action doesn't yet end combat.
      */
     private Pair<Boolean, Integer> playerAction(final CombatActions theAction,
@@ -388,7 +352,7 @@ public final class DungeonAdventure implements Serializable {
                 PCS.firePropertyChanged(PCS.COMBAT_LOG,
                         "Used a Skill Orb to activate "
                                 + Helper.camelToSpaced(
-                                        theHero.getSkill().getClass().getSimpleName()));
+                                theHero.getSkill().getClass().getSimpleName()));
 
                 theHero.useSkill(myCurrentlyFightingMonster);
             }

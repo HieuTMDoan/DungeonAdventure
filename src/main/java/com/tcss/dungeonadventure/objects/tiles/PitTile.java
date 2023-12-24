@@ -40,9 +40,6 @@ public class PitTile extends Tile {
             return;
         }
 
-        // Play the sound when the player steps on the pit
-        playSound(PIT_STEP_SOUND_FILE);
-
         final Hero hero = thePlayer.getPlayerHero();
         hero.changeHealth(this, -DAMAGE);
 
@@ -50,30 +47,9 @@ public class PitTile extends Tile {
             DungeonAdventure.getInstance().endGame(false);
         }
 
-        PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " heath.");
-
+        PCS.firePropertyChanged(PCS.LOG, "Stepped into a pit! Lost " + DAMAGE + " health.");
     }
 
-//    private void playSoundEffect() {
-//        try {
-//            // Load the sound file
-//            FileInputStream fileInputStream = new FileInputStream(SOUND_EFFECT_PATH);
-//            AdvancedPlayer player = new AdvancedPlayer(fileInputStream);
-//
-//            // Set up a listener to handle events
-//            player.setPlayBackListener(new PlaybackListener() {
-//                @Override
-//                public void playbackFinished(PlaybackEvent evt) {
-//                    // Handle playback finished event if needed
-//                }
-//            });
-//
-//            // Start playback
-//            player.play();
-//        } catch (FileNotFoundException | JavaLayerException e) {
-//            e.printStackTrace(); // Handle exceptions appropriately
-//        }
-//    }
 
     @Override
     public String getTileColor() {

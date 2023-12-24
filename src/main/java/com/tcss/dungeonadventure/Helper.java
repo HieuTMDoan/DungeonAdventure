@@ -37,10 +37,10 @@ public final class Helper {
      */
     private static final Class<?>[] ITEM_POOL =
             new Class[]{
-                    HealingPotion.class,
-                    VisionPotion.class,
-                    SkillOrb.class,
-                    GreaterHealingPotion.class};
+                HealingPotion.class,
+                VisionPotion.class,
+                SkillOrb.class,
+                GreaterHealingPotion.class};
 
     /**
      * Contains all the class declarations of the monsters
@@ -53,10 +53,10 @@ public final class Helper {
      */
     private static final Class<?>[] PILLARS =
             new Class[]{
-                    PillarOfInheritance.class,
-                    PillarOfAbstraction.class,
-                    PillarOfPolymorphism.class,
-                    PillarOfEncapsulation.class};
+                PillarOfInheritance.class,
+                PillarOfAbstraction.class,
+                PillarOfPolymorphism.class,
+                PillarOfEncapsulation.class};
 
     private Helper() {
 
@@ -121,7 +121,7 @@ public final class Helper {
     /**
      * Get an array of the classes of the pillars.
      *
-     * @return An Class[] populated by the 4 Pillars.
+     * @return A Class[] populated by the 4 Pillars.
      */
     public static Class<?>[] getPillarList() {
         return PILLARS;
